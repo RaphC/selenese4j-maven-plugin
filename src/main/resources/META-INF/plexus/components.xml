@@ -1,0 +1,9 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.rcr.maven.selenese4j.transform.ISourceGenerator</role>
+      <implementation>org.rcr.maven.selenese4j.transform.SourceGenerator</implementation>
+      <configuration/>
+    </component>
+  </components>
+</component-set>
