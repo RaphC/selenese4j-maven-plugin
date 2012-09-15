@@ -13,10 +13,9 @@ public interface ISourceGenerator {
 	/**
      * Role used to register component implementations with the container.
      */
-    String ROLE = ISourceGenerator.class.getName ();
+    String ROLE = ISourceGenerator.class.getName();
 	
 	/**
-	 * 
 	 * @param methodReader
 	 * @throws Exception
 	 */

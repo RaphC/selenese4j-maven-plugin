@@ -10,7 +10,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author Raphael
  *
  */
-class VelocityBean {
+class ScenarioTokens {
 
   private Map<String, String> suiteContext = new HashMap<String, String>();
   private Map<String, String> substituteEntries = new HashMap<String, String>();

@@ -5,5 +5,10 @@
       <implementation>org.rcr.maven.selenese4j.transform.SourceGenerator</implementation>
       <configuration/>
     </component>
+	<component>
+      <role>org.rcr.maven.selenese4j.transform.ICommandToMethodTranslator</role>
+      <implementation>org.rcr.maven.selenese4j.transform.UnManagedCommandToMethodTranslator</implementation>
+      <configuration/>
+    </component>
   </components>
 </component-set>

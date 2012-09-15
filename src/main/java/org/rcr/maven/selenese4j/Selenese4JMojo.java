@@ -14,8 +14,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.rcr.maven.selenese4j.transform.DefaultMethodReader;
 import org.rcr.maven.selenese4j.transform.ISourceGenerator;
-import org.rcr.maven.selenese4j.transform.SourceGenerator;
 
 /**
  * Goal which transform selenium html file scenarii into JUnit Test cases java sources.
@@ -52,6 +52,12 @@ public class Selenese4JMojo extends AbstractMojo {
      * @component
      */
     private ISourceGenerator generator;
+    
+    /**
+     * template to use instead of default Templates.
+     * @parameter
+     */
+    private String overrideTemplatesDirectoryPath;
 	
 	/*
 	 * (non-Javadoc)
@@ -93,12 +99,10 @@ public class Selenese4JMojo extends AbstractMojo {
 		testSourceGenerationDirectory.mkdir();
 		getLog().info("directory " + testSourceGenerationDirectory + " created.");
 
-//		read(new DefaultMethodReader(this.overrideTemplatesDirectoryPath, TEST_BUILD_DIR));
-		
 		// Generation
 		//Check if an impl is defined and if it exists
 		try {
-			generator.generate(null);
+			generator.generate(new DefaultMethodReader(this.overrideTemplatesDirectoryPath, this.testSourceGenerationDirectoryPath));
 		} catch (Exception e) {
 			throw new MojoExecutionException("Exception", e);
 		}

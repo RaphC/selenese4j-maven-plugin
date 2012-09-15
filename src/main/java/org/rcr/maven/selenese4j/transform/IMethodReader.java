@@ -14,10 +14,21 @@ public interface IMethodReader {
 	/**
 	 * 
 	 * @param dir
-	 * @param subPackage
 	 * @param classBean
-	 * @param velocityBean
+	 * @param tokens
 	 * @throws Exception
 	 */
-	void read(File dir, String subPackage, ClassBean classBean, VelocityBean velocityBean) throws Exception;
+	void read(File dir, ClassInfo classBean, ScenarioTokens tokens) throws Exception;
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTemplatesDirectoryPath();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTestBuildDirectory();
 }

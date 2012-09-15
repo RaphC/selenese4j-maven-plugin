@@ -5,29 +5,11 @@ package org.rcr.maven.selenese4j.transform;
  * @author Raphael
  *
  */
-class ClassBean {
+class ClassInfo {
 
   private String packageName;
   private String className;
   private String methodBody;
-  private String loopCount;
-  private String cuncurrentUsers;
-
-  public String getLoopCount() {
-    return loopCount;
-  }
-
-  public void setLoopCount(String loopCount) {
-    this.loopCount = loopCount;
-  }
-
-  public String getCuncurrentUsers() {
-    return cuncurrentUsers;
-  }
-
-  public void setCuncurrentUsers(String cuncurrentUsers) {
-    this.cuncurrentUsers = cuncurrentUsers;
-  }
 
   public String getClassName() {
     return className;
