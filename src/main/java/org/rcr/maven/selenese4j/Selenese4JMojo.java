@@ -36,7 +36,7 @@ public class Selenese4JMojo extends AbstractMojo {
     
     /**
      * Location of the scenarii directories.
-     * @parameter default-value="./target/generated-it-java"
+     * @parameter default-value="target/generated-it-java"
      */
     private String testSourceGenerationDirectoryPath;
     
