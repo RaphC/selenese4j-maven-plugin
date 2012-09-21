@@ -65,7 +65,7 @@ public class SourceGenerator implements ISourceGenerator {
 		
 		for (File suiteDir : suiteDirs) {
 			logger.info("reading file ["+suiteDir+"]...");
-			doTests(suiteDir, methodReader, null);
+			processTests(suiteDir, methodReader, null);
 		}
 
 	}
@@ -79,7 +79,7 @@ public class SourceGenerator implements ISourceGenerator {
 	 * @param tokens
 	 * @throws Exception
 	 */
-	private void doTests(File dir, IMethodReader methodReader, ScenarioTokens tokens) throws Exception {
+	private void processTests(File dir, IMethodReader methodReader, ScenarioTokens tokens) throws Exception {
 		logger.log(Level.FINE, "Reading " + dir + " tests...");
 		ScenarioTokens scenarioTokens = new ScenarioTokens();
 		if (tokens != null) {
@@ -89,9 +89,9 @@ public class SourceGenerator implements ISourceGenerator {
 
 //		loadTestProperties(dir, scenarioTokens);
 
-		File suiteFile = new File(dir, "suite.html");
+		File suiteFile = new File(dir, GeneratorConfiguration.SUITE_FILE_NAME);
 		if (!suiteFile.exists()) {
-			throw new RuntimeException("Missing \"suite.html\" file at " + dir + ".");
+			throw new RuntimeException("Missing \""+GeneratorConfiguration.SUITE_FILE_NAME+"\" file at " + dir + ".");
 		}
 		Collection<File> files = ScenarioHtmlParser.parseSuite(suiteFile);
 		Collection<String> classBeans = new ArrayList<String>();
@@ -110,25 +110,25 @@ public class SourceGenerator implements ISourceGenerator {
 		
 		String packName = null;
 		packName = basedPackageName != null ? basedPackageName + "." + dir.getName() : dir.getName();
-		loadSuiteContext(dir, scenarioTokens);
+		loadContextKeys(dir, scenarioTokens);
 
-		for (File f : files) {
+		for (File file : files) {
 			
 			String scenariiGenerationDisabledValue = properties.getProperty("scenarii.generation.disabled");
-			if(StringUtils.contains(scenariiGenerationDisabledValue, f.getName())){
-				logger.log(Level.FINE, "The conversion of the following scenario file has been disabled [" + f.getName() + "]. Conversion skipped.");
+			if(StringUtils.contains(scenariiGenerationDisabledValue, file.getName())){
+				logger.log(Level.FINE, "The conversion of the following scenario file has been disabled [" + file.getName() + "]. Conversion skipped.");
 				continue;
 			}
 			
-			logger.log(Level.FINE, "Processing [" + f.getName() + "]...");
+			logger.log(Level.FINE, "Processing [" + file.getName() + "]...");
 			StringBuilder sb = new StringBuilder();
-			String className = getClassNameSuffixed(getFileNameNoExtension(f));
+			String className = StringUtils.chomp(file.getName(), ".").concat(GeneratorConfiguration.GENERATED_JAVA_TEST_CLASS_SUFFIX);
 			// Parsing du fichier. On extrait les commandes
-			Collection<Command> cmds = ScenarioHtmlParser.parseHTML(f);
+			Collection<Command> cmds = ScenarioHtmlParser.parseHTML(file);
 			//Traduction des commandes en instruction java
 			for (Command c : cmds) {
 				String cmdStr = commandToMethodTranslator.discovery(c);
-				cmdStr = getPopulatedCmd(dir, className, cmdStr, scenarioTokens);
+				cmdStr = populatingCommand(dir, className, cmdStr, scenarioTokens);
 				sb.append("\n\t\t" + cmdStr);
 			}
 			
@@ -148,25 +148,6 @@ public class SourceGenerator implements ISourceGenerator {
 	}
 	
 	/**
-	 * Supprime l'extension du nom du fichier
-	 * @param f
-	 * @return
-	 */
-	private static String getFileNameNoExtension(File f) {
-		String fileName = f.getName();
-		return fileName.substring(0, fileName.lastIndexOf('.'));
-	}
-	
-	/**
-	 * Ajoute le suffixe de la classe
-	 * @param f
-	 * @return
-	 */
-	private static String getClassNameSuffixed(String className) {
-		return className.concat(GeneratorConfiguration.GENERATED_JAVA_TEST_CLASS_SUFFIX);
-	}
-	
-	/**
 	 * Remplace les tokens ${xxxxx} par une possible clé de substitution 
 	 * presente <i>substitute.yyyyyyy.xxxxxx</i> dans le fichier selenium4j où yyyyyyy correspond au nom du testcase YYYYYTestCase.
 	 * Remplace les tokens ${messages.xxxxx} par un messages i18n correspond à la langue fournie.
@@ -178,7 +159,7 @@ public class SourceGenerator implements ISourceGenerator {
 	 * @param scenarioTokens
 	 * @return
 	 */
-	private String getPopulatedCmd(File basedir, String className, String cmdStr, ScenarioTokens scenarioTokens) {
+	private String populatingCommand(File basedir, String className, String cmdStr, ScenarioTokens scenarioTokens) {
 		String newCmdStr = cmdStr;
 		
 		Map<String, String> subEntries = scenarioTokens.getSubstituteEntries(className);
@@ -218,7 +199,7 @@ public class SourceGenerator implements ISourceGenerator {
 		}
 		
 		//Application des variables locales
-		//Substitution basique : Dooit prendre en compte le contexte du positionnement
+		//Substitution basique : Doit prendre en compte le contexte du positionnement
 		Pattern localVariableTokensPattern = Pattern.compile("[.\\s]*(\\$\\{local\\.variable\\.([\\S]*)\\})+[.\\s]*");
 		Matcher matcher = localVariableTokensPattern.matcher(newCmdStr);
 		while(matcher.find()){
@@ -236,8 +217,8 @@ public class SourceGenerator implements ISourceGenerator {
 	 * @param scenarioTokens
 	 * @throws Exception
 	 */
-	private void loadSuiteContext(File dir, ScenarioTokens scenarioTokens) throws Exception {
-		logger.log(Level.FINE, "Loading SuiteContext for '" + dir + "'");
+	private void loadContextKeys(File dir, ScenarioTokens scenarioTokens) throws Exception {
+		logger.log(Level.FINE, "Loading context for '" + dir + "'");
 		File propFile = new File(dir, Selenese4JProperties.GLOBAL_CONF_FILE_NAME);
 		Properties properties = new Properties();
 		try {
@@ -291,14 +272,14 @@ public class SourceGenerator implements ISourceGenerator {
 	 * @param methodReader
 	 * @param classInfo
 	 * @param tokens
-	 * @param classBeans
+	 * @param classInfos
 	 * @throws Exception
 	 */
-	private void writeTestFile(File dir, IMethodReader methodReader, ClassInfo classInfo, ScenarioTokens tokens, Collection<String> classBeans) throws Exception {
+	private void writeTestFile(File dir, IMethodReader methodReader, ClassInfo classInfo, ScenarioTokens tokens, Collection<String> classInfos) throws Exception {
 		methodReader.read(dir, classInfo, tokens);
-		String classBeanCanonicalName = classInfo.getPackageName() + "." + classInfo.getClassName();
-		classBeans.add(classBeanCanonicalName);
-		logger.log(Level.FINE, "ClassBean [" + classBeanCanonicalName + "] added.");
+		String classInfoCanonicalName = classInfo.getPackageName() + "." + classInfo.getClassName();
+		classInfos.add(classInfoCanonicalName);
+		logger.log(Level.FINE, "ClassInfo [" + classInfoCanonicalName + "] added.");
 	}
 	
 	/**
@@ -310,7 +291,7 @@ public class SourceGenerator implements ISourceGenerator {
 	 */
 	private void createOrderedSuite(String overrideTemplatesDirectoryPath, String buildDir, Collection<String> classBeans, ScenarioTokens tokens, String packageName, String dirName) {
 		logger.log(Level.FINE, "Building Order Suite for " + dirName);
-		VelocitySuiteTranslator t = getVelocitySuiteTranslator(overrideTemplatesDirectoryPath, "OrderedTestsSuite.vm");
+		VelocitySuiteTranslator t = getVelocitySuiteTranslator(overrideTemplatesDirectoryPath, GeneratorConfiguration.ORDERED_TESTS_SUITE_TEMPLATE_NAME);
 
 		String[] packageDirs = packageName.split("\\.");
 		String allDirName = "";
@@ -335,8 +316,7 @@ public class SourceGenerator implements ISourceGenerator {
 
 		String externalTemplateDir = StringUtils.substringAfter(overrideTemplatesDirectoryPath, GeneratorConfiguration.VELOCITY_FILE_LOADER + ":");
 		if (StringUtils.isNotEmpty(externalTemplateDir)
-				&& (new File(externalTemplateDir + File.separator
-						+ templateFile)).exists()) {
+				&& (new File(externalTemplateDir + File.separator + templateFile)).exists()) {
 			out = new VelocitySuiteTranslator(GeneratorConfiguration.VELOCITY_FILE_LOADER, externalTemplateDir, templateFile);
 		} else {
 			out = new VelocitySuiteTranslator(GeneratorConfiguration.DEFAULT_VELOCITY_LOADER, GeneratorConfiguration.DEFAULT_TEMPLATE_DIRECTORY_PATH, templateFile);

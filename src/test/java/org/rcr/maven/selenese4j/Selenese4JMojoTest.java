@@ -6,7 +6,6 @@ package org.rcr.maven.selenese4j;
 import java.io.File;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.junit.Test;
 
 /**
  * @author Raphael
@@ -18,7 +17,6 @@ public class Selenese4JMojoTest extends AbstractMojoTestCase {
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        // required for mojo lookups to work
         super.setUp();
     }
 

@@ -19,6 +19,13 @@ public interface GeneratorConfiguration {
 	  
 	  public final static String ALL_TEST_TEMPLATE_NAME = "AllTests.vm";
 	  
+	  public final static String ORDERED_TESTS_SUITE_TEMPLATE_NAME = "OrderedTestsSuite.vm";
+	  
+	  /**
+	   * 
+	   */
+	  public final static String SUITE_FILE_NAME = "suite.html";
+	  
 	  public final static String DEFAULT_TEMPLATE_DIRECTORY_PATH = "templates/";
 	  
 	  public static final String VELOCITY_FILE_LOADER = "file";
