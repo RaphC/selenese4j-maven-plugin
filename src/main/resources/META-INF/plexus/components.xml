@@ -3,6 +3,11 @@
     <component>
       <role>org.rcr.maven.selenese4j.transform.ISourceGenerator</role>
       <implementation>org.rcr.maven.selenese4j.transform.SourceGenerator</implementation>
+      <requirements>
+	    <requirement>
+	      <role>org.rcr.maven.selenese4j.transform.ICommandToMethodTranslator</role>
+	    </requirement>
+	  </requirements>
       <configuration/>
     </component>
 	<component>

@@ -36,10 +36,9 @@ public class SourceGenerator implements ISourceGenerator {
 	
 	private Locale i18nMessagesLocale = GeneratorConfiguration.DEFAULT_I18N_MESSAGES_LOCALE;
 	
-	
-	
 	/**
-	 * @component
+	 * traducteur
+	 * @component role="org.rcr.maven.selenese4j.transform.ICommandToMethodTranslator"
 	 */
 	private ICommandToMethodTranslator commandToMethodTranslator;
 	
@@ -47,10 +46,9 @@ public class SourceGenerator implements ISourceGenerator {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.rcr.maven.selenese4j.transform.ISourceGenerator#generate(org.rcr.maven.selenese4j.transform.IMethodReader)
+	 * @see org.rcr.maven.selenese4j.transform.ISourceGenerator#generate(java.io.File, org.rcr.maven.selenese4j.transform.IMethodReader)
 	 */
-	public void generate(IMethodReader methodReader) throws Exception {
-		File dir = new File(GeneratorConfiguration.TEST_RESOURCES_DIR);
+	public void generate(File scenariiRootDirectory, IMethodReader methodReader) throws Exception {
 		
 		FileFilter dirFilter = new FileFilter() {
 		      public boolean accept(File file) {
@@ -58,10 +56,10 @@ public class SourceGenerator implements ISourceGenerator {
 		      }
 		    };
 		
-		File[] suiteDirs =    dir.listFiles(dirFilter);
+		File[] suiteDirs = scenariiRootDirectory.listFiles(dirFilter);
 		
 		if(ArrayUtils.isEmpty(suiteDirs)){
-			logger.log(Level.WARNING, "No suite directories found into ["+GeneratorConfiguration.TEST_RESOURCES_DIR+"] !!!!");
+			logger.log(Level.WARNING, "No suite directories found into ["+scenariiRootDirectory.getName()+"] !!!!");
 			return;
 		}
 		
@@ -282,6 +280,7 @@ public class SourceGenerator implements ISourceGenerator {
 			}
 
 		} catch (FileNotFoundException e1) {
+			logger.log(Level.SEVERE, "Missing \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".", e1);
 			throw new RuntimeException("Missing \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".");
 		}
 	}

@@ -1,0 +1,17 @@
+package $packageName;
+
+import org.roussev.selenium4j.test.MainTestCase;
+
+public class $className extends MainTestCase {
+    
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+    startSeleniumSession("$browserDrivers", "$webSite");
+  }
+  
+  public void testMethod() throws Exception {
+    $methodBody
+  }
+  
+}

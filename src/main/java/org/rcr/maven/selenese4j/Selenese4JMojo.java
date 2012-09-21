@@ -102,7 +102,7 @@ public class Selenese4JMojo extends AbstractMojo {
 		// Generation
 		//Check if an impl is defined and if it exists
 		try {
-			generator.generate(new DefaultMethodReader(this.overrideTemplatesDirectoryPath, this.testSourceGenerationDirectoryPath));
+			generator.generate(scenariiRootDirectory, new DefaultMethodReader(this.overrideTemplatesDirectoryPath, this.testSourceGenerationDirectoryPath));
 		} catch (Exception e) {
 			throw new MojoExecutionException("Exception", e);
 		}
