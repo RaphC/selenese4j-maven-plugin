@@ -87,8 +87,6 @@ public class SourceGenerator implements ISourceGenerator {
 			scenarioTokens.setSuiteContext(tokens.getSuiteContext());
 		}
 
-//		loadTestProperties(dir, scenarioTokens);
-
 		File suiteFile = new File(dir, GeneratorConfiguration.SUITE_FILE_NAME);
 		if (!suiteFile.exists()) {
 			throw new RuntimeException("Missing \""+GeneratorConfiguration.SUITE_FILE_NAME+"\" file at " + dir + ".");
