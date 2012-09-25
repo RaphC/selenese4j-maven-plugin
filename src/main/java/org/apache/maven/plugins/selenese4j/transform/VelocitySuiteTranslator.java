@@ -1,13 +1,12 @@
-package org.rcr.maven.selenese4j.transform;
+package org.apache.maven.plugins.selenese4j.transform;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.maven.plugin.logging.Log;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -21,7 +20,10 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  */
 class VelocitySuiteTranslator {
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+	/**
+	 * 
+	 */
+	private Log logger = new org.apache.maven.plugin.logging.SystemStreamLog();
 
 	private String templateFile;
 	
@@ -36,7 +38,7 @@ class VelocitySuiteTranslator {
 	}
 
 	void doWrite(Collection<String> classesList, ScenarioTokens tokens, String packageName, String fileOut, boolean setupDirExist, boolean teardownDirExist) {
-		logger.log(Level.FINE, "Flushing content to java file [" + fileOut + "] from template file ["+velocityResourceLoaderPath+","+templateFile+"] ...");
+		logger.debug("Flushing content to java file [" + fileOut + "] from template file ["+velocityResourceLoaderPath+","+templateFile+"] ...");
 
 		try {
 			String templateResource = null;
@@ -66,10 +68,10 @@ class VelocitySuiteTranslator {
 			try {
 				template = Velocity.getTemplate(templateResource);
 			} catch (ResourceNotFoundException rnfe) {
-				logger.log(Level.SEVERE, "VelocitySuiteTranslator : error : cannot find template " + templateResource);
+				logger.error("VelocitySuiteTranslator : error : cannot find template " + templateResource, rnfe);
 				return;
 			} catch (ParseErrorException pee) {
-				logger.log(Level.SEVERE, "VelocitySuiteTranslator : Syntax error in template " + templateResource + ":" + pee);
+				logger.error("VelocitySuiteTranslator : Syntax error in template " + templateResource, pee);
 				return;
 			}
 
@@ -82,12 +84,12 @@ class VelocitySuiteTranslator {
 			writer.flush();
 			writer.close();
 
-			logger.log(Level.FINE, "File [" + fileOut + "] written.");
+			logger.debug("File [" + fileOut + "] written.");
 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage());
+			logger.error(e);
 		}
-		logger.log(Level.FINE, "AllTest suite transformation done.");
+		logger.debug("AllTest suite transformation done.");
 	}
 
 }

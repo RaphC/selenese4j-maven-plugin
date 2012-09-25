@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.rcr.maven.selenese4j;
+package org.apache.maven.plugins.selenese4j;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,8 +14,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.rcr.maven.selenese4j.transform.DefaultMethodReader;
-import org.rcr.maven.selenese4j.transform.ISourceGenerator;
+import org.apache.maven.plugins.selenese4j.transform.DefaultMethodReader;
+import org.apache.maven.plugins.selenese4j.transform.ISourceGenerator;
 
 /**
  * Goal which transform selenium html file scenarii into JUnit Test cases java sources.

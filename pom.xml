@@ -3,6 +3,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>selenese4j-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
@@ -37,7 +43,7 @@
 
 	<build>
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.rat</groupId>
 				<artifactId>apache-rat-plugin</artifactId>
 				<version>0.7</version>
@@ -49,11 +55,14 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.4</version>
+				<configuration>
+					<executable>gpg2.exe</executable>
+				</configuration>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>

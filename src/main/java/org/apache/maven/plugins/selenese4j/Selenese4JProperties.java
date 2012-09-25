@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.rcr.maven.selenese4j;
+package org.apache.maven.plugins.selenese4j;
 
 /**
  * @author Raphael

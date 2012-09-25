@@ -1,11 +1,12 @@
 /**
  * 
  */
-package org.rcr.maven.selenese4j;
+package org.apache.maven.plugins.selenese4j;
 
 import java.io.File;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.apache.maven.plugins.selenese4j.Selenese4JMojo;
 
 /**
  * @author Raphael

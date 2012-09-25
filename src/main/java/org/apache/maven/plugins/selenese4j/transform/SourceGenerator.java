@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.rcr.maven.selenese4j.transform;
+package org.apache.maven.plugins.selenese4j.transform;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -24,7 +24,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
-import org.rcr.maven.selenese4j.Selenese4JProperties;
+import org.apache.maven.plugins.selenese4j.Selenese4JProperties;
 
 /**
  * @author Raphael

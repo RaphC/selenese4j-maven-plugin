@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.rcr.maven.selenese4j.transform;
+package org.apache.maven.plugins.selenese4j.transform;
 
 import java.util.Locale;
 
@@ -11,13 +11,13 @@ import java.util.Locale;
  */
 public interface GeneratorConfiguration {
 	
-	 public final static String SELENIUM_TEST_TEMPLATE_NAME = "SeleniumJava.vm";
+	 public final static String SELENIUM_TEST_TEMPLATE_NAME = "junit-selenium-test-class.vm";
 	  
-	  public final static String ALL_SUITES_TEMPLATE_NAME = "AllSuites.vm";
-	  
-	  public final static String ALL_SEQUENTIAL_TEMPLATE_NAME = "AllSequentialTests.vm";
-	  
-	  public final static String ALL_TEST_TEMPLATE_NAME = "AllTests.vm";
+//	  public final static String ALL_SUITES_TEMPLATE_NAME = "AllSuites.vm";
+//	  
+//	  public final static String ALL_SEQUENTIAL_TEMPLATE_NAME = "AllSequentialTests.vm";
+//	  
+//	  public final static String ALL_TEST_TEMPLATE_NAME = "AllTests.vm";
 	  
 	  public final static String ORDERED_TESTS_SUITE_TEMPLATE_NAME = "OrderedTestsSuite.vm";
 	  

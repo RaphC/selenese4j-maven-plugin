@@ -1,4 +1,4 @@
-package org.rcr.maven.selenese4j.transform;
+package org.apache.maven.plugins.selenese4j.transform;
 
 import java.io.BufferedReader;
 import java.io.File;

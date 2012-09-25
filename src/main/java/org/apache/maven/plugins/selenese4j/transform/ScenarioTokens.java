@@ -1,4 +1,4 @@
-package org.rcr.maven.selenese4j.transform;
+package org.apache.maven.plugins.selenese4j.transform;
 
 import java.util.HashMap;
 import java.util.Map;

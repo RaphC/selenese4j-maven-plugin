@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.rcr.maven.selenese4j.transform;
+package org.apache.maven.plugins.selenese4j.transform;
 
 import java.io.File;
 import java.util.logging.Level;
