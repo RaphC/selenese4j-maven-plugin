@@ -132,22 +132,22 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		boolean isMatcheable = StringUtils.contains(c.getValue(),"regexp:");
 		
 		if (m != null && ! isMatcheable) {
-			return "Assert.assert" + not + "True(\""+c.getTarget()+"\"," + getMethodBody(m, c) + ");";
+			return "Assert.assert" + not + "True(\""+filter(c.getTarget())+"\"," + getMethodBody(m, c) + ");";
 		}
 		
 		//Commande de type regexp
 		if(m != null && isMatcheable){
-			return "Assert.assert" + not + "True(\""+c.getTarget()+"\"," + doMatch(c, mName) + ");";
+			return "Assert.assert" + not + "True(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
 		}
 		
 		m = methods.get("get" + mName);
 		if (m != null && ! isMatcheable) {
-			return "Assert.assert" + not + "Equals(\""+c.getTarget()+"\"," + compareLeftRight(m, c) + ");";
+			return "Assert.assert" + not + "Equals(\""+filter(c.getTarget())+"\"," + compareLeftRight(m, c) + ");";
 		}
 		
 		//Commande de type regexp
 		if(m != null && isMatcheable){
-			return "Assert.assert" + not + "True(\""+c.getTarget()+"\"," + doMatch(c, mName) + ");";
+			return "Assert.assert" + not + "True(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
 		}
 		
 		if(methodNotPresent){
