@@ -1,10 +1,12 @@
 /**
  * 
  */
-package org.apache.maven.plugins.selenese4j.transform;
+package com.github.raphc.maven.plugins.selenese4j.transform;
 
 import java.lang.reflect.Method;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -15,6 +17,8 @@ import org.apache.commons.lang.StringUtils;
 public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodTranslator implements ICommandToMethodTranslator {
 
 	private final static String SELENIUM = "selenium";
+	
+	private static final Pattern SNIPPET_FRAGMENT_PATTERN = Pattern.compile("[\\s\\S]*\\{@snippet\\:java([\\s\\S]*)@snippet\\}[\\s\\S]*");
 	
 	/**
 	 * 
@@ -28,11 +32,19 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 */
 	public String discovery(Command c) {
 		String instr = null;
-		Method m = methods.get(c.getName());
-		if(m == null){
-			instr = discoveryCustom(c);
+		
+		//On verifie si il ne s'agit pas de snippet
+		Matcher matcher = SNIPPET_FRAGMENT_PATTERN.matcher(c.getName());
+		if(matcher.matches()){
+			logger.log(Level.FINE, "The command [" +c.getName()+ "] is a snippet. No transformation processed.");
+			instr = matcher.group(1);
 		} else {
-			instr = getMethodBody(m, c) + ";";
+			Method m = methods.get(c.getName());
+			if(m == null){
+				instr = discoveryCustom(c);
+			} else {
+				instr = getMethodBody(m, c) + ";";
+			}
 		}
 		logger.log(Level.FINE, "Java instruction generated ["+instr+"].");
 		return instr;

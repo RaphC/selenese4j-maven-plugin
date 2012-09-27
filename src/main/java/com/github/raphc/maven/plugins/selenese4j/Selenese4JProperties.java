@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.apache.maven.plugins.selenese4j;
+package com.github.raphc.maven.plugins.selenese4j;
 
 /**
  * @author Raphael

@@ -1,18 +1,18 @@
 <component-set>
   <components>
     <component>
-      <role>org.apache.maven.plugins.selenese4j.transform.ISourceGenerator</role>
-      <implementation>org.apache.maven.plugins.selenese4j.transform.SourceGenerator</implementation>
+      <role>com.github.raphc.maven.plugins.selenese4j.transform.ISourceGenerator</role>
+      <implementation>com.github.raphc.maven.plugins.selenese4j.transform.SourceGenerator</implementation>
       <requirements>
 	    <requirement>
-	      <role>org.apache.maven.plugins.selenese4j.transform.ICommandToMethodTranslator</role>
+	      <role>com.github.raphc.maven.plugins.selenese4j.transform.ICommandToMethodTranslator</role>
 	    </requirement>
 	  </requirements>
       <configuration/>
     </component>
 	<component>
-      <role>org.apache.maven.plugins.selenese4j.transform.ICommandToMethodTranslator</role>
-      <implementation>org.apache.maven.plugins.selenese4j.transform.UnManagedCommandToMethodTranslator</implementation>
+      <role>com.github.raphc.maven.plugins.selenese4j.transform.ICommandToMethodTranslator</role>
+      <implementation>com.github.raphc.maven.plugins.selenese4j.transform.UnManagedCommandToMethodTranslator</implementation>
       <configuration/>
     </component>
   </components>

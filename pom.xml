@@ -9,7 +9,7 @@
 		<version>7</version>
 	</parent>
 	
-	<groupId>org.apache.maven.plugins</groupId>
+	<groupId>com.github.raphc</groupId>
 	<artifactId>selenese4j-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<version>1.0-SNAPSHOT</version>
@@ -106,6 +106,11 @@
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.shared</groupId>

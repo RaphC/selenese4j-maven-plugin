@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.apache.maven.plugins.selenese4j.transform;
+package com.github.raphc.maven.plugins.selenese4j.transform;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -24,7 +24,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.plugins.selenese4j.Selenese4JProperties;
+
+import com.github.raphc.maven.plugins.selenese4j.Selenese4JProperties;
+import com.github.raphc.maven.plugins.selenese4j.source.data.Html;
+import com.github.raphc.maven.plugins.selenese4j.xstream.converter.TdContentConverter;
+import com.thoughtworks.xstream.XStream;
 
 /**
  * @author Raphael
@@ -42,7 +46,15 @@ public class SourceGenerator implements ISourceGenerator {
 	 */
 	private ICommandToMethodTranslator commandToMethodTranslator;
 	
-	public SourceGenerator(){}
+	private static XStream xstream;
+	
+	public SourceGenerator(){
+		//Initialize XStream
+		xstream = new XStream();
+		xstream.autodetectAnnotations(true);
+		xstream.processAnnotations(Html.class);
+		xstream.registerConverter(new TdContentConverter());
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -122,7 +134,14 @@ public class SourceGenerator implements ISourceGenerator {
 			StringBuilder sb = new StringBuilder();
 			String className = StringUtils.chomp(file.getName(), ".").concat(GeneratorConfiguration.GENERATED_JAVA_TEST_CLASS_SUFFIX);
 			// Parsing du fichier. On extrait les commandes
-			Collection<Command> cmds = ScenarioHtmlParser.parseHTML(file);
+			Html html = (Html) xstream.fromXML(file);
+			logger.log(Level.FINE, "Html Parsing result is [" + html + "]. ["+CollectionUtils.size(html.getBody().getTable().getTbody().getTrs())+"] lines found.");
+			if(html.getBody().getTable().getTbody().getTrs() == null){
+				logger.log(Level.SEVERE, "No lines extracted from html ["+file.getName()+"]");
+				return;
+			}
+			Collection<Command> cmds = HtmlConverter.convert(html.getBody().getTable().getTbody().getTrs());
+			
 			//Traduction des commandes en instruction java
 			for (Command c : cmds) {
 				String cmdStr = commandToMethodTranslator.discovery(c);
