@@ -20,6 +20,8 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	
 	private static final Pattern SNIPPET_FRAGMENT_PATTERN = Pattern.compile("[\\s\\S]*\\{@snippet\\:java([\\s\\S]*)@snippet\\}[\\s\\S]*");
 	
+	private final static String NOT_FLAG = "Not";
+	
 	/**
 	 * 
 	 */
@@ -87,7 +89,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 			return "";// empty step
 			
 		} else if (c.getName().startsWith("waitForNot")) {
-			result = doWaitFor(c, "Not", false);
+			result = doWaitFor(c, NOT_FLAG, false);
 
 		} else if (c.getName().startsWith("waitFor") && c.getName().endsWith("NotPresent")) {
 			result = doWaitFor(c, "", true);
@@ -96,7 +98,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 			result = doWaitFor(c, "", false);
 
 		} else if (c.getName().startsWith("verifyNot")) {
-			result = doVerify(c, "Not", false);
+			result = doVerify(c, NOT_FLAG, false);
 
 		} else if (c.getName().startsWith("verify") && c.getName().endsWith("NotPresent")) {
 			result = doVerify(c, "", true);
@@ -105,7 +107,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 			result = doVerify(c, "", false);
 
 		} else if (c.getName().startsWith("assertNot")) {
-			result = doAssert(c, "Not", false);
+			result = doAssert(c, NOT_FLAG, false);
 			
 		} else if (c.getName().startsWith("assert") && c.getName().endsWith("NotPresent")) {
 			result = doAssert(c, "", true);
@@ -144,12 +146,12 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		boolean isMatcheable = StringUtils.contains(c.getValue(),"regexp:");
 		
 		if (m != null && ! isMatcheable) {
-			return "Assert.assert" + (StringUtils.isBlank(not) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + getMethodBody(m, c) + ");";
+			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + getMethodBody(m, c) + ");";
 		}
 		
 		//Commande de type regexp
 		if(m != null && isMatcheable){
-			return "Assert.assert" + (StringUtils.isBlank(not) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
+			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
 		}
 		
 		m = methods.get("get" + mName);
@@ -159,11 +161,11 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		
 		//Commande de type regexp
 		if(m != null && isMatcheable){
-			return "Assert.assert" + (StringUtils.isBlank(not) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
+			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
 		}
 		
 		if(methodNotPresent){
-			mName = mName.replace("Not", "");
+			mName = mName.replace(NOT_FLAG, "");
 			m = methods.get("is" + mName);
 			return "verifyFalse(" + getMethodBody(m, c) + ");";
 		}
@@ -195,14 +197,14 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		String mName = c.getName().substring(("verify" + not).length());
 		Method m = methods.get("is" + mName);
 		if (m != null) {
-			return "Assert.assert" + (StringUtils.isBlank(not) ? "False" : "True") + "(" + getMethodBody(m, c) + ");";
+			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "(" + getMethodBody(m, c) + ");";
 		}
 		m = methods.get("get" + mName);
 		if (m != null) {
 			return "Assert.assert" + not + "Equals(" + compareLeftRight(m, c) + ");";
 		}
 		if(methodNotPresent){
-			mName = mName.replace("Not", "");
+			mName = mName.replace(NOT_FLAG, "");
 			m = methods.get("is" + mName);
 			return "verifyFalse(" + getMethodBody(m, c) + ");";
 		}
@@ -213,10 +215,10 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		String mName = c.getName().substring(("waitFor" + Not).length());
 		String pipe = "";
 		if(methodNotPresent){
-			mName = mName.replace("Not", "");
+			mName = mName.replace(NOT_FLAG, "");
 			pipe = "!";
 			
-		} else if(Not.equals("Not")){
+		} else if(Not.equals(NOT_FLAG)){
 			pipe = "!";
 		}
 		Method m = methods.get("is" + mName);
