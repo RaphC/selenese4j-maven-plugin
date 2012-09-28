@@ -144,12 +144,12 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		boolean isMatcheable = StringUtils.contains(c.getValue(),"regexp:");
 		
 		if (m != null && ! isMatcheable) {
-			return "Assert.assert" + not + "True(\""+filter(c.getTarget())+"\"," + getMethodBody(m, c) + ");";
+			return "Assert.assert" + (StringUtils.isBlank(not) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + getMethodBody(m, c) + ");";
 		}
 		
 		//Commande de type regexp
 		if(m != null && isMatcheable){
-			return "Assert.assert" + not + "True(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
+			return "Assert.assert" + (StringUtils.isBlank(not) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
 		}
 		
 		m = methods.get("get" + mName);
@@ -159,7 +159,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		
 		//Commande de type regexp
 		if(m != null && isMatcheable){
-			return "Assert.assert" + not + "True(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
+			return "Assert.assert" + (StringUtils.isBlank(not) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
 		}
 		
 		if(methodNotPresent){
@@ -187,19 +187,19 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	/**
 	 * Gestion des commandes de type verifyXXXXX
 	 * @param c
-	 * @param Not
+	 * @param not
 	 * @param methodNotPresent
 	 * @return
 	 */
-	private String doVerify(Command c, String Not, boolean methodNotPresent) {
-		String mName = c.getName().substring(("verify" + Not).length());
+	private String doVerify(Command c, String not, boolean methodNotPresent) {
+		String mName = c.getName().substring(("verify" + not).length());
 		Method m = methods.get("is" + mName);
 		if (m != null) {
-			return "Assert.assert" + Not + "True(" + getMethodBody(m, c) + ");";
+			return "Assert.assert" + (StringUtils.isBlank(not) ? "False" : "True") + "(" + getMethodBody(m, c) + ");";
 		}
 		m = methods.get("get" + mName);
 		if (m != null) {
-			return "Assert.assert" + Not + "Equals(" + compareLeftRight(m, c) + ");";
+			return "Assert.assert" + not + "Equals(" + compareLeftRight(m, c) + ");";
 		}
 		if(methodNotPresent){
 			mName = mName.replace("Not", "");

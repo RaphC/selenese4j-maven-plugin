@@ -24,6 +24,7 @@ public class ScenarioHtmlParser {
 	 * @return
 	 * @throws Exception
 	 */
+	@Deprecated
 	public static Collection<File> parseSuite(File suiteFile) throws Exception {
 
 		String line;

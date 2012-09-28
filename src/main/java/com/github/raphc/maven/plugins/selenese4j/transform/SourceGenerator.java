@@ -198,17 +198,27 @@ public class SourceGenerator implements ISourceGenerator {
 			URLClassLoader loader = new URLClassLoader(urls);
 			ResourceBundle resource = ResourceBundle.getBundle(GeneratorConfiguration.I18N_MESSAGES_FILE_BASENAME, i18nMessagesLocale, loader);
 			
-			Pattern i18nTokensPattern = Pattern.compile("[.\\s]*(\\$\\{" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX + "\\.([\\S&&[^$]]*)\\})+[.\\s]*");
+			Pattern i18nTokensPattern = Pattern.compile("[.\\s]*(\\$\\{" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX + "\\.([\\S&&[^$]]*)\\}(\\[.*\\])?)+[.\\s]*");
 			Matcher matcher = i18nTokensPattern.matcher(newCmdStr);
 			while(matcher.find()){
-				String i18nToken = matcher.group(2);
-				logger.log(Level.FINE, "Found i18n token [" +i18nToken+ "] in cmd [" +newCmdStr+ "]");
-				if(! resource.containsKey(i18nToken)){
-					logger.log(Level.FINE, "The matching token [" +i18nToken+ "] has been not found in resource bundle [" +resource+"]. The conversion will be skipped.");
+				String i18nTokenKey = matcher.group(2);
+				
+				String[] i18nTokenValueTokens = new String[0];
+				if(StringUtils.isNotBlank(matcher.group(3))){
+					i18nTokenValueTokens = StringUtils.split(matcher.group(3), ',');
+				}
+				
+				logger.log(Level.FINE, "Found i18n token [" +i18nTokenKey+ "] [" +matcher.group(3)+ "]("+i18nTokenValueTokens.length+" elts) in cmd [" +newCmdStr+ "]");
+				if(! resource.containsKey(i18nTokenKey)){
+					logger.log(Level.FINE, "The matching token [" +i18nTokenKey+ "] has been not found in resource bundle [" +resource+"]. The conversion will be skipped.");
 				} else {
-					String value = resource.getString(i18nToken);
-					logger.log(Level.FINE, "Replacing string [${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nToken) + "}] in cmd ["+newCmdStr+"] by [" + value + "].");
-					newCmdStr = newCmdStr.replace("${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nToken) + "}", value);
+					// On recupere la chaine initiale
+					String message = resource.getString(i18nTokenKey);
+					// On remplace les differentes variables par les tokens references
+					// TODO String valuedMessage = MessageFormat.format(message, i18nTokenValueTokens);
+					String valuedMessage = message;
+					logger.log(Level.FINE, "Replacing string [${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}] in cmd ["+newCmdStr+"] by [" + valuedMessage + "].");
+					newCmdStr = newCmdStr.replace("${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}", filter(valuedMessage));
 				}
 			}
 		} catch(Exception e){
@@ -340,4 +350,16 @@ public class SourceGenerator implements ISourceGenerator {
 		}
 		return out;
 	}
+	
+	/**
+	 * 
+	 */
+	protected static String filter(String s) {
+		if(s != null){
+			s = s.replace("\\", "\\\\");
+			s = s.replace("\"", "\\\"");
+		}
+		return s;
+	}
+	
 }

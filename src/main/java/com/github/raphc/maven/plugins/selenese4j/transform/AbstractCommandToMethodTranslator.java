@@ -36,7 +36,8 @@ public abstract class AbstractCommandToMethodTranslator implements ICommandToMet
 		for (Method m : selC.getMethods()) {
 			if ("void".equals(m.getReturnType().toString()) 
 					||"boolean".equals(m.getReturnType().toString()) 
-					|| m.getReturnType().isAssignableFrom(String.class)) {
+					|| m.getReturnType().isAssignableFrom(String.class)
+					|| m.getReturnType().isAssignableFrom(Number.class)) {
 				Class<?>[] types = m.getParameterTypes();
 				if (types.length == 0) {
 					methods.put(m.getName(), m);
