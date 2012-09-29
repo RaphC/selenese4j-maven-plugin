@@ -53,18 +53,4 @@ public abstract class AbstractCommandToMethodTranslator implements ICommandToMet
 		}
 	}
 	
-	/**
-	 * 
-	 * @param s
-	 * @return
-	 */
-	protected static String filter(String s) {
-		if(s != null){
-			s = s.replace("\\", "\\\\");
-			s = s.replace("\"", "\\\"");
-		}
-		return s;
-	}
-
-	
 }

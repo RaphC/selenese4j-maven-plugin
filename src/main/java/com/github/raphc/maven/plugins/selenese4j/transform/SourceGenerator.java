@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.github.raphc.maven.plugins.selenese4j.Selenese4JProperties;
 import com.github.raphc.maven.plugins.selenese4j.source.data.Html;
+import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
 import com.github.raphc.maven.plugins.selenese4j.xstream.converter.TdContentConverter;
 import com.thoughtworks.xstream.XStream;
 
@@ -216,9 +217,10 @@ public class SourceGenerator implements ISourceGenerator {
 					String message = resource.getString(i18nTokenKey);
 					// On remplace les differentes variables par les tokens references
 					// TODO String valuedMessage = MessageFormat.format(message, i18nTokenValueTokens);
+					
 					String valuedMessage = message;
 					logger.log(Level.FINE, "Replacing string [${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}] in cmd ["+newCmdStr+"] by [" + valuedMessage + "].");
-					newCmdStr = newCmdStr.replace("${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}", filter(valuedMessage));
+					newCmdStr = newCmdStr.replace("${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}", FilteringUtils.filter(valuedMessage));
 				}
 			}
 		} catch(Exception e){
@@ -350,16 +352,4 @@ public class SourceGenerator implements ISourceGenerator {
 		}
 		return out;
 	}
-	
-	/**
-	 * 
-	 */
-	protected static String filter(String s) {
-		if(s != null){
-			s = s.replace("\\", "\\\\");
-			s = s.replace("\"", "\\\"");
-		}
-		return s;
-	}
-	
 }
