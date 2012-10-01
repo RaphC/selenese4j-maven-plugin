@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
+
 /**
  * @author Raphael
  *
@@ -62,10 +64,10 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		for (Class<?> cl : pTypes) {
 			if (cl.isAssignableFrom(String.class)) {
 				if (i == 1) {
-					sb.append("\"" + filter(c.getTarget()) + "\"");
+					sb.append("\"" + FilteringUtils.filter(c.getTarget()) + "\"");
 				} else if (i == 2) {
 					sb.append(",");
-					sb.append("\"" + filter(c.getValue()) + "\"");
+					sb.append("\"" + FilteringUtils.filter(c.getValue()) + "\"");
 				}
 				i++;
 			} else {
@@ -145,23 +147,33 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		Method m = methods.get("is" + mName);
 		boolean isMatcheable = StringUtils.contains(c.getValue(),"regexp:");
 		
+		//Creation de l'expected
+		Object expectedElement = "\""+FilteringUtils.filter(c.getTarget())+"\"";
+		
 		if (m != null && ! isMatcheable) {
-			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + getMethodBody(m, c) + ");";
+			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "("+expectedElement+"," + getMethodBody(m, c) + ");";
 		}
 		
 		//Commande de type regexp
 		if(m != null && isMatcheable){
-			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
+			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "("+expectedElement+"," + doMatch(c, mName) + ");";
 		}
 		
 		m = methods.get("get" + mName);
+		//TODO Gerer de façon dynamique le type des expected m.getReturnType() 
+		//+ gestion des Abstract et des interfaces + des constructeurs avec arg de type String en non String
+//		Class<?> classToInstantiate = m.getReturnType();
+//		InstantiateFactory.getInstance(m.getReturnType(), new Class[]{String.class}, expectedElement);
+//		Factory factory = InstantiateFactory.getInstance(method.getReturnType(), new Class[]{String.class}, new Object[]{expectedValue});
+//		// TODO On a besoin le l'instruction correspondant a l'instanciation
+//		return "new ";
 		if (m != null && ! isMatcheable) {
-			return "Assert.assert" + not + "Equals(\""+filter(c.getTarget())+"\"," + compareLeftRight(m, c) + ");";
+			return "Assert.assert" + not + "Equals("+expectedElement+"," + compareLeftRight(m, c) + ");";
 		}
 		
 		//Commande de type regexp
 		if(m != null && isMatcheable){
-			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "(\""+filter(c.getTarget())+"\"," + doMatch(c, mName) + ");";
+			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "("+expectedElement+"," + doMatch(c, mName) + ");";
 		}
 		
 		if(methodNotPresent){
@@ -223,16 +235,16 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		}
 		Method m = methods.get("is" + mName);
 		if (m != null) {
-			return forBlock( "if (" + pipe + SELENIUM + "." + m.getName() + "(\"" + processRegex(filter(c.getTarget())) + "\"))", c);
+			return forBlock( "if (" + pipe + SELENIUM + "." + m.getName() + "(\"" + processRegex(FilteringUtils.filter(c.getTarget())) + "\"))", c);
 		}
 		m = methods.get("get" + mName);
 		if (m != null) {
 			boolean noArgs = m.getParameterTypes().length == 0;
 			if(noArgs){
-				return forBlock("if (" + pipe + " " + SELENIUM + "." + m.getName() + "().matches(\"" + processRegex(filter(c.getTarget())) + "\"))", c);
+				return forBlock("if (" + pipe + " " + SELENIUM + "." + m.getName() + "().matches(\"" + processRegex(FilteringUtils.filter(c.getTarget())) + "\"))", c);
 			} else {
 				return 
-				forBlock("if (" +pipe + " " + SELENIUM + "." + m.getName() + "(\"" + filter(c.getTarget()) + "\").matches(\"" + processRegex(filter(c.getValue())) + "\"))", c);
+				forBlock("if (" +pipe + " " + SELENIUM + "." + m.getName() + "(\"" + FilteringUtils.filter(c.getTarget()) + "\").matches(\"" + processRegex(FilteringUtils.filter(c.getValue())) + "\"))", c);
 			}
 		}
 		return null;
@@ -245,7 +257,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		}
 		descr = c.getName() + ":" + descr;
 		return "for (int second = 0;; second++) {" +
-		"\n\t\t	if (second >= " + DEFAULT_LOOP + ") Assert.fail(\"timeout '" + filter(descr) + "' \");" +
+		"\n\t\t	if (second >= " + DEFAULT_LOOP + ") Assert.fail(\"timeout '" + FilteringUtils.filter(descr) + "' \");" +
 		"\n\t\t	try { " + condition + " break; } catch (Exception e) {}" +
 		"\n\t\t	Thread.sleep(" + DEFAULT_TIMEOUT + ");" +
 		"\n\t\t}";
@@ -284,7 +296,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * @return
 	 */
 	private String doMatch(Command c, String mName) {
-		return "Pattern.compile(\"" +filter(StringUtils.substringAfter(c.getValue(), "regexp:"))+ "\").matcher(selenium.get" +mName+ "(\"" +c.getTarget()+ "\")).find()";
+		return "Pattern.compile(\"" +FilteringUtils.filter(StringUtils.substringAfter(c.getValue(), "regexp:"))+ "\").matcher(selenium.get" +mName+ "(\"" +c.getTarget()+ "\")).find()";
 	}
 	
 	/**
@@ -293,7 +305,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	private String compareLeftRight(Method m, Command c) {
 		boolean noArgs = m.getParameterTypes().length == 0;
 		String left = noArgs? c.getTarget() : c.getValue();
-		return "\"" + filter(left) + "\", " + getMethodBody(m, c);
+		return "\"" + FilteringUtils.filter(left) + "\", " + getMethodBody(m, c);
 	}
 	
 	private static String processRegex(String value) {
