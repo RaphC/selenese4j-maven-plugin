@@ -42,7 +42,13 @@ class ScenarioConverter {
 		this.templateFile = templateFile;
 	}
 
-	public void doWrite(ClassInfo classBean, ScenarioTokens velocityBean, String dirName, String fileOut) {
+	/**
+	 * 
+	 * @param classBean
+	 * @param velocityBean
+	 * @param fileOut
+	 */
+	public void doWrite(ClassInfo classBean, ScenarioTokens velocityBean, String fileOut) {
 		logger.log(Level.INFO, "Flushing content to java file [" + fileOut + "] from template file [" + velocityResourceLoaderPath + "," + templateFile + "] ...");
 		try {
 
@@ -65,7 +71,7 @@ class ScenarioConverter {
 			Velocity.init(props);
 
 			VelocityContext context = new VelocityContext();
-			context.put("packageName", classBean.getPackageName() + "."	+ dirName);
+			context.put("packageName", classBean.getPackageName());
 			context.put("className", classBean.getClassName());
 			context.put("methodBody", classBean.getMethodBody());
 			Map<String, String> templateEntries = velocityBean.getTemplateEntries(classBean.getClassName());

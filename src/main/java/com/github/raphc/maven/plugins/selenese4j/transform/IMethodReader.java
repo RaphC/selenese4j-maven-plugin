@@ -18,7 +18,7 @@ public interface IMethodReader {
 	 * @param tokens
 	 * @throws Exception
 	 */
-	void read(File dir, ClassInfo classBean, ScenarioTokens tokens) throws Exception;
+	void writeSource(File dir, ClassInfo classBean, ScenarioTokens tokens) throws Exception;
 	
 	/**
 	 * 

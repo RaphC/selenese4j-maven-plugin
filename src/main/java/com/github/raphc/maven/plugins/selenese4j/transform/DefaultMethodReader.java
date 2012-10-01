@@ -27,11 +27,9 @@ public class DefaultMethodReader extends AbstractMethodReader {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.roussev.selenium4j.transform.MethodReader#read(java.io.File, java.lang.String, org.roussev.selenium4j.transform.ClassBean, org.roussev.selenium4j.transform.VelocityBean, org.roussev.selenium4j.transform.VelocityBean.DriverBean)
+	 * @see com.github.raphc.maven.plugins.selenese4j.transform.IMethodReader#writeSource(java.io.File, com.github.raphc.maven.plugins.selenese4j.transform.ClassInfo, com.github.raphc.maven.plugins.selenese4j.transform.ScenarioTokens)
 	 */
-	public void read(File dir, ClassInfo classBean, ScenarioTokens tokens) throws Exception {
-	      File subDir = new File(dir.getName());
-	      String dirName = subDir.getName();
+	public void writeSource(File dir, ClassInfo classBean, ScenarioTokens tokens) throws Exception {
 	      
 	      String[] javaSourcePackageDirs = classBean.getPackageName().split("\\.");
 	      String javaSourceDirName = "";
@@ -39,12 +37,13 @@ public class DefaultMethodReader extends AbstractMethodReader {
 	    	  javaSourceDirName = javaSourceDirName + File.separator + elt;
 	      }
 	      
-	      File packageDir = new File(testBuildDirectory + File.separator + javaSourceDirName + File.separator + dirName);
+	      File packageDir = new File(testBuildDirectory + File.separator + javaSourceDirName + File.separator);
 	      packageDir.mkdirs();
 	      
 	      ScenarioConverter t = getScenarioConverter();
-	      logger.log(Level.FINE, "Writing Java source  " + packageDir.getAbsolutePath() + File.separator + classBean.getClassName() + ".java ...");
-	      t.doWrite(classBean, tokens, dirName, packageDir.getAbsolutePath() + File.separator + classBean.getClassName() + ".java");
+	      String javaSourceFile = packageDir.getAbsolutePath() + File.separator + classBean.getClassName() + ".java";
+	      logger.log(Level.FINE, "Writing Java source  " + javaSourceFile + " ...");
+	      t.doWrite(classBean, tokens, javaSourceFile);
     
 	}
 	  
