@@ -19,7 +19,7 @@ public interface GeneratorConfiguration {
 //	  
 //	  public final static String ALL_TEST_TEMPLATE_NAME = "AllTests.vm";
 	  
-	  public final static String ORDERED_TESTS_SUITE_TEMPLATE_NAME = "OrderedTestsSuite.vm";
+	  public final static String ORDERED_TESTS_SUITE_TEMPLATE_NAME = "junit-ordered-test-suite.vm";
 	  
 	  /**
 	   * 
