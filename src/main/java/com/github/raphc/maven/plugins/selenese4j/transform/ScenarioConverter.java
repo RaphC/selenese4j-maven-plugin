@@ -79,7 +79,7 @@ class ScenarioConverter {
 					"Populating source [" + classBean.getClassName() + "] with template keys (" + CollectionUtils.size(templateEntries) + " keys) ...");
 			for (String key : templateEntries.keySet()) {
 				context.put(key, templateEntries.get(key));
-				logger.log(Level.INFO, "Adding [" + key + "] to velocity context with value [" + templateEntries.get(key) + "]...");
+				logger.log(Level.FINE, "Adding [" + key + "] to velocity context with value [" + templateEntries.get(key) + "]...");
 			}
 
 			Template template = null;

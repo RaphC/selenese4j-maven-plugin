@@ -5,6 +5,7 @@ package com.github.raphc.maven.plugins.selenese4j.transform;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -33,7 +34,7 @@ public class HtmlConverter {
 		for(Tr line : lines){
 			Command command = new Command();
 			List<Td> cells = line.getTds();
-			logger.fine("Converting cells ["+cells.get(0).getContent()+"]["+cells.get(1).getContent()+"]["+cells.get(2).getContent()+"] to command...");
+			logger.log(Level.FINE, "Converting cells ["+cells.get(0).getContent()+"]["+cells.get(1).getContent()+"]["+cells.get(2).getContent()+"] to command...");
 			command.setName(cells.get(0).getContent());
 			command.setTarget(cells.get(1).getContent());
 			command.setValue(cells.get(2).getContent());
