@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
@@ -27,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.github.raphc.maven.plugins.selenese4j.Selenese4JProperties;
 import com.github.raphc.maven.plugins.selenese4j.source.data.Html;
-import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
 import com.github.raphc.maven.plugins.selenese4j.xstream.converter.TdContentConverter;
 import com.thoughtworks.xstream.XStream;
 
@@ -133,7 +133,7 @@ public class SourceGenerator implements ISourceGenerator {
 			
 			logger.log(Level.FINE, "Processing [" + file.getName() + "]...");
 			StringBuilder sb = new StringBuilder();
-			String className = StringUtils.chomp(file.getName(), ".").concat(GeneratorConfiguration.GENERATED_JAVA_TEST_CLASS_SUFFIX);
+			String className = StringUtils.removeEndIgnoreCase(file.getName(), ".html").concat(GeneratorConfiguration.GENERATED_JAVA_TEST_CLASS_SUFFIX);
 			// Parsing du fichier. On extrait les commandes
 			Html html = (Html) xstream.fromXML(file);
 			logger.log(Level.FINE, "Html Parsing result is [" + html + "]. ["+CollectionUtils.size(html.getBody().getTable().getTbody().getTrs())+"] lines found.");
@@ -145,12 +145,13 @@ public class SourceGenerator implements ISourceGenerator {
 			
 			//Traduction des commandes en instruction java
 			for (Command c : cmds) {
+				processI18nTokensInCommandAttributes(c, dir);
 				String cmdStr = commandToMethodTranslator.discovery(c);
-				cmdStr = populatingCommand(dir, className, cmdStr, scenarioTokens);
+				cmdStr = populatingCommand(className, cmdStr, scenarioTokens);
 				sb.append("\n\t\t" + cmdStr);
 			}
 			
-			logger.log(Level.FINE, "Generating ["+packName+"]["+className+"] ...");
+			logger.log(Level.INFO, "Generating ["+packName+"]["+className+"] ...");
 			
 			ClassInfo classInfo = new ClassInfo();
 			classInfo.setPackageName(packName);
@@ -166,18 +167,28 @@ public class SourceGenerator implements ISourceGenerator {
 	}
 	
 	/**
+	 * 
+	 * @param cmd
+	 * @param basedir
+	 */
+	private void processI18nTokensInCommandAttributes(Command cmd, File basedir) {
+		String i18nTarget = bindingI18nVars(basedir, cmd.getTarget());
+		cmd.setTarget(i18nTarget);
+		
+		String i18nValue = bindingI18nVars(basedir, cmd.getValue());
+		cmd.setValue(i18nValue);
+	}
+	
+	/**
 	 * Remplace les tokens ${xxxxx} par une possible clé de substitution 
 	 * presente <i>substitute.yyyyyyy.xxxxxx</i> dans le fichier selenium4j où yyyyyyy correspond au nom du testcase YYYYYTestCase.
-	 * Remplace les tokens ${messages.xxxxx} par un messages i18n correspond à la langue fournie.
-	 * Par defaut, la recherche est realise en ${@link GeneratorConfiguration#DEFAULT_I18N_MESSAGES_LOCALE}.
 	 * Si absent aucun modification n'est faite.
-	 * @param basedir
 	 * @param className
 	 * @param cmdStr
 	 * @param scenarioTokens
 	 * @return
 	 */
-	private String populatingCommand(File basedir, String className, String cmdStr, ScenarioTokens scenarioTokens) {
+	private String populatingCommand(String className, String cmdStr, ScenarioTokens scenarioTokens) {
 		String newCmdStr = cmdStr;
 		
 		Map<String, String> subEntries = scenarioTokens.getSubstituteEntries(className);
@@ -193,51 +204,65 @@ public class SourceGenerator implements ISourceGenerator {
 			}
 		}
 		
-		//Application du bundling i18n
+		return newCmdStr;
+	}
+
+	/**
+	 * Remplace les tokens ${messages.xxxxx} par un messages i18n correspond à la langue fournie.
+	 * Par defaut, la recherche est realise en ${@link Globals#DEFAULT_I18N_MESSAGES_LOCALE}.
+	 * Si absent aucun modification n'est faite.
+	 * @param basedir
+	 * @param msg
+	 * @return
+	 */
+	private String bindingI18nVars(File basedir, String msg){
+		String newCmdStr2 = msg;
 		try {
 			URL[] urls = new URL[]{basedir.toURI().toURL()};
 			URLClassLoader loader = new URLClassLoader(urls);
 			ResourceBundle resource = ResourceBundle.getBundle(GeneratorConfiguration.I18N_MESSAGES_FILE_BASENAME, i18nMessagesLocale, loader);
 			
-			Pattern i18nTokensPattern = Pattern.compile("[.\\s]*(\\$\\{" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX + "\\.([\\S&&[^$]]*)\\}(\\[.*\\])?)+[.\\s]*");
-			Matcher matcher = i18nTokensPattern.matcher(newCmdStr);
+			Pattern i18nTokensPattern = Pattern.compile("[.\\s]*(\\$\\{" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX + "\\.([\\S&&[^$]]*)\\}(\\[([^]]*)\\])?)+[.\\s]*");
+			
+			Matcher matcher = i18nTokensPattern.matcher(newCmdStr2);
 			while(matcher.find()){
 				String i18nTokenKey = matcher.group(2);
 				
-				String[] i18nTokenValueTokens = new String[0];
-				if(StringUtils.isNotBlank(matcher.group(3))){
-					i18nTokenValueTokens = StringUtils.split(matcher.group(3), ',');
+				String[] unQuotedI18nTokenValueTokens = new String[0];
+				if(matcher.groupCount() >= 4 && StringUtils.isNotBlank(matcher.group(4))){
+					String[] quotedI18nTokenValueTokens = new String[0];
+					quotedI18nTokenValueTokens = StringUtils.split(matcher.group(4), ',');
+					//On vire les doubles quotes exterieures
+					unQuotedI18nTokenValueTokens = com.github.raphc.maven.plugins.selenese4j.utils.ArrayUtils.unQuotingArrayElement(quotedI18nTokenValueTokens);
 				}
 				
-				logger.log(Level.FINE, "Found i18n token [" +i18nTokenKey+ "] [" +matcher.group(3)+ "]("+i18nTokenValueTokens.length+" elts) in cmd [" +newCmdStr+ "]");
+				logger.log(Level.FINE, "Found i18n token [" +i18nTokenKey+ "] [" +StringUtils.join(unQuotedI18nTokenValueTokens,'|')+ "]("+unQuotedI18nTokenValueTokens.length+" elts) in cmd [" +newCmdStr2+ "]");
+				
 				if(! resource.containsKey(i18nTokenKey)){
 					logger.log(Level.FINE, "The matching token [" +i18nTokenKey+ "] has been not found in resource bundle [" +resource+"]. The conversion will be skipped.");
 				} else {
 					// On recupere la chaine initiale
 					String message = resource.getString(i18nTokenKey);
-					// On remplace les differentes variables par les tokens references
-					// TODO String valuedMessage = MessageFormat.format(message, i18nTokenValueTokens);
 					
-					String valuedMessage = message;
-					logger.log(Level.FINE, "Replacing string [${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}] in cmd ["+newCmdStr+"] by [" + valuedMessage + "].");
-					newCmdStr = newCmdStr.replace("${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}", FilteringUtils.filter(valuedMessage));
+					// On remplace les differentes variables par les tokens references
+					if(unQuotedI18nTokenValueTokens.length > 0){
+						MessageFormat form = new MessageFormat(message);
+						message = form.format((Object[]) unQuotedI18nTokenValueTokens);
+					}
+					
+					logger.log(Level.FINE, "Replacing string [${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}] in cmd ["+newCmdStr2+"] by [" + message + "].");
+					newCmdStr2 = StringUtils.replace(newCmdStr2, "${" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX.concat(".").concat(i18nTokenKey) + "}", message);
+					
+					// Suppression du tableau de valeur de la chaine de caractere finale
+					if(matcher.groupCount() >= 3 && StringUtils.isNotBlank(matcher.group(3))){
+						newCmdStr2 = StringUtils.remove(newCmdStr2, matcher.group(3));
+					}
 				}
 			}
 		} catch(Exception e){
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
-		
-		//Application des variables locales
-		//Substitution basique : Doit prendre en compte le contexte du positionnement
-		Pattern localVariableTokensPattern = Pattern.compile("[.\\s]*(\\$\\{local\\.variable\\.([\\S]*)\\})+[.\\s]*");
-		Matcher matcher = localVariableTokensPattern.matcher(newCmdStr);
-		while(matcher.find()){
-			String localVariableToken = matcher.group(2);
-			logger.log(Level.FINE, "Replacing java class local variable token [" +localVariableToken+ "] in cmd [" +newCmdStr+ "]");
-			newCmdStr = newCmdStr.replace("${local.variable." + localVariableToken + "}", "\" + " +localVariableToken + " + \"\"");
-		}
-		
-		return newCmdStr;
+		return newCmdStr2;
 	}
 	
 	/**
@@ -305,7 +330,8 @@ public class SourceGenerator implements ISourceGenerator {
 	 * @throws Exception
 	 */
 	private void writeTestFile(File dir, IMethodReader methodReader, ClassInfo classInfo, ScenarioTokens tokens, Collection<String> classInfos) throws Exception {
-		methodReader.read(dir, classInfo, tokens);
+		// Generate the java class file
+		methodReader.writeSource(dir, classInfo, tokens);
 		String classInfoCanonicalName = classInfo.getPackageName() + "." + classInfo.getClassName();
 		classInfos.add(classInfoCanonicalName);
 		logger.log(Level.FINE, "ClassInfo [" + classInfoCanonicalName + "] added.");
