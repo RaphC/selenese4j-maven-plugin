@@ -114,6 +114,9 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		} else if (c.getName().startsWith("assert") && c.getName().endsWith("NotPresent")) {
 			result = doAssert(c, "", true);
 			
+		} else if (c.getName().startsWith("assertXpathCount")) {
+			result = doXpathCount(c);
+			
 		} else if (c.getName().startsWith("assert")) {
 			result = doAssert(c, "", false);
 		
@@ -297,6 +300,16 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 */
 	private String doMatch(Command c, String mName) {
 		return "Pattern.compile(\"" +FilteringUtils.filter(StringUtils.substringAfter(c.getValue(), "regexp:"))+ "\").matcher(selenium.get" +mName+ "(\"" +c.getTarget()+ "\")).find()";
+	}
+	
+	/**
+	 * 
+	 * @param c
+	 * @param mName
+	 * @return
+	 */
+	private String doXpathCount(Command c) {
+		return "Assert.assertEquals(new Integer(\""+c.getValue()+"\"), selenium.getXpathCount(\"" +c.getTarget()+ "\"));";
 	}
 	
 	/**
