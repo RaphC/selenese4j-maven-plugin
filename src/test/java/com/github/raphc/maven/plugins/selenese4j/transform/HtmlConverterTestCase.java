@@ -10,8 +10,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.github.raphc.maven.plugins.selenese4j.source.data.Td;
-import com.github.raphc.maven.plugins.selenese4j.source.data.Tr;
+import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestTd;
+import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestTr;
 
 /**
  * @author Raphael
@@ -22,31 +22,31 @@ public class HtmlConverterTestCase {
 	
 	@Test
 	public void convert(){
-		List<Tr> lines = new ArrayList<Tr>();
+		List<TestTr> lines = new ArrayList<TestTr>();
 		
-		Tr tr1 = new Tr();
-		List<Td> cells1 = new ArrayList<Td>();
-		Td cells11 = new Td();
+		TestTr tr1 = new TestTr();
+		List<TestTd> cells1 = new ArrayList<TestTd>();
+		TestTd cells11 = new TestTd();
 		cells11.setContent("sandra");
 		cells1.add(cells11);
-		Td cells12 = new Td();
+		TestTd cells12 = new TestTd();
 		cells12.setContent("nocouverture");
 		cells1.add(cells12);
-		Td cells13 = new Td();
+		TestTd cells13 = new TestTd();
 		cells13.setContent("a froid");
 		cells1.add(cells13);
 		tr1.setTds(cells1);
 		lines.add(tr1);
 		
-		Tr tr2 = new Tr();
-		List<Td> cells2 = new ArrayList<Td>();
-		Td cells21 = new Td();
+		TestTr tr2 = new TestTr();
+		List<TestTd> cells2 = new ArrayList<TestTd>();
+		TestTd cells21 = new TestTd();
 		cells21.setContent("sandra");
 		cells2.add(cells21);
-		Td cells22 = new Td();
+		TestTd cells22 = new TestTd();
 		cells22.setContent("aveccouverture");
 		cells2.add(cells22);
-		Td cells23 = new Td();
+		TestTd cells23 = new TestTd();
 		cells23.setContent("a chaud");
 		cells2.add(cells23);
 		tr2.setTds(cells2);

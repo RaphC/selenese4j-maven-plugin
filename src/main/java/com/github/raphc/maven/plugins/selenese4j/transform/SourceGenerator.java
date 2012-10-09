@@ -27,7 +27,7 @@ import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.github.raphc.maven.plugins.selenese4j.Selenese4JProperties;
-import com.github.raphc.maven.plugins.selenese4j.source.data.Html;
+import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestHtml;
 import com.github.raphc.maven.plugins.selenese4j.xstream.converter.TdContentConverter;
 import com.thoughtworks.xstream.XStream;
 
@@ -53,8 +53,8 @@ public class SourceGenerator implements ISourceGenerator {
 		//Initialize XStream
 		xstream = new XStream();
 		xstream.autodetectAnnotations(true);
-		xstream.processAnnotations(Html.class);
-		xstream.registerConverter(new TdContentConverter());
+		xstream.processAnnotations(TestHtml.class);
+//		xstream.registerConverter(new TdContentConverter());
 	}
 	
 	/*
@@ -135,7 +135,7 @@ public class SourceGenerator implements ISourceGenerator {
 			StringBuilder sb = new StringBuilder();
 			String className = StringUtils.removeEndIgnoreCase(file.getName(), ".html").concat(GeneratorConfiguration.GENERATED_JAVA_TEST_CLASS_SUFFIX);
 			// Parsing du fichier. On extrait les commandes
-			Html html = (Html) xstream.fromXML(file);
+			TestHtml html = (TestHtml) xstream.fromXML(file);
 			logger.log(Level.FINE, "Html Parsing result is [" + html + "]. ["+CollectionUtils.size(html.getBody().getTable().getTbody().getTrs())+"] lines found.");
 			if(html.getBody().getTable().getTbody().getTrs() == null){
 				logger.log(Level.SEVERE, "No lines extracted from html ["+file.getName()+"]");
@@ -161,7 +161,7 @@ public class SourceGenerator implements ISourceGenerator {
 			
 		}
 
-		// Generation de la classe annoté @Suite
+		// Generation de la classe annotÃ© @Suite
 		//base sur l'ordre de presentation dans le fichier suite.html
 		createOrderedSuite(methodReader.getTemplatesDirectoryPath(), methodReader.getTestBuildDirectory(), classBeans, scenarioTokens, packName, dir.getName());
 	}
@@ -180,8 +180,8 @@ public class SourceGenerator implements ISourceGenerator {
 	}
 	
 	/**
-	 * Remplace les tokens ${xxxxx} par une possible clé de substitution 
-	 * presente <i>substitute.yyyyyyy.xxxxxx</i> dans le fichier selenium4j où yyyyyyy correspond au nom du testcase YYYYYTestCase.
+	 * Remplace les tokens ${xxxxx} par une possible clÃ© de substitution 
+	 * presente <i>substitute.yyyyyyy.xxxxxx</i> dans le fichier selenium4j oÃ¹ yyyyyyy correspond au nom du testcase YYYYYTestCase.
 	 * Si absent aucun modification n'est faite.
 	 * @param className
 	 * @param cmdStr
@@ -193,7 +193,7 @@ public class SourceGenerator implements ISourceGenerator {
 		
 		Map<String, String> subEntries = scenarioTokens.getSubstituteEntries(className);
 		
-		//Application des clés de subsitution
+		//Application des clÃ©s de subsitution
 		logger.log(Level.FINE, "Populating cmd ["+cmdStr+"] with substitue keys of ["+className+"] ("+CollectionUtils.size(subEntries)+" keys) ...");
 		
 		for (String key : subEntries.keySet()) {
@@ -208,7 +208,7 @@ public class SourceGenerator implements ISourceGenerator {
 	}
 
 	/**
-	 * Remplace les tokens ${messages.xxxxx} par un messages i18n correspond à la langue fournie.
+	 * Remplace les tokens ${messages.xxxxx} par un messages i18n correspond Ã  la langue fournie.
 	 * Par defaut, la recherche est realise en ${@link Globals#DEFAULT_I18N_MESSAGES_LOCALE}.
 	 * Si absent aucun modification n'est faite.
 	 * @param basedir
