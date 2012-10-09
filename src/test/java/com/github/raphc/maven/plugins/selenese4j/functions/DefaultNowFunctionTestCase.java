@@ -27,6 +27,6 @@ public class DefaultNowFunctionTestCase {
 	
 	@Test
 	public void process(){
-		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "yyyy-MM-dd"), defaultNowFunction.process("{@function:now()}"));
+		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "yyyy-MM-dd"), defaultNowFunction.replaceByValue("{@function:now()}"));
 	}
 }

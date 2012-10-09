@@ -21,6 +21,7 @@ public class PreDefinedFunctionProcessorTestCase {
 	@Test
 	public void processOK() throws Exception {
 		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "yyyy-MM-dd"), processor.process("{@function:now()}"));
+		Assert.assertEquals("Je suis un simple label : "+DateFormatUtils.format(Calendar.getInstance(), "yyyy-MM-dd"), processor.process("Je suis un simple label : {@function:now()}"));
 	}
 	
 	@Test

@@ -18,8 +18,8 @@ public interface PreDefinedFunction {
 	
 	/**
 	 * 
-	 * @param instruction
+	 * @param token
 	 */
-	public String process(String instruction) throws NotMatchedException;
+	public String replaceByValue(String token) throws NotMatchedException;
 	
 }

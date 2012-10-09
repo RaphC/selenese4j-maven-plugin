@@ -27,8 +27,8 @@ public class LocaleAndFormatNowFunctionTestCase {
 	
 	@Test
 	public void process(){
-		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "MM:yyyy"), localeAndFormatNowFunction.process("{@function:now('sv_SE','MM:yyyy')}"));
-		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "MMMMM dd, yyyy"), localeAndFormatNowFunction.process("{@function:now('fr_CA','MMMMM dd, yyyy')}"));
+		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "MM:yyyy"), localeAndFormatNowFunction.replaceByValue("{@function:now('sv_SE','MM:yyyy')}"));
+		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "MMMMM dd, yyyy"), localeAndFormatNowFunction.replaceByValue("{@function:now('fr_CA','MMMMM dd, yyyy')}"));
 		
 	}
 }

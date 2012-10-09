@@ -11,7 +11,7 @@
 	      <role>com.thoughtworks.xstream.XStream</role>
 	    </requirement> -->
 	    <requirement>
-	      <role>com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor</role>
+	      <role>com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor</role>
 	    </requirement>
 	  </requirements>
       <configuration/>
@@ -22,7 +22,7 @@
       <configuration/>
     </component>
     <component>
-      <role>com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor</role>
+      <role>com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor</role>
       <implementation>com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor</implementation>
       <configuration/>
     </component>

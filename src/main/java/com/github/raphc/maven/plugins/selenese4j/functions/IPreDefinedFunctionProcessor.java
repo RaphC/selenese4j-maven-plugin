@@ -9,11 +9,5 @@ package com.github.raphc.maven.plugins.selenese4j.functions;
  */
 public interface IPreDefinedFunctionProcessor {
 
-	/**
-	 * 
-	 * @param instruction
-	 * @return
-	 * @throws NotMatchedException
-	 */
-	public String process(String instruction) throws NotMatchedException;
+
 }

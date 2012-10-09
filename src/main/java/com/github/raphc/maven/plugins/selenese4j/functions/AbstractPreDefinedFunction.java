@@ -3,6 +3,7 @@
  */
 package com.github.raphc.maven.plugins.selenese4j.functions;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -16,7 +17,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractPreDefinedFunction implements PreDefinedFunction {
 
-	public static final Pattern DEFINED_FUNCTION_PATTERN = Pattern.compile("[\\s\\S]*\\{@function\\:([\\s\\S]*)\\(([\\s\\S]*)\\)\\}[\\s\\S]*");
+	public static final Pattern DEFINED_FUNCTION_PATTERN = Pattern.compile("[\\s\\S]*(\\{@function\\:([\\s\\S]*)\\(([\\s\\S]*)\\)\\})[\\s\\S]*");
 	
 	protected Logger logger = Logger.getLogger(getClass().getName());
 	
@@ -33,7 +34,7 @@ public abstract class AbstractPreDefinedFunction implements PreDefinedFunction {
 	/**
 	 * The current arguments
 	 */
-	protected String[] functionArgs;
+	private AtomicReference<String[]> functionArgs = new AtomicReference<String[]>();
 
 	/*
 	 * (non-Javadoc)
@@ -46,11 +47,11 @@ public abstract class AbstractPreDefinedFunction implements PreDefinedFunction {
 			logger.log(Level.FINE, "This instruction [" +instruction+ "] contains a pre-defined function.");
 			
 			//On controle qu'il s'agit bien de la bonne fonction (nom + nombre argument)
-			String instrFunctionName =functionMatcher.group(1);
+			String instrFunctionName = functionMatcher.group(2);
 			
 			String[] instrFunctionArgs = new String[0];
-			if(StringUtils.isNotBlank(functionMatcher.group(2))) {
-				instrFunctionArgs = functionMatcher.group(2).split("'\\s*,\\s*'");
+			if(StringUtils.isNotBlank(functionMatcher.group(3))) {
+				instrFunctionArgs = functionMatcher.group(3).split("'\\s*,\\s*'");
 			}
 			
 			if(!functionName.equalsIgnoreCase(instrFunctionName) || functionArgsNumber != instrFunctionArgs.length){
@@ -59,11 +60,30 @@ public abstract class AbstractPreDefinedFunction implements PreDefinedFunction {
 			}
 			
 			//On vire les simples quotes exterieures
-			this.functionArgs = com.github.raphc.maven.plugins.selenese4j.utils.ArrayUtils.unQuotingArrayElement(instrFunctionArgs);
+			this.functionArgs.set(com.github.raphc.maven.plugins.selenese4j.utils.ArrayUtils.unQuotingArrayElement(instrFunctionArgs));
 			return true;
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * 
+	 * @param content
+	 * @return
+	 * @throws NotMatchedException
+	 */
+	public final String process(String content) throws NotMatchedException {
+		String initialString = content;
+		
+		Matcher matcher = DEFINED_FUNCTION_PATTERN.matcher(content);
+		if(matcher.matches()){
+			String tokenPart = matcher.group(1);
+			String value = replaceByValue(tokenPart);
+			return StringUtils.isNotBlank(value) ? StringUtils.replace(initialString, tokenPart, value) : initialString;
+		}
+		
+		return initialString;
 	}
 	
 	/**
@@ -84,14 +104,14 @@ public abstract class AbstractPreDefinedFunction implements PreDefinedFunction {
 	 * @return the functionArgs
 	 */
 	public String[] getFunctionArgs() {
-		return functionArgs;
+		return functionArgs.get();
 	}
 
 	/**
 	 * @param functionArgs the functionArgs to set
 	 */
 	public void setFunctionArgs(String[] functionArgs) {
-		this.functionArgs = functionArgs;
+		this.functionArgs.set(functionArgs);
 	}
 	
 }

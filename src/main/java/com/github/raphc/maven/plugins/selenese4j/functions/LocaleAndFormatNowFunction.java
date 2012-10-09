@@ -25,14 +25,14 @@ public class LocaleAndFormatNowFunction extends AbstractPreDefinedFunction {
 	 * (non-Javadoc)
 	 * @see com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunction#process(java.lang.String)
 	 */
-	public String process(String instruction) {
-		if(!matches(instruction)){
-			throw new RuntimeException("this instruction ["+instruction+"] doesn't match localeAndFormatNow function");
+	public String replaceByValue(String token) {
+		if(!matches(token)){
+			throw new RuntimeException("this instruction ["+token+"] doesn't match localeAndFormatNow function");
 		}
 		
 		//Extraction du 1er arg : correspond au format
-		String locale = this.functionArgs[0];
-		String format = this.functionArgs[1];
+		String locale = getFunctionArgs()[0];
+		String format = getFunctionArgs()[1];
 		
 		return DateFormatUtils.format(Calendar.getInstance(), format, LocaleUtils.toLocale(locale));
 	}

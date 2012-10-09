@@ -27,8 +27,8 @@ import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.github.raphc.maven.plugins.selenese4j.Selenese4JProperties;
-import com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor;
 import com.github.raphc.maven.plugins.selenese4j.functions.NotMatchedException;
+import com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestHtml;
 import com.thoughtworks.xstream.XStream;
 
@@ -56,9 +56,9 @@ public class SourceGenerator implements ISourceGenerator {
 	
 	/**
 	 * processor de fonction
-	 * @component role="com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor" 
+	 * @component role="com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor" 
 	 */
-	private IPreDefinedFunctionProcessor preDefinedFunctionProcessor;
+	private PreDefinedFunctionProcessor preDefinedFunctionProcessor;
 	
 	public SourceGenerator(){
 		//Initialize XStream

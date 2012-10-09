@@ -24,13 +24,13 @@ public class FormattedNowFunction extends AbstractPreDefinedFunction {
 	 * (non-Javadoc)
 	 * @see com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunction#process(java.lang.String)
 	 */
-	public String process(String instruction) {
-		if(!matches(instruction)){
-			throw new RuntimeException("this instruction ["+instruction+"] doesn't match FormattedNow function");
+	public String replaceByValue(String token) {
+		if(!matches(token)){
+			throw new RuntimeException("this instruction ["+token+"] doesn't match FormattedNow function");
 		}
 		
 		//Extraction du 1er arg : correspond au format
-		String format = this.functionArgs[0];
+		String format = getFunctionArgs()[0];
 		
 		return DateFormatUtils.format(Calendar.getInstance(), format);
 	}

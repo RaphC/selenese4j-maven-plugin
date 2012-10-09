@@ -24,10 +24,11 @@ public class DefaultNowFunction extends AbstractPreDefinedFunction {
 	 * (non-Javadoc)
 	 * @see com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunction#process(java.lang.String)
 	 */
-	public String process(String instruction) {
-		if(!matches(instruction)){
-			throw new RuntimeException("this instruction ["+instruction+"] doesn't match now function");
+	public String replaceByValue(String token) {
+		if(!matches(token)){
+			throw new RuntimeException("this instruction ["+token+"] doesn't match now function");
 		}
+		// Devrait retournaut la valeur entiere et pas uniquement la valorisation du token
 		return DateFormatUtils.ISO_DATE_FORMAT.format(Calendar.getInstance());
 	}
 

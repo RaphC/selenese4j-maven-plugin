@@ -18,22 +18,26 @@ public class PreDefinedFunctionProcessor implements IPreDefinedFunctionProcessor
 		functions.add(new DefaultNowFunction());
 		functions.add(new FormattedNowFunction());
 		functions.add(new LocaleAndFormatNowFunction());
+		functions.add(new LocaleAndFormatDateAddFunction());
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor#process(java.lang.String)
+	/**
+	 * 
+	 * @param instruction
+	 * @return
+	 * @throws NotMatchedException
 	 */
-	public String process(String instruction) throws NotMatchedException {
+	public final String process(String instruction) throws NotMatchedException {
+		String initialInstruction = instruction;
 		
 		for(PreDefinedFunction predefinedFunction : functions){
 			//Verification
 			if(predefinedFunction.matches(instruction)){
-				return predefinedFunction.process(instruction);
+				return ((AbstractPreDefinedFunction) predefinedFunction).process(instruction);
 			}
 		}
 		// No function found
-		return instruction;
+		return initialInstruction;
 	}
 
 }

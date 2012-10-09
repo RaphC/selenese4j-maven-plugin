@@ -27,6 +27,6 @@ public class FormattedNowFunctionTestCase {
 	
 	@Test
 	public void process(){
-		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "dd/MM/yyyy"), formattedNowFunction.process("{@function:now('dd/MM/yyyy')}"));
+		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "dd/MM/yyyy"), formattedNowFunction.replaceByValue("{@function:now('dd/MM/yyyy')}"));
 	}
 }
