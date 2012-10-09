@@ -10,7 +10,7 @@ package com.github.raphc.maven.plugins.selenese4j.utils;
 public class ArrayUtils {
 
 	/**
-	 * Removed leading and trailing double quotes from all String element contained into the array
+	 * Removed leading and trailing quotes and double quotes from all String element contained into the array
 	 * @param arr
 	 * @return
 	 */
@@ -19,7 +19,7 @@ public class ArrayUtils {
 		
 		int i = 0;
 		for(String emt : arr){
-			result[i] = emt.replaceAll("^\"|\"$", "");
+			result[i] = emt.replaceAll("^\"|^'|'$|\"$", "");
 			i++;
 		}
 		return result;
