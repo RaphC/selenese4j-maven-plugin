@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.github.raphc.maven.plugins.selenese4j.functions.AbstractPreDefinedFunction;
 import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
 
 /**
@@ -37,11 +38,18 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	public String discovery(Command c) {
 		String instr = null;
 		
+		//On verifie que le command name n'est pas une defined function
+		Matcher functionMatcher = AbstractPreDefinedFunction.DEFINED_FUNCTION_PATTERN.matcher(c.getName());
+		if(functionMatcher.matches()){
+			logger.log(Level.FINE, "The command [" +c.getName()+ "] contains a function. This is not supported in name field.");
+			throw new RuntimeException("The command [" +c.getName()+ "] contains a function. This is not supported in name field.");
+		}
+		
 		//On verifie si il ne s'agit pas de snippet
-		Matcher matcher = SNIPPET_FRAGMENT_PATTERN.matcher(c.getName());
-		if(matcher.matches()){
+		Matcher snippetMatcher = SNIPPET_FRAGMENT_PATTERN.matcher(c.getName());
+		if(snippetMatcher.matches()){
 			logger.log(Level.FINE, "The command [" +c.getName()+ "] is a snippet. No transformation processed.");
-			instr = matcher.group(1);
+			instr = snippetMatcher.group(1);
 		} else {
 			Method m = methods.get(c.getName());
 			if(m == null){
@@ -54,6 +62,13 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		return instr;
 	}
 	
+	/**
+	 * Transforme la method m issue de la commande c en instruction java interpretable par l'API selenium
+	 * Ne sont supportés que les m retournant un type {@link String}
+	 * @param m
+	 * @param c
+	 * @return
+	 */
 	private String getMethodBody(Method m, Command c) {
 		StringBuilder sb = new StringBuilder(SELENIUM);
 		sb.append(".");
@@ -163,7 +178,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		}
 		
 		m = methods.get("get" + mName);
-		//TODO Gerer de fa�on dynamique le type des expected m.getReturnType() 
+		//TODO Gerer de façon dynamique le type des expected m.getReturnType() 
 		//+ gestion des Abstract et des interfaces + des constructeurs avec arg de type String en non String
 //		Class<?> classToInstantiate = m.getReturnType();
 //		InstantiateFactory.getInstance(m.getReturnType(), new Class[]{String.class}, expectedElement);
@@ -226,6 +241,13 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param c
+	 * @param Not
+	 * @param methodNotPresent
+	 * @return
+	 */
 	private String doWaitFor(Command c, String Not, boolean methodNotPresent) {
 		String mName = c.getName().substring(("waitFor" + Not).length());
 		String pipe = "";
@@ -253,6 +275,12 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param condition
+	 * @param c
+	 * @return
+	 */
 	private static String forBlock(String condition, Command c) {
 		String descr = c.getTarget();
 		if(c.getValue() != null && !c.getValue().equals("")){
@@ -266,7 +294,12 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		"\n\t\t}";
 	}
 	
-	
+	/**
+	 * Transforme la commande waitForPageToLoad en selenium.waitForPageToLoad(30000);
+	 * @param m
+	 * @param c
+	 * @return
+	 */
 	private String doAndWait(Method m, Command c) {
 		String s = getMethodBody(m, c);
 		return s + ";\n\t\t" + SELENIUM + ".waitForPageToLoad(\"" + DEFAULT_WAIT_FOR_PAGE_TOLOAD + "\");";
