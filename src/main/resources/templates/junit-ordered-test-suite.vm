@@ -13,7 +13,7 @@ import ${testClazz};
 #end
 
 /**
- * @author Raphael
+ * 
  *
  */
 @RunWith(Suite.class)
