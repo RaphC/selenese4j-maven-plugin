@@ -7,6 +7,12 @@
 	    <requirement>
 	      <role>com.github.raphc.maven.plugins.selenese4j.transform.ICommandToMethodTranslator</role>
 	    </requirement>
+	    <!-- <requirement>
+	      <role>com.thoughtworks.xstream.XStream</role>
+	    </requirement> -->
+	    <requirement>
+	      <role>com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor</role>
+	    </requirement>
 	  </requirements>
       <configuration/>
     </component>
@@ -15,5 +21,20 @@
       <implementation>com.github.raphc.maven.plugins.selenese4j.transform.UnManagedCommandToMethodTranslator</implementation>
       <configuration/>
     </component>
+    <component>
+      <role>com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor</role>
+      <implementation>com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor</implementation>
+      <configuration/>
+    </component>
+    <!-- <component>
+      <role>com.thoughtworks.xstream.XStream</role>
+      <implementation>com.thoughtworks.xstream.XStream</implementation>
+      <configuration>
+      	<annotationConfiguration>
+      		<autodetectAnnotations>true</autodetectAnnotations>
+      	</annotationConfiguration>
+      </configuration>
+    </component> -->
+    
   </components>
 </component-set>

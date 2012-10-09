@@ -27,8 +27,9 @@ import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.github.raphc.maven.plugins.selenese4j.Selenese4JProperties;
+import com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor;
+import com.github.raphc.maven.plugins.selenese4j.functions.NotMatchedException;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestHtml;
-import com.github.raphc.maven.plugins.selenese4j.xstream.converter.TdContentConverter;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -43,18 +44,27 @@ public class SourceGenerator implements ISourceGenerator {
 	
 	/**
 	 * traducteur
-	 * @component role="org.rcr.maven.selenese4j.transform.ICommandToMethodTranslator"
+	 * @component role="com.github.raphc.maven.plugins.selenese4j.transform.ICommandToMethodTranslator"
 	 */
 	private ICommandToMethodTranslator commandToMethodTranslator;
 	
+	/**
+	 * parser XStream
+	 * @component role="com.thoughtworks.xstream.XStream" 
+	 */
 	private static XStream xstream;
+	
+	/**
+	 * processor de fonction
+	 * @component role="com.github.raphc.maven.plugins.selenese4j.functions.IPreDefinedFunctionProcessor" 
+	 */
+	private IPreDefinedFunctionProcessor preDefinedFunctionProcessor;
 	
 	public SourceGenerator(){
 		//Initialize XStream
 		xstream = new XStream();
 		xstream.autodetectAnnotations(true);
 		xstream.processAnnotations(TestHtml.class);
-//		xstream.registerConverter(new TdContentConverter());
 	}
 	
 	/*
@@ -145,8 +155,13 @@ public class SourceGenerator implements ISourceGenerator {
 			
 			//Traduction des commandes en instruction java
 			for (Command c : cmds) {
+				//On traite les tokens de type ${messages.xxxxxx}
 				processI18nTokensInCommandAttributes(c, dir);
+				//On traite les token de type {@function:....}
+				processPredefinedFunctionsInCommandAttributes(c);
+				//On convertit l'ordre en instruction Java
 				String cmdStr = commandToMethodTranslator.discovery(c);
+				//On remplace les tokens definis au niveau des templates
 				cmdStr = populatingCommand(className, cmdStr, scenarioTokens);
 				sb.append("\n\t\t" + cmdStr);
 			}
@@ -167,7 +182,7 @@ public class SourceGenerator implements ISourceGenerator {
 	}
 	
 	/**
-	 * 
+	 * Transforme les token de type ${messages.xxx} presentes dans les target et les value
 	 * @param cmd
 	 * @param basedir
 	 */
@@ -263,6 +278,28 @@ public class SourceGenerator implements ISourceGenerator {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return newCmdStr2;
+	}
+	
+	/**
+	 * Interprete les tokens de type {@function:myfunction()} 
+	 * @param msg
+	 * @return
+	 */
+	private void processPredefinedFunctionsInCommandAttributes(Command cmd){
+		
+		try {
+			String valuedTarget = preDefinedFunctionProcessor.process(cmd.getTarget());
+			cmd.setTarget(valuedTarget);
+		} catch (NotMatchedException nme) {
+			logger.log(Level.SEVERE, nme.getMessage(), nme);
+		}
+		
+		try {
+			String valuedValue = preDefinedFunctionProcessor.process(cmd.getValue());
+			cmd.setValue(valuedValue);
+		} catch (NotMatchedException nme) {
+			logger.log(Level.SEVERE, nme.getMessage(), nme);
+		}
 	}
 	
 	/**

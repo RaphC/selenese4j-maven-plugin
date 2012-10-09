@@ -26,7 +26,7 @@ public class FormattedNowFunction extends AbstractPreDefinedFunction {
 	 */
 	public String process(String instruction) {
 		if(!matches(instruction)){
-			throw new RuntimeException("Doesn't match");
+			throw new RuntimeException("this instruction ["+instruction+"] doesn't match FormattedNow function");
 		}
 		
 		//Extraction du 1er arg : correspond au format

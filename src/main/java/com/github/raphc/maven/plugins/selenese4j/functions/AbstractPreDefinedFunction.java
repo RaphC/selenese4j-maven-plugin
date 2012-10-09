@@ -48,7 +48,11 @@ public abstract class AbstractPreDefinedFunction implements PreDefinedFunction {
 			//On controle qu'il s'agit bien de la bonne fonction (nom + nombre argument)
 			String instrFunctionName =functionMatcher.group(1);
 			
-			String[] instrFunctionArgs = StringUtils.split(functionMatcher.group(2),',');
+			String[] instrFunctionArgs = new String[0];
+			if(StringUtils.isNotBlank(functionMatcher.group(2))) {
+				instrFunctionArgs = functionMatcher.group(2).split("'\\s*,\\s*'");
+			}
+			
 			if(!functionName.equalsIgnoreCase(instrFunctionName) || functionArgsNumber != instrFunctionArgs.length){
 				logger.log(Level.FINE, "Doesn't matches the pre-defined function name ["+functionName+"]");
 				return false;

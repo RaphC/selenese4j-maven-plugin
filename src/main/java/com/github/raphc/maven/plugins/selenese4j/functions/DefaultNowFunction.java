@@ -25,6 +25,9 @@ public class DefaultNowFunction extends AbstractPreDefinedFunction {
 	 * @see com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunction#process(java.lang.String)
 	 */
 	public String process(String instruction) {
+		if(!matches(instruction)){
+			throw new RuntimeException("this instruction ["+instruction+"] doesn't match now function");
+		}
 		return DateFormatUtils.ISO_DATE_FORMAT.format(Calendar.getInstance());
 	}
 
