@@ -1,43 +1,100 @@
 package com.github.raphc.maven.plugins.selenese4j.transform;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * 
  * @author Raphael
- *
+ * 
  */
 public class Command {
 
-  private String name;
-  private String target;
-  private String value;
+	/**
+	 * 
+	 */
+	private String name;
+	
+	/**
+	 * 
+	 */
+	private String target;
+	
+	/**
+	 * 
+	 */
+	private String value;
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	/**
+	 * 
+	 */
+	public Command(){}
+	
+	/**
+	 * @param name
+	 * @param target
+	 * @param value
+	 */
+	public Command(String name, String target, String value) {
+		this.name = name;
+		this.target = target;
+		this.value = value;
+	}
 
-  public void setTarget(String t) {
-    this.target = t;
-  }
+	/**
+	 * 
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public void setValue(String v) {
-    this.value = v;
-  }
+	/**
+	 * 
+	 * @param t
+	 */
+	public void setTarget(String t) {
+		this.target = t;
+	}
 
-  public String getName() {
-    return name;
-  }
+	/**
+	 * 
+	 * @param v
+	 */
+	public void setValue(String v) {
+		this.value = v;
+	}
 
-  public String getTarget() {
-    return target;
-  }
+	/**
+	 * 
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
 
-  public String getValue() {
-    return value;
-  }
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTarget() {
+		return target;
+	}
 
-  @Override
-  public String toString() {
-    return "Command{" + name + "\n" + target + "\n" + value + "}";
-  }
+	/**
+	 * 
+	 * @return
+	 */
+	public String getValue() {
+		return value;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 
 }
