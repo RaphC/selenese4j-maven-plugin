@@ -47,6 +47,11 @@
 	
 	<dependencies>
 		<dependency>
+			<groupId>com.github.raphc</groupId>
+			<artifactId>selenese4j-maven-plugin-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
 			<version>2.0</version>
