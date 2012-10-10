@@ -8,6 +8,7 @@ import java.util.Calendar;
 import junit.framework.Assert;
 
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -16,7 +17,15 @@ import org.junit.Test;
  */
 public class PreDefinedFunctionProcessorTestCase {
 
-	private PreDefinedFunctionProcessor processor = new PreDefinedFunctionProcessor();
+	private PreDefinedFunctionProcessor processor = null;
+	
+	
+	@Before
+	public void before() throws Exception {
+		if(processor == null){
+			processor = new PreDefinedFunctionProcessor();
+		}
+	}
 	
 	@Test
 	public void processOK() throws Exception {
