@@ -32,8 +32,9 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.roussev.selenium4j.transform.ICommandToMethodTranslator#discovery(org.roussev.selenium4j.transform.Command)
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.raphc.maven.plugins.selenese4j.transform.ICommandToMethodTranslator#discovery(com.github.raphc.maven.plugins.selenese4j.transform.Command)
 	 */
 	public String discovery(Command c) {
 		String instr = null;
@@ -157,7 +158,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * Transforme les commandes de type assertXXXXX en instruction Java
 	 * @param c
 	 * @param not
-	 * @param methodNotPresent
+	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type assertXXXXXNotPresent
 	 * @return
 	 */
 	private String doAssert(Command c, String not, boolean methodNotPresent) {
@@ -194,10 +195,11 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 			return "Assert.assert" + (StringUtils.equalsIgnoreCase(not, NOT_FLAG) ? "False" : "True") + "("+expectedElement+"," + doMatch(c, mName) + ");";
 		}
 		
+		//Commande de type assertXXXXXNotPresent
 		if(methodNotPresent){
 			mName = mName.replace(NOT_FLAG, "");
 			m = methods.get("is" + mName);
-			return "verifyFalse(" + getMethodBody(m, c) + ");";
+			return "Assert.assertFalse("+expectedElement+"," + getMethodBody(m, c) + ");";
 		}
 		return null;
 	}
@@ -220,7 +222,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * Gestion des commandes de type verifyXXXXX
 	 * @param c
 	 * @param not
-	 * @param methodNotPresent
+	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type verifyXXXXXNotPresent
 	 * @return
 	 */
 	private String doVerify(Command c, String not, boolean methodNotPresent) {
@@ -236,7 +238,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		if(methodNotPresent){
 			mName = mName.replace(NOT_FLAG, "");
 			m = methods.get("is" + mName);
-			return "verifyFalse(" + getMethodBody(m, c) + ");";
+			return "Assert.assertFalse(" + getMethodBody(m, c) + ");";
 		}
 		return null;
 	}
@@ -245,7 +247,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * 
 	 * @param c
 	 * @param Not
-	 * @param methodNotPresent
+	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type XXXXXNotPresent
 	 * @return
 	 */
 	private String doWaitFor(Command c, String Not, boolean methodNotPresent) {

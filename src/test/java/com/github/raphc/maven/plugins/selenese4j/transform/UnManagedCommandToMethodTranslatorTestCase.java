@@ -62,4 +62,11 @@ public class UnManagedCommandToMethodTranslatorTestCase {
 		Command command = new Command("{@function:now()}","My target in text: Hello World","true");
 		translator.discovery(command);
 	}
+	
+	@Test
+	public void discoveryAssertElementNotPresentCommand(){
+		Command command = new Command("assertElementNotPresent","link=my_link","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertFalse(\"link=my_link\",selenium.isElementPresent(\"link=my_link\"));", result);
+	}
 }
