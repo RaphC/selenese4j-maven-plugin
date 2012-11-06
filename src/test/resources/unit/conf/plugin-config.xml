@@ -15,7 +15,7 @@
 				<configuration>
 					<selenese4jConfigurationDirectory>${basedir}/src/test/resources/plugin-conf/config</selenese4jConfigurationDirectory>
 					<scenariiRootDirectory>${basedir}/src/test/resources/plugin-conf/scenarii</scenariiRootDirectory>
-					<testSourceGenerationDirectoryPath>${basedir}/target/generated-it-java</testSourceGenerationDirectoryPath>
+					<testSourceGenerationDirectoryPath>${basedir}/target/generated-source-java</testSourceGenerationDirectoryPath>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -30,6 +30,7 @@ import com.github.raphc.maven.plugins.selenese4j.Selenese4JProperties;
 import com.github.raphc.maven.plugins.selenese4j.functions.NotMatchedException;
 import com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestHtml;
+import com.github.raphc.maven.plugins.selenese4j.utils.StringSplittingUtils;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -245,10 +246,7 @@ public class SourceGenerator implements ISourceGenerator {
 				
 				String[] unQuotedI18nTokenValueTokens = new String[0];
 				if(matcher.groupCount() >= 4 && StringUtils.isNotBlank(matcher.group(4))){
-					String[] quotedI18nTokenValueTokens = new String[0];
-					quotedI18nTokenValueTokens = StringUtils.split(matcher.group(4), ',');
-					//On vire les doubles quotes exterieures
-					unQuotedI18nTokenValueTokens = com.github.raphc.maven.plugins.selenese4j.utils.ArrayUtils.unQuotingArrayElement(quotedI18nTokenValueTokens);
+					unQuotedI18nTokenValueTokens = StringSplittingUtils.split(matcher.group(4),'"','"');
 				}
 				
 				logger.log(Level.FINE, "Found i18n token [" +i18nTokenKey+ "] [" +StringUtils.join(unQuotedI18nTokenValueTokens,'|')+ "]("+unQuotedI18nTokenValueTokens.length+" elts) in cmd [" +newCmdStr2+ "]");

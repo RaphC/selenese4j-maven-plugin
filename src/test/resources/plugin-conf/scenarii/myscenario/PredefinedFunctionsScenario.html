@@ -8,7 +8,7 @@
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Call Page</td></tr>
+<tr><td rowspan="1" colspan="3">PredefinedFunctionsScenario</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -34,6 +34,11 @@
 	<td>assertTextPresent</td>
 	<td>My 2 next day is {@function:dateadd('2','fr_FR','dd:yyyy-MM')}</td>
 	<td>true</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>${messages.my.current.tokenized.label}["{@function:now('en_US','MMMMM dd, yyyy')}","0.00 €"]</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>
