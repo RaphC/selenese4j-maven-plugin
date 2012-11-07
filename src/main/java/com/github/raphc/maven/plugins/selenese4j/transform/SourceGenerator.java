@@ -238,7 +238,7 @@ public class SourceGenerator implements ISourceGenerator {
 			URLClassLoader loader = new URLClassLoader(urls);
 			ResourceBundle resource = ResourceBundle.getBundle(GeneratorConfiguration.I18N_MESSAGES_FILE_BASENAME, i18nMessagesLocale, loader);
 			
-			Pattern i18nTokensPattern = Pattern.compile("[.\\s]*(\\$\\{" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX + "\\.([\\S&&[^$]]*)\\}(\\[([^]]*)\\])?)+[.\\s]*");
+			Pattern i18nTokensPattern = Pattern.compile("[.\\s]*(\\$\\{" + GeneratorConfiguration.SOURCE_FILE_I18N_TOKENS_PREFIX + "\\.([\\S&&[^{^$]]*)\\}(\\[([^]]*)\\])?)+[.\\s]*");
 			
 			Matcher matcher = i18nTokensPattern.matcher(newCmdStr2);
 			while(matcher.find()){
