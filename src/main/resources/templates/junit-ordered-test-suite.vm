@@ -19,7 +19,8 @@ import ${testClazz};
 @RunWith(Suite.class)
 @SuiteClasses({
 #foreach( $testClazz in $testClasses ) 
- ${testClazz}.class,
+ ${testClazz}.class#if( $foreach.hasNext ),#end
+ 
 #end
 })
 public class OrderedTestSuite {}
