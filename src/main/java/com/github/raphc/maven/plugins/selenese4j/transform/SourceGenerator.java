@@ -97,6 +97,12 @@ public class SourceGenerator implements ISourceGenerator {
 		
 		for (File suiteDir : suiteDirs) {
 			logger.info("reading file ["+suiteDir+"]...");
+			
+			//On valide le nom du package
+			if(! suiteDir.getName().matches("[a-z0-9\\.]*")){
+				throw new MojoExecutionException("The directory name "+suiteDir.getName()+" has to follow Java convention  [only lowercase letters, numbers and '.' chars].");
+			}
+			
 			processTests(suiteDir, methodReader, null);
 		}
 
@@ -132,7 +138,6 @@ public class SourceGenerator implements ISourceGenerator {
 		String basedPackageName = null;
 		try {
 			properties.load(new FileInputStream(propFile));
-    		
 			configurationValidator.validate(properties);
 			basedPackageName = properties.getProperty(GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE);
 			logger.log(Level.FINE, "Property ["+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+"] loaded ["+basedPackageName+"].");
@@ -142,6 +147,7 @@ public class SourceGenerator implements ISourceGenerator {
 			throw new MojoExecutionException("Invalid Configuration \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".", ce);
 		}
 		
+		// On determine le nom du package
 		String packName = null;
 		packName = basedPackageName != null ? basedPackageName + "." + dir.getName() : dir.getName();
 		loadContextKeys(dir, scenarioTokens);

@@ -24,10 +24,8 @@ public class ConfigurationValidator implements IConfigurationValidator {
 	public void validate(Properties globalProperties) throws ConfigurationException {
 		
 		String basedTestsSourcesPackageValue = (String) globalProperties.get(GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE);
-		if(StringUtils.isBlank(basedTestsSourcesPackageValue)) {
-			throw new ConfigurationException("The "+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+" token is blank");
-		}		
-		if(! basedTestsSourcesPackageValue.matches(PROP_BASED_TESTS_SOURCES_PACKAGE_VALUE_PATTERN)){
+		if(StringUtils.isNotBlank(basedTestsSourcesPackageValue) 
+				&& ! basedTestsSourcesPackageValue.matches(PROP_BASED_TESTS_SOURCES_PACKAGE_VALUE_PATTERN)){
 			throw new ConfigurationException("The "+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+" token ["+basedTestsSourcesPackageValue+"] is invalid");
 		}
 

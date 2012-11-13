@@ -41,13 +41,5 @@ public class ConfigurationValidatorTestCase {
     	} catch(ConfigurationException ce){
     		Assert.assertEquals("The "+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+" token [some-domain.toto] is invalid", ce.getMessage());
     	}
-    	
-    	//NOK
-    	myGlobalProperties.put(GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE, "");
-    	try {    	
-    		configurationValidator.validate(myGlobalProperties);
-    	} catch(ConfigurationException ce){
-    		Assert.assertEquals("The "+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+" token is blank", ce.getMessage());
-    	}
 	}
 }
