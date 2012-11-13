@@ -34,6 +34,7 @@ import com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionPro
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestHtml;
 import com.github.raphc.maven.plugins.selenese4j.utils.StringSplittingUtils;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 /**
  * @author Raphael
@@ -71,7 +72,32 @@ public class SourceGenerator implements ISourceGenerator {
 	
 	public SourceGenerator(){
 		//Initialize XStream
-		xstream = new XStream();
+		xstream = new XStream() {
+		
+			/*
+			 * (non-Javadoc)
+			 * @see com.thoughtworks.xstream.XStream#wrapMapper(com.thoughtworks.xstream.mapper.MapperWrapper)
+			 */
+			@Override
+			protected MapperWrapper wrapMapper(MapperWrapper next) {
+			
+				return new MapperWrapper(next) {
+
+					/*
+					 * (non-Javadoc)
+					 * @see com.thoughtworks.xstream.mapper.MapperWrapper#shouldSerializeMember(java.lang.Class, java.lang.String)
+					 */
+					@Override
+					public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+						if (definedIn == Object.class) { return false; }
+						return super .shouldSerializeMember(definedIn, fieldName);
+					}
+			
+				};
+			}
+		};
+		
+		
 		xstream.autodetectAnnotations(true);
 		xstream.processAnnotations(TestHtml.class);
 	}
