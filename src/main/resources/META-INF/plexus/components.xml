@@ -13,6 +13,9 @@
 	    <requirement>
 	      <role>com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor</role>
 	    </requirement>
+	    <requirement>
+	      <role>com.github.raphc.maven.plugins.selenese4j.transform.IConfigurationValidator</role>
+	    </requirement>
 	  </requirements>
       <configuration/>
     </component>
@@ -24,6 +27,11 @@
     <component>
       <role>com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor</role>
       <implementation>com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor</implementation>
+      <configuration/>
+    </component>
+    <component>
+      <role>com.github.raphc.maven.plugins.selenese4j.transform.IConfigurationValidator</role>
+      <implementation>com.github.raphc.maven.plugins.selenese4j.transform.ConfigurationValidator</implementation>
       <configuration/>
     </component>
     <!-- <component>

@@ -25,8 +25,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugin.MojoExecutionException;
 
 import com.github.raphc.maven.plugins.selenese4j.Selenese4JProperties;
+import com.github.raphc.maven.plugins.selenese4j.exception.ConfigurationException;
 import com.github.raphc.maven.plugins.selenese4j.functions.NotMatchedException;
 import com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestHtml;
@@ -60,6 +62,12 @@ public class SourceGenerator implements ISourceGenerator {
 	 * @component role="com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor" 
 	 */
 	private PreDefinedFunctionProcessor preDefinedFunctionProcessor;
+	
+    /**
+     * The validator to use
+     * @component
+     */
+    private IConfigurationValidator configurationValidator;
 	
 	public SourceGenerator(){
 		//Initialize XStream
@@ -124,10 +132,14 @@ public class SourceGenerator implements ISourceGenerator {
 		String basedPackageName = null;
 		try {
 			properties.load(new FileInputStream(propFile));
+    		
+			configurationValidator.validate(properties);
 			basedPackageName = properties.getProperty(GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE);
 			logger.log(Level.FINE, "Property ["+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+"] loaded ["+basedPackageName+"].");
 		} catch (FileNotFoundException e1) {
 			throw new RuntimeException("Missing \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".");
+		} catch (ConfigurationException ce) {
+			throw new MojoExecutionException("Invalid Configuration \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".", ce);
 		}
 		
 		String packName = null;
