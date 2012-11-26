@@ -31,7 +31,7 @@ public class UnManagedCommandToMethodTranslatorTestCase {
 	
 	@Test
 	public void discoveryPauseCommand(){
-		Command command = new Command("pause","","180000");
+		Command command = new Command("pause","180000","");
 		String result = translator.discovery(command);
 		Assert.assertEquals("Thread.sleep(180000);", result);
 	}
