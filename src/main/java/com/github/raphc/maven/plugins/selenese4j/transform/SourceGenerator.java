@@ -32,6 +32,7 @@ import com.github.raphc.maven.plugins.selenese4j.exception.ConfigurationExceptio
 import com.github.raphc.maven.plugins.selenese4j.functions.NotMatchedException;
 import com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestHtml;
+import com.github.raphc.maven.plugins.selenese4j.utils.ClassUtils;
 import com.github.raphc.maven.plugins.selenese4j.utils.StringSplittingUtils;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
@@ -188,7 +189,9 @@ public class SourceGenerator implements ISourceGenerator {
 			
 			logger.log(Level.FINE, "Processing [" + file.getName() + "]...");
 			StringBuilder sb = new StringBuilder();
-			String className = StringUtils.removeEndIgnoreCase(file.getName(), ".html").concat(GeneratorConfiguration.GENERATED_JAVA_TEST_CLASS_SUFFIX);
+			
+			String className = ClassUtils.normalizeClassName(file.getName());
+			
 			// Parsing du fichier. On extrait les commandes
 			TestHtml html = (TestHtml) xstream.fromXML(file);
 			logger.log(Level.FINE, "Html Parsing result is [" + html + "]. ["+CollectionUtils.size(html.getBody().getTable().getTbody().getTrs())+"] lines found.");

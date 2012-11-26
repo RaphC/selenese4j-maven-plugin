@@ -71,4 +71,6 @@ public interface GeneratorConfiguration {
 	  
 	  /** parametre specifique a la generation **/
 	  public static  final String PROP_BASED_TESTS_SOURCES_PACKAGE = "basedTestsSourcesPackage";
+	  
+	  public static  final String SCENARIO_FILE_SUFFIX = ".html";
 }
