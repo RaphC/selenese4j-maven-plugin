@@ -313,7 +313,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * @return
 	 */
 	private String doPause(Command c) {
-		return "Thread.sleep("+c.getValue()+");";
+		return "Thread.sleep("+c.getTarget()+");";
 	}
 	
 	/**
