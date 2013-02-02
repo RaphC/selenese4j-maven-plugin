@@ -12,6 +12,7 @@ import java.net.URLClassLoader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -22,6 +23,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
@@ -105,9 +109,9 @@ public class SourceGenerator implements ISourceGenerator {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.rcr.maven.selenese4j.transform.ISourceGenerator#generate(java.io.File, org.rcr.maven.selenese4j.transform.IMethodReader)
+	 * @see com.github.raphc.maven.plugins.selenese4j.transform.ISourceGenerator#generate(java.io.File, java.lang.String[], com.github.raphc.maven.plugins.selenese4j.transform.IMethodReader)
 	 */
-	public void generate(File scenariiRootDirectory, IMethodReader methodReader) throws Exception {
+	public void generate(File scenariiRootDirectory, String[] suiteFilePattern, IMethodReader methodReader) throws Exception {
 		
 		FileFilter dirFilter = new FileFilter() {
 		      public boolean accept(File file) {
@@ -130,7 +134,7 @@ public class SourceGenerator implements ISourceGenerator {
 				throw new MojoExecutionException("The directory name "+suiteDir.getName()+" has to follow Java convention  [only lowercase letters, numbers and '.' chars].");
 			}
 			
-			processTests(suiteDir, methodReader, null);
+			processTests(suiteDir, suiteFilePattern, methodReader, null);
 		}
 
 	}
@@ -144,7 +148,7 @@ public class SourceGenerator implements ISourceGenerator {
 	 * @param tokens
 	 * @throws Exception
 	 */
-	private void processTests(File dir, IMethodReader methodReader, ScenarioTokens tokens) throws Exception {
+	private void processTests(File dir, String[] suiteFilePattern, IMethodReader methodReader, ScenarioTokens tokens) throws Exception {
 		logger.log(Level.FINE, "Reading " + dir + " tests...");
 		ScenarioTokens scenarioTokens = new ScenarioTokens();
 		if (tokens != null) {
@@ -152,81 +156,100 @@ public class SourceGenerator implements ISourceGenerator {
 			scenarioTokens.setSuiteContext(tokens.getSuiteContext());
 		}
 
-		File suiteFile = new File(dir, GeneratorConfiguration.SUITE_FILE_NAME);
-		if (!suiteFile.exists()) {
-			throw new RuntimeException("Missing \""+GeneratorConfiguration.SUITE_FILE_NAME+"\" file at " + dir + ".");
-		}
-		Collection<File> files = ScenarioHtmlParser.parseSuite(suiteFile);
-		Collection<String> classBeans = new ArrayList<String>();
-
-		//On definit le nom des packages
-		File propFile = new File(dir, Selenese4JProperties.GLOBAL_CONF_FILE_NAME);
-		Properties properties = new Properties();
-		String basedPackageName = null;
-		try {
-			properties.load(new FileInputStream(propFile));
-			configurationValidator.validate(properties);
-			basedPackageName = properties.getProperty(GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE);
-			logger.log(Level.FINE, "Property ["+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+"] loaded ["+basedPackageName+"].");
-		} catch (FileNotFoundException e1) {
-			throw new RuntimeException("Missing \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".");
-		} catch (ConfigurationException ce) {
-			throw new MojoExecutionException("Invalid Configuration \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".", ce);
+		// Identification des fichiers suite
+		List<File> suiteFileList = new ArrayList<File>();
+		if (! ArrayUtils.isEmpty(suiteFilePattern)) {
+			for(String pattern : suiteFilePattern){
+				// gestion * > .* sinon dangling meta character
+				RegexFileFilter regexFileFilter = new RegexFileFilter(StringUtils.replace(pattern, "*", ".*"));
+				@SuppressWarnings("unchecked")
+				Collection<File> suiteFiles = FileUtils.listFiles(dir, regexFileFilter, DirectoryFileFilter.DIRECTORY);
+				suiteFileList.addAll(suiteFiles);
+			}
+		} else {
+			File defaultSuiteFile = new File(dir, GeneratorConfiguration.DEFAULT_SUITE_FILE_NAME);
+			if (!defaultSuiteFile.exists()) {
+				throw new RuntimeException("Missing \""+GeneratorConfiguration.DEFAULT_SUITE_FILE_NAME+"\" file at " + dir + ".");
+			}
+			
+			suiteFileList.add(defaultSuiteFile);
 		}
 		
-		// On determine le nom du package
-		String packName = null;
-		packName = basedPackageName != null ? basedPackageName + "." + dir.getName() : dir.getName();
-		loadContextKeys(dir, scenarioTokens);
-
-		for (File file : files) {
-			
-			String scenariiGenerationDisabledValue = properties.getProperty("scenarii.generation.disabled");
-			if(StringUtils.contains(scenariiGenerationDisabledValue, file.getName())){
-				logger.log(Level.FINE, "The conversion of the following scenario file has been disabled [" + file.getName() + "]. Conversion skipped.");
-				continue;
+		// On parcours la liste des suites
+		for(File suiteFile : suiteFileList){
+		
+			Collection<File> files = ScenarioHtmlParser.parseSuite(suiteFile);
+			Collection<String> classBeans = new ArrayList<String>();
+	
+			//On definit le nom des packages
+			File propFile = new File(dir, Selenese4JProperties.GLOBAL_CONF_FILE_NAME);
+			Properties properties = new Properties();
+			String basedPackageName = null;
+			try {
+				properties.load(new FileInputStream(propFile));
+				configurationValidator.validate(properties);
+				basedPackageName = properties.getProperty(GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE);
+				logger.log(Level.FINE, "Property ["+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+"] loaded ["+basedPackageName+"].");
+			} catch (FileNotFoundException e1) {
+				throw new RuntimeException("Missing \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".");
+			} catch (ConfigurationException ce) {
+				throw new MojoExecutionException("Invalid Configuration \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".", ce);
 			}
 			
-			logger.log(Level.FINE, "Processing [" + file.getName() + "]...");
-			StringBuilder sb = new StringBuilder();
-			
-			String className = ClassUtils.normalizeClassName(file.getName());
-			
-			// Parsing du fichier. On extrait les commandes
-			TestHtml html = (TestHtml) xstream.fromXML(file);
-			logger.log(Level.FINE, "Html Parsing result is [" + html + "]. ["+CollectionUtils.size(html.getBody().getTable().getTbody().getTrs())+"] lines found.");
-			if(html.getBody().getTable().getTbody().getTrs() == null){
-				logger.log(Level.SEVERE, "No lines extracted from html ["+file.getName()+"]");
-				return;
+			// On determine le nom du package
+			String packName = null;
+			packName = basedPackageName != null ? basedPackageName + "." + dir.getName() : dir.getName();
+			loadContextKeys(dir, scenarioTokens);
+	
+			for (File file : files) {
+				
+				String scenariiGenerationDisabledValue = properties.getProperty("scenarii.generation.disabled");
+				if(StringUtils.contains(scenariiGenerationDisabledValue, file.getName())){
+					logger.log(Level.FINE, "The conversion of the following scenario file has been disabled [" + file.getName() + "]. Conversion skipped.");
+					continue;
+				}
+				
+				logger.log(Level.FINE, "Processing [" + file.getName() + "]...");
+				StringBuilder sb = new StringBuilder();
+				
+				String className = ClassUtils.normalizeClassName(file.getName());
+				
+				// Parsing du fichier. On extrait les commandes
+				TestHtml html = (TestHtml) xstream.fromXML(file);
+				logger.log(Level.FINE, "Html Parsing result is [" + html + "]. ["+CollectionUtils.size(html.getBody().getTable().getTbody().getTrs())+"] lines found.");
+				if(html.getBody().getTable().getTbody().getTrs() == null){
+					logger.log(Level.SEVERE, "No lines extracted from html ["+file.getName()+"]");
+					return;
+				}
+				Collection<Command> cmds = HtmlConverter.convert(html.getBody().getTable().getTbody().getTrs());
+				
+				//Traduction des commandes en instruction java
+				for (Command c : cmds) {
+					//On traite les tokens de type ${messages.xxxxxx}
+					processI18nTokensInCommandAttributes(c, dir);
+					//On traite les token de type {@function:....}
+					processPredefinedFunctionsInCommandAttributes(c);
+					//On convertit l'ordre en instruction Java
+					String cmdStr = commandToMethodTranslator.discovery(c);
+					//On remplace les tokens definis au niveau des templates
+					cmdStr = populatingCommand(className, cmdStr, scenarioTokens);
+					sb.append("\n\t\t" + cmdStr);
+				}
+				
+				logger.log(Level.INFO, "Generating ["+packName+"]["+className+"] ...");
+				
+				ClassInfo classInfo = new ClassInfo();
+				classInfo.setPackageName(packName);
+				classInfo.setClassName(className);
+				classInfo.setMethodBody(sb.toString());
+				writeTestFile(dir, methodReader, classInfo, scenarioTokens, classBeans);
+				
 			}
-			Collection<Command> cmds = HtmlConverter.convert(html.getBody().getTable().getTbody().getTrs());
-			
-			//Traduction des commandes en instruction java
-			for (Command c : cmds) {
-				//On traite les tokens de type ${messages.xxxxxx}
-				processI18nTokensInCommandAttributes(c, dir);
-				//On traite les token de type {@function:....}
-				processPredefinedFunctionsInCommandAttributes(c);
-				//On convertit l'ordre en instruction Java
-				String cmdStr = commandToMethodTranslator.discovery(c);
-				//On remplace les tokens definis au niveau des templates
-				cmdStr = populatingCommand(className, cmdStr, scenarioTokens);
-				sb.append("\n\t\t" + cmdStr);
-			}
-			
-			logger.log(Level.INFO, "Generating ["+packName+"]["+className+"] ...");
-			
-			ClassInfo classInfo = new ClassInfo();
-			classInfo.setPackageName(packName);
-			classInfo.setClassName(className);
-			classInfo.setMethodBody(sb.toString());
-			writeTestFile(dir, methodReader, classInfo, scenarioTokens, classBeans);
-			
+	
+			// Generation de la classe annoté @Suite
+			//base sur l'ordre de presentation dans le fichier suite.html
+			createOrderedSuite(methodReader.getTemplatesDirectoryPath(), methodReader.getTestBuildDirectory(), classBeans, scenarioTokens, packName, dir.getName());
 		}
-
-		// Generation de la classe annoté @Suite
-		//base sur l'ordre de presentation dans le fichier suite.html
-		createOrderedSuite(methodReader.getTemplatesDirectoryPath(), methodReader.getTestBuildDirectory(), classBeans, scenarioTokens, packName, dir.getName());
 	}
 	
 	/**

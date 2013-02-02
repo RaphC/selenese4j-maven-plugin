@@ -11,11 +11,14 @@
 			<plugin>
 				<groupId>com.github.raphc</groupId>
 				<artifactId>selenese4j-maven-plugin</artifactId>
-				<version>1.1-SNAPSHOT</version>
+				<version>1.8-SNAPSHOT</version>
 				<configuration>
 					<selenese4jConfigurationDirectory>${basedir}/src/test/resources/plugin-conf/config</selenese4jConfigurationDirectory>
 					<scenariiRootDirectory>${basedir}/src/test/resources/plugin-conf/scenarii</scenariiRootDirectory>
 					<testSourceGenerationDirectoryPath>${basedir}/target/generated-source-java</testSourceGenerationDirectoryPath>
+					<includes>
+						<include>*suite*</include>
+					</includes>
 				</configuration>
 			</plugin>
 		</plugins>

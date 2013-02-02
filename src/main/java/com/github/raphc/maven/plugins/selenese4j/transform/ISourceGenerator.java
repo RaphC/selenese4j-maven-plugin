@@ -20,8 +20,9 @@ public interface ISourceGenerator {
 	/**
 	 * 
 	 * @param scenariiRootDirectory
+	 * @param suiteFilePattern
 	 * @param methodReader
 	 * @throws Exception
 	 */
-	public void generate(File scenariiRootDirectory, IMethodReader methodReader) throws Exception;
+	public void generate(File scenariiRootDirectory, String[] suiteFilePattern, IMethodReader methodReader) throws Exception;
 }

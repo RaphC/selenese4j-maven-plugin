@@ -13,18 +13,12 @@ public interface GeneratorConfiguration {
 	
 	 public final static String SELENIUM_TEST_TEMPLATE_NAME = "junit-selenium-test-class.vm";
 	  
-//	  public final static String ALL_SUITES_TEMPLATE_NAME = "AllSuites.vm";
-//	  
-//	  public final static String ALL_SEQUENTIAL_TEMPLATE_NAME = "AllSequentialTests.vm";
-//	  
-//	  public final static String ALL_TEST_TEMPLATE_NAME = "AllTests.vm";
-	  
 	  public final static String ORDERED_TESTS_SUITE_TEMPLATE_NAME = "junit-ordered-test-suite.vm";
 	  
 	  /**
-	   * 
+	   * The default file searched if no includes parameter is set
 	   */
-	  public final static String SUITE_FILE_NAME = "suite.html";
+	  public final static String DEFAULT_SUITE_FILE_NAME = "suite.html";
 	  
 	  public final static String DEFAULT_TEMPLATE_DIRECTORY_PATH = "templates/";
 	  

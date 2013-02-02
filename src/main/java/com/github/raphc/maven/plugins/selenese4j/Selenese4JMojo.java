@@ -59,7 +59,14 @@ public class Selenese4JMojo extends AbstractMojo {
      * @parameter
      */
     private String overrideTemplatesDirectoryPath;
-	
+    
+    /**
+    * A set of suite file patterns to perform
+    * @parameter alias="includes"
+    */
+    private String[] suitePatternIncludes;
+
+    
 	/*
 	 * (non-Javadoc)
 	 * @see org.apache.maven.plugin.AbstractMojo#execute()
@@ -103,11 +110,19 @@ public class Selenese4JMojo extends AbstractMojo {
 		// Generation
 		//Check if an impl is defined and if it exists
 		try {
-			generator.generate(scenariiRootDirectory, new DefaultMethodReader(this.overrideTemplatesDirectoryPath, this.testSourceGenerationDirectoryPath));
+			generator.generate(scenariiRootDirectory, suitePatternIncludes, new DefaultMethodReader(this.overrideTemplatesDirectoryPath, this.testSourceGenerationDirectoryPath));
 		} catch (Exception e) {
 			throw new MojoExecutionException("Exception", e);
 		}
 		
 	}
+	
+	/**
+     * 
+     * @param includes
+     */
+    public void setIncludes(String[] includes) {
+    	suitePatternIncludes = includes; 
+    }
 
 }
