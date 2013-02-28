@@ -26,5 +26,29 @@ public final class ClassUtils {
 		String normalizedClassName = Normalizer.normalize(className, Normalizer.Form.NFD).replaceAll("\\W", "");
 		return StringUtils.capitalize(normalizedClassName);
 	}
+	
+	/**
+	 * 
+	 * @param basedPackageName
+	 * @param childs
+	 * @return
+	 */
+	public static String buildPackageName(String basedPackageName, String...childs) {
+		if(basedPackageName != null){
+			return basedPackageName + "." + childs[0] + "." + normalizePackageName(childs[1]);
+		} else {
+			return childs[0] + "." + normalizePackageName(childs[1]);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param resourceName
+	 * @return
+	 */
+	public static String normalizePackageName(String resourceName) {
+		String resourceNameWithNoSpecChars = Normalizer.normalize(resourceName, Normalizer.Form.NFKD).replaceAll("[^a-zA-Z0-9]", "");
+		return StringUtils.lowerCase(resourceNameWithNoSpecChars);
+	}
 
 }

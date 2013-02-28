@@ -17,7 +17,7 @@
 					<scenariiRootDirectory>${basedir}/src/test/resources/plugin-conf/scenarii</scenariiRootDirectory>
 					<testSourceGenerationDirectoryPath>${basedir}/target/generated-source-java</testSourceGenerationDirectoryPath>
 					<includes>
-						<include>*suite*</include>
+						<include>*suit*</include>
 					</includes>
 				</configuration>
 			</plugin>

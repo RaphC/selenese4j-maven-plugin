@@ -19,4 +19,11 @@ public class ClassUtilsTestCase {
 		Assert.assertEquals("SimpleWithBlankAndDashFileNameTestCase", ClassUtils.normalizeClassName("simpleWith Blank And Dash -FileName"));
 		Assert.assertEquals("SimpleAndCorrectFileNameTestCase", ClassUtils.normalizeClassName("simpléAndCorrèctFileNàme"));
 	}
+	
+	@Test
+	public void buildPackageName() {
+		Assert.assertEquals("com.perso.app.mycurrentdir.mysuitefile", ClassUtils.buildPackageName("com.perso.app","mycurrentdir","mySuiteFile"));
+		Assert.assertEquals("com.perso.app.mycurrentdir.mysuitefilee", ClassUtils.buildPackageName("com.perso.app","mycurrentdir","my_Suite-Filée"));
+		Assert.assertEquals("com.perso.app.mycurrentdir.mysuitefile", ClassUtils.buildPackageName("com.perso.app","mycurrentdir","my S%uite @File"));
+	}
 }

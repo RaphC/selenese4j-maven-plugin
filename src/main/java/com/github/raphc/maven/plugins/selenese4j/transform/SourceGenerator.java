@@ -4,7 +4,6 @@
 package com.github.raphc.maven.plugins.selenese4j.transform;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -113,34 +112,30 @@ public class SourceGenerator implements ISourceGenerator {
 	 */
 	public void generate(File scenariiRootDirectory, String[] suiteFilePattern, IMethodReader methodReader) throws Exception {
 		
-		FileFilter dirFilter = new FileFilter() {
-		      public boolean accept(File file) {
-		        return file.isDirectory() && ! ArrayUtils.contains(GeneratorConfiguration.EXCLUDED_TEST_RESOURCES_DIR, file.getName());
-		      }
-		    };
+		// parcours de repertoire hebergeant potentiellement des scenarios
+		File[] scenariiDirs = scenariiRootDirectory.listFiles(new ScenariiDirectoryFilter());
 		
-		File[] suiteDirs = scenariiRootDirectory.listFiles(dirFilter);
-		
-		if(ArrayUtils.isEmpty(suiteDirs)){
+		if(ArrayUtils.isEmpty(scenariiDirs)){
 			logger.log(Level.WARNING, "No suite directories found into ["+scenariiRootDirectory.getName()+"] !!!!");
 			return;
 		}
 		
-		for (File suiteDir : suiteDirs) {
-			logger.info("reading file ["+suiteDir+"]...");
+		for (File scenarioDir : scenariiDirs) {
+			logger.info("reading file ["+scenarioDir+"]...");
 			
 			//On valide le nom du package
-			if(! suiteDir.getName().matches("[a-z0-9\\.]*")){
-				throw new MojoExecutionException("The directory name "+suiteDir.getName()+" has to follow Java convention  [only lowercase letters, numbers and '.' chars].");
+			if(! scenarioDir.getName().matches("[a-z0-9\\.]*")){
+				throw new MojoExecutionException("The directory name "+scenarioDir.getName()+" has to follow Java convention  [only lowercase letters, numbers and '.' chars].");
 			}
 			
-			processTests(suiteDir, suiteFilePattern, methodReader, null);
+			// Generation des tests hebergees dans le repertoire
+			processTests(scenarioDir, suiteFilePattern, methodReader, null);
 		}
 
 	}
 	
 	/**
-	 * 
+	 * Build Selenium Java Test Classes
 	 * @param overrideTemplatesDirectoryPath
 	 * @param buildDir
 	 * @param dir
@@ -151,10 +146,11 @@ public class SourceGenerator implements ISourceGenerator {
 	private void processTests(File dir, String[] suiteFilePattern, IMethodReader methodReader, ScenarioTokens tokens) throws Exception {
 		logger.log(Level.FINE, "Reading " + dir + " tests...");
 		ScenarioTokens scenarioTokens = new ScenarioTokens();
-		if (tokens != null) {
-			scenarioTokens.setSubstituteEntries(tokens.getSubstituteEntries());
-			scenarioTokens.setSuiteContext(tokens.getSuiteContext());
-		}
+		// TODO Toujours a null
+//		if (tokens != null) {
+//			scenarioTokens.setSubstituteEntries(tokens.getSubstituteEntries());
+//			scenarioTokens.setSuiteContext(tokens.getSuiteContext());
+//		}
 
 		// Identification des fichiers suite
 		List<File> suiteFileList = new ArrayList<File>();
@@ -175,32 +171,36 @@ public class SourceGenerator implements ISourceGenerator {
 			suiteFileList.add(defaultSuiteFile);
 		}
 		
+		//On definit le nom des packages
+		File propFile = new File(dir, Selenese4JProperties.GLOBAL_CONF_FILE_NAME);
+		Properties properties = new Properties();
+		String basedPackageName = null;
+		try {
+			properties.load(new FileInputStream(propFile));
+			configurationValidator.validate(properties);
+			basedPackageName = properties.getProperty(GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE);
+			logger.log(Level.FINE, "Property ["+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+"] loaded ["+basedPackageName+"].");
+		} catch (FileNotFoundException e1) {
+			throw new RuntimeException("Missing \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".");
+		} catch (ConfigurationException ce) {
+			throw new MojoExecutionException("Invalid Configuration \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".", ce);
+		}
+		
+		// Charge des cles de contextualisees
+		loadContextKeys(dir, scenarioTokens);
+		
 		// On parcours la liste des suites
 		for(File suiteFile : suiteFileList){
 		
 			Collection<File> files = ScenarioHtmlParser.parseSuite(suiteFile);
 			Collection<String> classBeans = new ArrayList<String>();
-	
-			//On definit le nom des packages
-			File propFile = new File(dir, Selenese4JProperties.GLOBAL_CONF_FILE_NAME);
-			Properties properties = new Properties();
-			String basedPackageName = null;
-			try {
-				properties.load(new FileInputStream(propFile));
-				configurationValidator.validate(properties);
-				basedPackageName = properties.getProperty(GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE);
-				logger.log(Level.FINE, "Property ["+GeneratorConfiguration.PROP_BASED_TESTS_SOURCES_PACKAGE+"] loaded ["+basedPackageName+"].");
-			} catch (FileNotFoundException e1) {
-				throw new RuntimeException("Missing \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".");
-			} catch (ConfigurationException ce) {
-				throw new MojoExecutionException("Invalid Configuration \"" + Selenese4JProperties.GLOBAL_CONF_FILE_NAME + "\" file at " + dir + ".", ce);
-			}
 			
 			// On determine le nom du package
-			String packName = null;
-			packName = basedPackageName != null ? basedPackageName + "." + dir.getName() : dir.getName();
-			loadContextKeys(dir, scenarioTokens);
+			// Le controle de normalisation a ete realise en amont
+			// TODO : On ajoute le nom du fichier suite normalise
+			String packName = ClassUtils.buildPackageName(basedPackageName, dir.getName(), StringUtils.substringBeforeLast(suiteFile.getName(), "."));
 	
+			// Parcours des fichiers scenario de la suite courante
 			for (File file : files) {
 				
 				String scenariiGenerationDisabledValue = properties.getProperty("scenarii.generation.disabled");
