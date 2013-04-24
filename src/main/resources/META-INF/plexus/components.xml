@@ -5,7 +5,7 @@
       <implementation>com.github.raphc.maven.plugins.selenese4j.transform.SourceGenerator</implementation>
       <requirements>
 	    <requirement>
-	      <role>com.github.raphc.maven.plugins.selenese4j.transform.ICommandToMethodTranslator</role>
+	      <role>com.github.raphc.maven.plugins.selenese4j.translator.ICommandToMethodTranslator</role>
 	    </requirement>
 	    <!-- <requirement>
 	      <role>com.thoughtworks.xstream.XStream</role>
@@ -20,8 +20,18 @@
       <configuration/>
     </component>
 	<component>
-      <role>com.github.raphc.maven.plugins.selenese4j.transform.ICommandToMethodTranslator</role>
-      <implementation>com.github.raphc.maven.plugins.selenese4j.transform.UnManagedCommandToMethodTranslator</implementation>
+      <role>com.github.raphc.maven.plugins.selenese4j.translator.ICommandToMethodTranslator</role>
+      <implementation>com.github.raphc.maven.plugins.selenese4j.translator.UnManagedCommandToMethodTranslator</implementation>
+      <configuration/>
+    </component>
+	<component>
+      <role>com.github.raphc.maven.plugins.selenese4j.translator.ICommandToMethodTranslator</role>
+      <implementation>com.github.raphc.maven.plugins.selenese4j.translator.WebDriverCommandToMethodTranslator</implementation>
+      <requirements>
+	    <requirement>
+	      <role>com.github.raphc.maven.plugins.selenese4j.translator.SeleniumWebDriverAdaptor</role>
+	    </requirement>
+	  </requirements>
       <configuration/>
     </component>
     <component>
@@ -34,6 +44,12 @@
       <implementation>com.github.raphc.maven.plugins.selenese4j.transform.ConfigurationValidator</implementation>
       <configuration/>
     </component>
+    
+    <component>
+      <role>com.github.raphc.maven.plugins.selenese4j.translator.SeleniumWebDriverAdaptor</role>
+      <implementation>com.github.raphc.maven.plugins.selenese4j.translator.SeleniumWebDriverAdaptor</implementation>
+      <configuration/>
+    </component>
     <!-- <component>
       <role>com.thoughtworks.xstream.XStream</role>
       <implementation>com.thoughtworks.xstream.XStream</implementation>
@@ -43,6 +59,5 @@
       	</annotationConfiguration>
       </configuration>
     </component> -->
-    
   </components>
 </component-set>

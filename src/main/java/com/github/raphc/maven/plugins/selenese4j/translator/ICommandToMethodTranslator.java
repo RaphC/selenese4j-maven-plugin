@@ -1,4 +1,6 @@
-package com.github.raphc.maven.plugins.selenese4j.transform;
+package com.github.raphc.maven.plugins.selenese4j.translator;
+
+import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 
 public interface ICommandToMethodTranslator {
 

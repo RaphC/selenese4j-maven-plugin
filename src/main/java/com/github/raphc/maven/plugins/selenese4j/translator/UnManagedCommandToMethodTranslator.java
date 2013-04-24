@@ -1,17 +1,20 @@
 /**
  * 
  */
-package com.github.raphc.maven.plugins.selenese4j.transform;
+package com.github.raphc.maven.plugins.selenese4j.translator;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.github.raphc.maven.plugins.selenese4j.functions.AbstractPreDefinedFunction;
+import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
+import com.thoughtworks.selenium.Selenium;
 
 /**
  * @author Raphael
@@ -21,17 +24,40 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 
 	private final static String SELENIUM = "selenium";
 	
-	private static final Pattern SNIPPET_FRAGMENT_PATTERN = Pattern.compile("[\\s\\S]*\\{@snippet\\:java([\\s\\S]*)@snippet\\}[\\s\\S]*");
-	
-	private final static String NOT_FLAG = "Not";
+	protected final static Map<String, Method> methods = new HashMap<String, Method>();
 	
 	/**
 	 * 
 	 */
-	public UnManagedCommandToMethodTranslator() {
-		super();
+	public UnManagedCommandToMethodTranslator(){
+		init();
 	}
 	
+	/**
+	 * Chargement des methodes exposees par l'API Selenium
+	 */
+	private static void init() {
+		Class<Selenium> selC = Selenium.class;
+		for (Method m : selC.getMethods()) {
+			if ("void".equals(m.getReturnType().toString()) 
+					||"boolean".equals(m.getReturnType().toString()) 
+					|| m.getReturnType().isAssignableFrom(String.class)
+					|| m.getReturnType().isAssignableFrom(Number.class)) {
+				Class<?>[] types = m.getParameterTypes();
+				if (types.length == 0) {
+					methods.put(m.getName(), m);
+					continue;
+				}
+				for (Class<?> t : types) {
+					if (!t.isAssignableFrom(String.class)) {
+						continue;
+					}
+				}
+				methods.put(m.getName(), m);
+			}
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.github.raphc.maven.plugins.selenese4j.transform.ICommandToMethodTranslator#discovery(com.github.raphc.maven.plugins.selenese4j.transform.Command)
@@ -276,25 +302,6 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		}
 		return null;
 	}
-
-	/**
-	 * 
-	 * @param condition
-	 * @param c
-	 * @return
-	 */
-	private static String forBlock(String condition, Command c) {
-		String descr = c.getTarget();
-		if(c.getValue() != null && !c.getValue().equals("")){
-			descr = c.getValue();
-		}
-		descr = c.getName() + ":" + descr;
-		return "for (int second = 0;; second++) {" +
-		"\n\t\t	if (second >= " + DEFAULT_LOOP + ") Assert.fail(\"timeout '" + FilteringUtils.filter(descr) + "' \");" +
-		"\n\t\t	try { " + condition + " break; } catch (Exception e) {}" +
-		"\n\t\t	Thread.sleep(" + DEFAULT_TIMEOUT + ");" +
-		"\n\t\t}";
-	}
 	
 	/**
 	 * Transforme la commande waitForPageToLoad en selenium.waitForPageToLoad(30000);
@@ -308,22 +315,13 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	}
 	
 	/**
-	 * Transforme la commande pause en Thread.sleep
-	 * @param c
-	 * @return
-	 */
-	private String doPause(Command c) {
-		return "Thread.sleep("+c.getTarget()+");";
-	}
-	
-	/**
 	 * Transforme la commande storeXXXX en instruction Java
 	 * @param c
 	 * @return
 	 */
 	private String doStore(Command c) {
 		String mName = c.getName().substring(("store").length());
-		return "String "+c.getValue()+" = selenium.get"+mName+"(\""+c.getTarget()+"\");";
+		return "String "+c.getValue()+" = " + SELENIUM + ".get"+mName+"(\""+c.getTarget()+"\");";
 	}
 	
 	/**
@@ -334,7 +332,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * @return
 	 */
 	private String doMatch(Command c, String mName) {
-		return "Pattern.compile(\"" +FilteringUtils.filter(StringUtils.substringAfter(c.getValue(), "regexp:"))+ "\").matcher(selenium.get" +mName+ "(\"" +c.getTarget()+ "\")).find()";
+		return "Pattern.compile(\"" +FilteringUtils.filter(StringUtils.substringAfter(c.getValue(), "regexp:"))+ "\").matcher(" + SELENIUM + ".get" +mName+ "(\"" +c.getTarget()+ "\")).find()";
 	}
 	
 	/**
@@ -344,7 +342,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * @return
 	 */
 	private String doXpathCount(Command c) {
-		return "Assert.assertEquals(new Integer(\""+c.getValue()+"\"), selenium.getXpathCount(\"" +c.getTarget()+ "\"));";
+		return "Assert.assertEquals(new Integer(\""+c.getValue()+"\"), " + SELENIUM + ".getXpathCount(\"" +c.getTarget()+ "\"));";
 	}
 	
 	/**
@@ -354,17 +352,6 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		boolean noArgs = m.getParameterTypes().length == 0;
 		String left = noArgs? c.getTarget() : c.getValue();
 		return "\"" + FilteringUtils.filter(left) + "\", " + getMethodBody(m, c);
-	}
-	
-	private static String processRegex(String value) {
-		String result = value;
-		
-		if(result != null){
-			result = result.replace("*", "[\\\\s\\\\S]*");
-			result = result.replace(".", "\\\\.");
-		}
-		
-		return result;
 	}
 
 }

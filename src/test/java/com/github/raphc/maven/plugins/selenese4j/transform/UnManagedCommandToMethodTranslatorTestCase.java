@@ -7,6 +7,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.github.raphc.maven.plugins.selenese4j.translator.UnManagedCommandToMethodTranslator;
+
 /**
  * @author Raphael
  *

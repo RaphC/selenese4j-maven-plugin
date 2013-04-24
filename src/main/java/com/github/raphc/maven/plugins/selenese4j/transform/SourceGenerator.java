@@ -35,6 +35,7 @@ import com.github.raphc.maven.plugins.selenese4j.exception.ConfigurationExceptio
 import com.github.raphc.maven.plugins.selenese4j.functions.NotMatchedException;
 import com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestHtml;
+import com.github.raphc.maven.plugins.selenese4j.translator.ICommandToMethodTranslator;
 import com.github.raphc.maven.plugins.selenese4j.utils.ClassUtils;
 import com.github.raphc.maven.plugins.selenese4j.utils.StringSplittingUtils;
 import com.thoughtworks.xstream.XStream;
@@ -230,6 +231,7 @@ public class SourceGenerator implements ISourceGenerator {
 					//On traite les token de type {@function:....}
 					processPredefinedFunctionsInCommandAttributes(c);
 					//On convertit l'ordre en instruction Java
+					// TODO Gestion API de generation (selenium 1 ou WD) 
 					String cmdStr = commandToMethodTranslator.discovery(c);
 					//On remplace les tokens definis au niveau des templates
 					cmdStr = populatingCommand(className, cmdStr, scenarioTokens);
