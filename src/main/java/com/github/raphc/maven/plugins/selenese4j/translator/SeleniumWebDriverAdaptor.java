@@ -63,6 +63,18 @@ public class SeleniumWebDriverAdaptor {
 	 * @return
 	 */
 	public Element find(Command command) {
+		if(command == null){
+			return null;
+		}
 		return elements.get(command.getName());
+	}
+	
+	/**
+	 * 
+	 * @param commandName
+	 * @return
+	 */
+	public Element findByName(String commandName) {
+		return elements.get(commandName);
 	}
 }

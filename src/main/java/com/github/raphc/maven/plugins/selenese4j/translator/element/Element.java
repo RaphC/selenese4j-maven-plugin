@@ -21,6 +21,7 @@ public interface Element {
 	 * 
 	 * @param command
 	 * @return
+	 * @throws IllegalArgumentException
 	 */
-	String process(Command command);
+	String process(Command command) throws IllegalArgumentException;
 }
