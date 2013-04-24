@@ -165,6 +165,9 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		} else if (c.getName().equalsIgnoreCase("pause")) {
 			result = doPause(c);	
 		
+		} else if (c.getName().equalsIgnoreCase("echo")) {
+			result = doEcho(c);
+		
 		} else if (c.getName().endsWith("AndWait")) {
 			result = doAndWait(c);
 		

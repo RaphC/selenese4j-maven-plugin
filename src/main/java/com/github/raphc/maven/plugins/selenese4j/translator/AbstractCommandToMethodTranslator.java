@@ -63,4 +63,13 @@ public abstract class AbstractCommandToMethodTranslator implements ICommandToMet
 		"\n\t\t	Thread.sleep(" + DEFAULT_TIMEOUT + ");" +
 		"\n\t\t}";
 	}
+	
+	/**
+	 * Transforme la commande echo en System.out.println
+	 * @param c
+	 * @return
+	 */
+	protected String doEcho(Command c) {
+		return "System.out.println(\"" + FilteringUtils.filter(c.getTarget()) + "\");";
+	}
 }

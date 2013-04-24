@@ -33,4 +33,18 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 		String result = translator.discovery(command);
 		Assert.assertEquals("driver.get(\"login.html\");", result);
 	}
+	
+	@Test
+	public void discoveryPauseCommand(){
+		Command command = new Command("pause","180000","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Thread.sleep(180000);", result);
+	}
+	
+	@Test
+	public void discoveryEchoCommand(){
+		Command command = new Command("echo","Mon nom est personne","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("System.out.println(\"Mon nom est personne\");", result);
+	}
 }

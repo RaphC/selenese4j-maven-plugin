@@ -66,8 +66,11 @@ public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodT
 		String result = null;
 
 		if ("".equals(c.getName()) || c.getName() == null) {
-			return "";// empty step
-			
+			return "";
+		} else if (c.getName().equalsIgnoreCase("pause")) {
+			result = doPause(c);
+		} else if (c.getName().equalsIgnoreCase("echo")) {
+			result = doEcho(c);
 		}
 		
 		return result;
