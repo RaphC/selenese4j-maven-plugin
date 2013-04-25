@@ -231,8 +231,12 @@ public class SourceGenerator implements ISourceGenerator {
 					//On traite les token de type {@function:....}
 					processPredefinedFunctionsInCommandAttributes(c);
 					//On convertit l'ordre en instruction Java
-					// TODO Gestion API de generation (selenium 1 ou WD) 
 					String cmdStr = commandToMethodTranslator.discovery(c);
+					
+					if(StringUtils.isBlank(cmdStr)){
+						logger.log(Level.WARNING, "The command ["+c.getName()+"] is not supported !!!!");
+						continue;
+					}
 					//On remplace les tokens definis au niveau des templates
 					cmdStr = populatingCommand(className, cmdStr, scenarioTokens);
 					sb.append("\n\t\t" + cmdStr);
