@@ -38,6 +38,8 @@ public class ${className} {
 	public void setUp() throws Exception {
 		driver = new ${wdBrowserDriver}Driver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(100, SECONDS);
+		driver.manage().timeouts().setScriptTimeout(100,SECONDS);
 	}
   
 	@Test

@@ -27,7 +27,7 @@ public class IsTextPresentElement implements Element  {
 	public String process(Command command) throws IllegalArgumentException {
 		// driver.findElement(By.tagName("body")).getText().contains("Some text to search")
 		// driver.getPageSource().contains("sometext")
-		return "driver.findElement(By.tagName(\"body\")).getText().contains(\""+command.getValue()+"\")";
+		return "driver.findElement(By.tagName(\"body\")).getText().contains(\""+command.getTarget()+"\")";
 	}
 	
 	/*
