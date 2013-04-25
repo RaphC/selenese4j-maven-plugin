@@ -19,11 +19,11 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 
 	private static WebDriverCommandToMethodTranslator translator = new WebDriverCommandToMethodTranslator();
 	
-	private static SeleniumWebDriverAdaptor adaptor = new SeleniumWebDriverAdaptor();
+	private static SeleniumWebDriverAdaptor adaptor = null;
 	
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		adaptor.registerElements();
+		adaptor = new SeleniumWebDriverAdaptor();
 		translator.setAdaptor(adaptor);
 	}
 	

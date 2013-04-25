@@ -29,31 +29,40 @@ public class SeleniumWebDriverAdaptor {
 	
 	Map<String, Element> elements = new HashMap<String, Element>();
 	
+	public SeleniumWebDriverAdaptor() throws InstantiationException {
+		registerElements();
+	}
+	
 	/**
 	 * 
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void registerElements() throws IllegalAccessException, InstantiationException {
-		//From internal class loader
-		Set<URL> urls = ClasspathHelper.forClassLoader(getClass().getClassLoader());
-		//Java classpath
-		urls.addAll(ClasspathHelper.forJavaClassPath());
-		//Classpath system
-				
-		Reflections reflections = new Reflections(
-		          new ConfigurationBuilder()
-		             .setUrls(urls)
-		             .setScanners(new TypeAnnotationsScanner()));
+	public void registerElements() throws InstantiationException {
 		
-		Set<Class<?>> wdElements = reflections.getTypesAnnotatedWith(WebDriverElement.class);
-		
-		logger.log(Level.INFO, " ["+wdElements.size()+"] WebDriverElement are found ...");	
-		
-		for(Class<?> functionClazz : wdElements){
-			Element element = (Element) functionClazz.newInstance();
-			logger.log(Level.INFO, "Adding ["+functionClazz.getCanonicalName()+"]to web driver element registered ...");	
-			elements.put(element.getCommandName(), element);
+		try {
+			//From internal class loader
+			Set<URL> urls = ClasspathHelper.forClassLoader(getClass().getClassLoader());
+			//Java classpath
+			urls.addAll(ClasspathHelper.forJavaClassPath());
+			//Classpath system
+					
+			Reflections reflections = new Reflections(
+			          new ConfigurationBuilder()
+			             .setUrls(urls)
+			             .setScanners(new TypeAnnotationsScanner()));
+			
+			Set<Class<?>> wdElements = reflections.getTypesAnnotatedWith(WebDriverElement.class);
+			
+			logger.log(Level.INFO, " ["+wdElements.size()+"] WebDriverElement are found ...");	
+			
+			for(Class<?> functionClazz : wdElements){
+				Element element = (Element) functionClazz.newInstance();
+				logger.log(Level.INFO, "Adding ["+functionClazz.getCanonicalName()+"]to web driver element registered ...");	
+				elements.put(element.getCommandName(), element);
+			}
+		} catch(IllegalAccessException iae) {
+			throw new InstantiationException(iae.getMessage());
 		}
 	}
 	
