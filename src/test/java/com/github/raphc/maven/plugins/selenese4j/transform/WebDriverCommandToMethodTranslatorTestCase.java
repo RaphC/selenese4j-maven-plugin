@@ -47,4 +47,209 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 		String result = translator.discovery(command);
 		Assert.assertEquals("System.out.println(\"Mon nom est personne\");", result);
 	}
+	
+	@Test
+	public void discoveryStoreCommand(){
+		Command command = new Command("store","5487","eltNumber");
+		String result = translator.discovery(command);
+		Assert.assertEquals("String eltNumber = \"5487\";", result);
+	}
+	
+	@Test
+	public void discoveryCheckByIdCommand(){
+		Command command = new Command("check","id='test'","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("if (!driver.findElement(By.id(\"'test'\")).isSelected()) {\ndriver.findElement(By.id(\"'test'\")).click();\n};", result);
+	}
+	
+	@Test
+	public void discoveryCheckByNameCommand(){
+		Command command = new Command("check","name='test'","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("if (!driver.findElement(By.name(\"'test'\")).isSelected()) {\ndriver.findElement(By.name(\"'test'\")).click();\n};", result);
+	}
+	
+	@Test
+	public void discoveryCheckAndWaitByNameCommand(){
+		Command command = new Command("checkAndWait","name='test'","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("if (!driver.findElement(By.name(\"'test'\")).isSelected()) {\ndriver.findElement(By.name(\"'test'\")).click();\n};", result);
+	}
+	
+	@Test
+	public void discoveryClickByIdCommand(){
+		Command command = new Command("click","id='test'","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.findElement(By.id(\"'test'\")).click();", result);
+	}
+	
+	@Test
+	public void discoveryCloseCommand(){
+		Command command = new Command("close","","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.close();", result);
+	}
+	
+	@Test
+	public void discoveryAssertAttributeWithRegexpCommand(){
+		Command command = new Command("assertAttribute","id=tresor@name","regexp:.*SARL TOTO.*");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertTrue(\"id=tresor@name\",Pattern.compile(\".*SARL TOTO.*\").matcher(driver.findElement(By.id(\"tresor\")).getAttribute(\"name\")).find());", result);
+	}
+	
+	@Test
+	public void discoveryAssertAttributeWithValueCommand(){
+		Command command = new Command("assertAttribute","id=tresor@type","radio");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertEquals(\"id=tresor@type\",\"radio\", driver.findElement(By.id(\"tresor\")).getAttribute(\"type\"));", result);
+	}
+	
+	@Test
+	public void discoveryAssertBodyTextWithValueCommand(){
+		Command command = new Command("assertBodyText","","simple text");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertEquals(\"\",\"simple text\", driver.findElement(By.tagName(\"BODY\")).getText());", result);
+	}
+	
+//	@Test
+//	public void discoveryAssertLocationWithRegexpCommand(){
+//		Command command = new Command("assertLocation","regexp:.*all","");
+//		String result = translator.discovery(command);
+//		Assert.assertEquals("Assert.assertTrue(Pattern.compile(\".*all\").matcher(driver.getCurrentUrl()).find());", result);
+//	}
+	
+	@Test
+	public void discoveryAssertTextCommand(){
+		Command command = new Command("assertText","id=tresor","argent");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertEquals(\"id=tresor\",\"argent\", driver.findElement(By.id(\"tresor\")).getText());", result);
+	}
+	
+	@Test
+	public void discoveryAssertTitleCommand(){
+		Command command = new Command("assertTitle","titre","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertEquals(\"titre\",\"titre\", driver.getTitle());", result);
+	}
+	
+	@Test
+	public void discoveryGoBackCommand(){
+		Command command = new Command("goBack","","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.navigate().back();", result);
+	}
+	
+	@Test
+	public void discoveryAssertValueWithValueCommand(){
+		Command command = new Command("assertValue","id=blue","chien");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertEquals(\"id=blue\",\"chien\", driver.findElement(By.id(\"blue\")).getAttribute(\"value\"));", result);
+	}
+
+	@Test
+	public void discoveryAssertXpathCountCommand(){
+		Command command = new Command("assertXpathCount","//td","6");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertEquals(\"//td\",6, driver.findElements(By.xpath(\"//td\")).size());", result);
+	}
+	
+	@Test
+	public void discoveryAssertCssCountByIdCommand(){
+		Command command = new Command("assertCssCount","id=unik","8");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertEquals(\"id=unik\",8, driver.findElements(By.id(\"unik\")).size());", result);
+	}
+	
+	@Test
+	public void discoveryAssertCssCountByCssCommand(){
+		Command command = new Command("assertCssCount","css=table","0");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertEquals(\"css=table\",0, driver.findElements(By.cssSelector(\"table\")).size());", result);
+	}
+	
+	@Test
+	public void discoveryIsCheckedByXpathCommand(){
+		Command command = new Command("assertChecked","xpath=//td[@id='123']","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertTrue(\"xpath=//td[@id='123']\",driver.findElement(By.xpath(\"//td[@id='123']\")).isSelected());", result);
+	}
+	
+	@Test
+	public void discoveryIsDisplayedByIdCommand(){
+		Command command = new Command("assertVisible","id=yum","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertTrue(\"id=yum\",driver.findElement(By.id(\"yum\")).isDisplayed());", result);
+	}
+	
+	@Test
+	public void discoveryRefreshCommand(){
+		Command command = new Command("refresh","","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.navigate().refresh();", result);
+	}
+	
+	@Test
+	public void discoverySubmitByCssCommand(){
+		Command command = new Command("submit","css=#form","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.findElement(By.cssSelector(\"#form\")).submit();", result);
+	}
+	
+	@Test
+	public void discoveryTypeByIdCommand(){
+		Command command = new Command("type","id=78-uyt","231");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.findElement(By.id(\"78-uyt\")).clear();\ndriver.findElement(By.id(\"78-uyt\")).sendKeys(\"231\");", result);
+	}
+	
+	@Test
+	public void discoverySendKeysByIdCommand(){
+		Command command = new Command("sendKeys","id=78-uyt","231");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.findElement(By.id(\"78-uyt\")).sendKeys(\"231\");", result);
+	}
+	
+	@Test
+	public void discoveryUnCheckByNameCommand(){
+		Command command = new Command("uncheck","name='test'","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("if (driver.findElement(By.name(\"'test'\")).isSelected()) {\ndriver.findElement(By.name(\"'test'\")).click();\n};", result);
+	}
+	
+	@Test
+	public void discoverySelectCommand(){
+		Command command1 = new Command("select","id=menu","label=regexp:^[Oo]ther");
+		String result1 = translator.discovery(command1);
+		Assert.assertEquals("new Select(driver.findElement(By.id(\"menu\"))).selectByVisibleText(\"regexp:^[Oo]ther\");", result1);
+
+		Command command2 = new Command("select","id=menu","value=other");
+		String result2 = translator.discovery(command2);
+		Assert.assertEquals("new Select(driver.findElement(By.id(\"menu\"))).selectByValue(\"other\");", result2);
+		
+		Command command3 = new Command("select","id=menu","id=option1");
+		String result3 = translator.discovery(command3);
+		Assert.assertEquals("new Select(driver.findElement(By.id(\"menu\"))).selectByVisibleText(\"option1\");", result3);
+		
+		Command command4 = new Command("select","id=menu","index=2");
+		String result4 = translator.discovery(command4);
+		Assert.assertEquals("new Select(driver.findElement(By.id(\"menu\"))).selectByIndex(2);", result4);
+	}
+	
+	@Test
+	public void discoveryVerifyCssCountCommand(){
+		Command command = new Command("verifyCssCount","id=douze","7");
+		String result = translator.discovery(command);
+		Assert.assertEquals("\n\t\ttry {\n\t\t\tAssert.assertEquals(7, driver.findElements(By.id(\"douze\")).size());\n\t\t} catch (Error e) {\n\t\t\tverificationErrors.append(e.toString());\n\t\t}", result);
+	}
+	
+	@Test
+	public void discoveryWaitForCheckedCommand(){
+		Command command = new Command("waitForChecked","xpath=//input[@id=treize]","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("for (int second = 0;; second++) {" +
+		"\n\t\t	if (second >= 60) Assert.fail(\"timeout 'waitForChecked:xpath=//input[@id=treize]' \");" +
+		"\n\t\t	try { if ( driver.findElement(By.xpath(\"//input[@id=treize]\")).isSelected()) break; } catch (Exception e) {}" +
+		"\n\t\t	Thread.sleep(1000);" +
+		"\n\t\t}", result);
+	}
 }
