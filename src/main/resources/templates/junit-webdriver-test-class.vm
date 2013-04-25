@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.Thread;
 import java.net.URL;
+
 import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
@@ -14,15 +16,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.hamcrest.CoreMatchers.*;
 
 import org.openqa.selenium.*;
-import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.firefox.${wdBrowserDriver}Driver;
+import org.openqa.selenium.support.ui.Select;
 
 public class ${className} {
 
 	private static Logger logger = Logger.getLogger(${className}.class);
 	private WebDriver driver;
     private String String baseUrl = "${appBaseUrl}"; 
+    private StringBuffer verificationErrors = new StringBuffer();
     
 	//@BeforeClass
 	//public static void setUp() throws Exception {
@@ -40,10 +45,14 @@ public class ${className} {
     	$methodBody
 	}
   
-	@AfterClass
+	@After
 	public static void tearDown() throws Exception {
 		//Close the browser
         driver.quit();
+		String verificationErrorString = verificationErrors.toString();
+		if (!"".equals(verificationErrorString)) {
+			Assert.fail(verificationErrorString);
+		}
 	}
 	
   
