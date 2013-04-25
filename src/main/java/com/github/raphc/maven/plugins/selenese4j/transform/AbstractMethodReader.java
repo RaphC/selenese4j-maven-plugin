@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class AbstractMethodReader  implements IMethodReader {
 
+	protected String templateFileName = null;
 	
 	protected String templatesDirectoryPath = null;
 	 
@@ -26,11 +27,12 @@ public abstract class AbstractMethodReader  implements IMethodReader {
 		ScenarioConverter out = null;
 		
 		String externalTemplateDir = StringUtils.substringAfter(templatesDirectoryPath, GeneratorConfiguration.VELOCITY_FILE_LOADER+":");
+		
 		if(StringUtils.isNotEmpty(externalTemplateDir) 
-				&& (new File(externalTemplateDir + File.separator + GeneratorConfiguration.SELENIUM_TEST_TEMPLATE_NAME)).exists()){
-			out = new ScenarioConverter(GeneratorConfiguration.VELOCITY_FILE_LOADER, externalTemplateDir, GeneratorConfiguration.SELENIUM_TEST_TEMPLATE_NAME);
+				&& (new File(externalTemplateDir + File.separator + this.templateFileName)).exists()){
+			out = new ScenarioConverter(GeneratorConfiguration.VELOCITY_FILE_LOADER, externalTemplateDir, this.templateFileName);
 		} else {
-			out = new ScenarioConverter(GeneratorConfiguration.DEFAULT_VELOCITY_LOADER, GeneratorConfiguration.DEFAULT_TEMPLATE_DIRECTORY_PATH, GeneratorConfiguration.SELENIUM_TEST_TEMPLATE_NAME);
+			out = new ScenarioConverter(GeneratorConfiguration.DEFAULT_VELOCITY_LOADER, GeneratorConfiguration.DEFAULT_TEMPLATE_DIRECTORY_PATH, this.templateFileName);
 		}
 		return out;
 	}

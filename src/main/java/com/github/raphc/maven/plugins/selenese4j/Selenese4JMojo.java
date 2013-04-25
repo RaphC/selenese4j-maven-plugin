@@ -16,6 +16,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import com.github.raphc.maven.plugins.selenese4j.transform.DefaultMethodReader;
+import com.github.raphc.maven.plugins.selenese4j.transform.GeneratorConfiguration;
 import com.github.raphc.maven.plugins.selenese4j.transform.ISourceGenerator;
 
 /**
@@ -50,7 +51,7 @@ public class Selenese4JMojo extends AbstractMojo {
     
     /**
      * The generator to use
-     * @component
+     * @component role-hint="selenium-generator-component" 
      */
     private ISourceGenerator generator;
     
@@ -110,7 +111,11 @@ public class Selenese4JMojo extends AbstractMojo {
 		// Generation
 		//Check if an impl is defined and if it exists
 		try {
-			generator.generate(scenariiRootDirectory, suitePatternIncludes, new DefaultMethodReader(this.overrideTemplatesDirectoryPath, this.testSourceGenerationDirectoryPath));
+			generator.generate(scenariiRootDirectory, suitePatternIncludes, 
+					new DefaultMethodReader(
+					GeneratorConfiguration.SELENIUM_TEST_TEMPLATE_NAME, this.overrideTemplatesDirectoryPath, this.testSourceGenerationDirectoryPath
+					)
+			);
 		} catch (Exception e) {
 			throw new MojoExecutionException("Exception", e);
 		}

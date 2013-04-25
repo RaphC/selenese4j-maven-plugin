@@ -17,10 +17,12 @@ public class DefaultMethodReader extends AbstractMethodReader {
 	
 	/**
 	 * 
+	 * @param templateFileName
 	 * @param templatesDirectoryPath
 	 * @param testBuildDirectory
 	 */
-	public DefaultMethodReader(String templatesDirectoryPath, String testBuildDirectory){
+	public DefaultMethodReader(String templateFileName, String templatesDirectoryPath, String testBuildDirectory){
+		this.templateFileName = templateFileName;
 		this.templatesDirectoryPath = templatesDirectoryPath;
 		this.testBuildDirectory = testBuildDirectory;
 	}
