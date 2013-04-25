@@ -252,4 +252,18 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 		"\n\t\t	Thread.sleep(1000);" +
 		"\n\t\t}", result);
 	}
+	
+	@Test
+	public void discoveryAssertTextPresentCommand(){
+		Command command = new Command("assertTextPresent","","toto part à la plage");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertTrue(\"\",driver.findElement(By.tagName(\"body\")).getText().contains(\"toto part à la plage\"));", result);
+	}
+	
+	@Test
+	public void discoveryAssertElementPresentCommand(){
+		Command command = new Command("assertElementPresent","id=menu","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertTrue(\"id=menu\",isElementPresent(By.id(\"menu\")));", result);
+	}
 }
