@@ -257,7 +257,7 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 	public void discoveryAssertTextPresentCommand(){
 		Command command = new Command("assertTextPresent","toto part à la plage","");
 		String result = translator.discovery(command);
-		Assert.assertEquals("Assert.assertTrue(\"\",driver.findElement(By.tagName(\"body\")).getText().contains(\"toto part à la plage\"));", result);
+		Assert.assertEquals("Assert.assertTrue(\"toto part à la plage\",driver.findElement(By.tagName(\"body\")).getText().contains(\"toto part à la plage\"));", result);
 	}
 	
 	@Test
