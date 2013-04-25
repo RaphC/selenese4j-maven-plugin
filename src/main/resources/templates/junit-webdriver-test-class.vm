@@ -26,7 +26,7 @@ public class ${className} {
 
 	private static Logger logger = Logger.getLogger(${className}.class);
 	private WebDriver driver;
-    private String String baseUrl = "${appBaseUrl}"; 
+    private String baseUrl = "${appBaseUrl}"; 
     private StringBuffer verificationErrors = new StringBuffer();
     
 	//@BeforeClass
@@ -38,8 +38,8 @@ public class ${className} {
 	public void setUp() throws Exception {
 		driver = new ${wdBrowserDriver}Driver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		driver.manage().timeouts().pageLoadTimeout(100, SECONDS);
-		driver.manage().timeouts().setScriptTimeout(100,SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(100, TimeUnit.SECONDS);
+		driver.manage().timeouts().setScriptTimeout(100, TimeUnit.SECONDS);
 	}
   
 	@Test

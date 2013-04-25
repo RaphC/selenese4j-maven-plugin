@@ -16,7 +16,7 @@ public class TdContentConverter implements SingleValueConverter {
 	 * (non-Javadoc)
 	 * @see com.thoughtworks.xstream.converters.ConverterMatcher#canConvert(java.lang.Class)
 	 */
-	public boolean canConvert(Class clazz) {
+	public boolean canConvert(@SuppressWarnings("rawtypes") Class clazz) {
 		return clazz.equals(TestTd.class);
 	}
 

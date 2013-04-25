@@ -3,6 +3,8 @@
  */
 package com.github.raphc.maven.plugins.selenese4j.translator;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Raphael
  * 
@@ -13,34 +15,48 @@ public class LocatorResolver {
 			throws IllegalArgumentException {
 
 		if (selector == null) {
-			throw new IllegalArgumentException(
-					"The command target has to specify id or name locator");
+			throw new IllegalArgumentException("The command target has no locator");
 		}
 
-		if ("xpath".equalsIgnoreCase(selector)) {
-			return "xpath";
+		String locator=selector.trim();
+		
+		if (StringUtils.startsWith(locator, "/")) {
+			return "By.xpath(\""+locator+"\")";
 		}
-		if ("css".equalsIgnoreCase(selector)) {
-			return "cssSelector";
+		
+		String[] selElt = StringUtils.splitByWholeSeparator(locator, "=", 2);
+		locator = selElt[0].toLowerCase().trim();
+		
+		String target = locator;
+		if(selElt.length > 1){
+			target = selElt[1];
 		}
-		if ("id".equalsIgnoreCase(selector)) {
-			return "id";
+		
+		if ("xpath".equalsIgnoreCase(locator)) {
+			return "By.xpath(\""+target+"\")";
 		}
-		if ("link".equalsIgnoreCase(selector)) {
-			return "linkText";
+		
+		if ("css".equalsIgnoreCase(locator)) {
+			return "By.cssSelector(\""+target+"\")";
 		}
-		if ("name".equalsIgnoreCase(selector)) {
-			return "name";
+		if ("id".equalsIgnoreCase(locator)) {
+			return "By.id(\""+target+"\")";
 		}
-		if ("tag_name".equalsIgnoreCase(selector)) {
-			return "tagName";
+		if ("link".equalsIgnoreCase(locator)) {
+			return "By.linkText(\""+target+"\")";
 		}
-		if ("dom".equalsIgnoreCase(selector)) {
+		if ("name".equalsIgnoreCase(locator)) {
+			return "By.name(\""+target+"\")";
+		}
+		if ("tag_name".equalsIgnoreCase(locator)) {
+			return "By.tagName(\""+target+"\")";
+		}
+		if ("dom".equalsIgnoreCase(locator)) {
 			throw new IllegalArgumentException("Error: Dom locators are not implemented yet!");
 		}
-		if ("class".equalsIgnoreCase(selector)) {
-			return "className";
+		if ("class".equalsIgnoreCase(locator)) {
+			return "By.className(\""+target+"\")";
 		}
-		throw new IllegalArgumentException("Error: unknown strategy [' + locatorType + '] for locator [' + locator + ']");
+		throw new IllegalArgumentException("Error: unknown strategy for locator [" + selector + "]");
 	}
 }

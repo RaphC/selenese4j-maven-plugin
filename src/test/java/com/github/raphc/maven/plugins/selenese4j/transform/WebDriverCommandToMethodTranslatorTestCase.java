@@ -175,6 +175,13 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 	}
 	
 	@Test
+	public void discoveryIsCheckedBySlashCommand(){
+		Command command = new Command("assertChecked","//td[@id='123']","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertTrue(\"//td[@id='123']\",driver.findElement(By.xpath(\"//td[@id='123']\")).isSelected());", result);
+	}
+	
+	@Test
 	public void discoveryIsDisplayedByIdCommand(){
 		Command command = new Command("assertVisible","id=yum","");
 		String result = translator.discovery(command);
@@ -199,7 +206,7 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 	public void discoveryTypeByIdCommand(){
 		Command command = new Command("type","id=78-uyt","231");
 		String result = translator.discovery(command);
-		Assert.assertEquals("driver.findElement(By.id(\"78-uyt\")).clear();\ndriver.findElement(By.id(\"78-uyt\")).sendKeys(\"231\");", result);
+		Assert.assertEquals("driver.findElement(By.id(\"78-uyt\")).clear();\n\t\tdriver.findElement(By.id(\"78-uyt\")).sendKeys(\"231\");", result);
 	}
 	
 	@Test

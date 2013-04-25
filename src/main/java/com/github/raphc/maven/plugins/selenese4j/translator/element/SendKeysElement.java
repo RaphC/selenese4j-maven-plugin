@@ -3,8 +3,6 @@
  */
 package com.github.raphc.maven.plugins.selenese4j.translator.element;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 import com.github.raphc.maven.plugins.selenese4j.translator.LocatorResolver;
 
@@ -28,9 +26,7 @@ public class SendKeysElement implements Element  {
 	 * @see com.github.raphc.maven.plugins.selenese4j.translator.element.Element#process(com.github.raphc.maven.plugins.selenese4j.transform.Command)
 	 */
 	public String process(Command command) throws IllegalArgumentException {
-		String[] cmdElt = StringUtils.splitByWholeSeparator(command.getTarget(), "=", 2);
-		String locator = LocatorResolver.resolve(cmdElt[0].toLowerCase().trim());
-		return "driver.findElement(By."+locator+"(\"" +cmdElt[1]+ "\")).sendKeys(\""+command.getValue()+"\");";
+		return "driver.findElement("+LocatorResolver.resolve(command.getTarget())+").sendKeys(\""+command.getValue()+"\");";
 	}
 
 	/*
