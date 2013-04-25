@@ -28,7 +28,7 @@ public class GetValueElement implements Element  {
 	 * @see com.github.raphc.maven.plugins.selenese4j.translator.element.Element#process(com.github.raphc.maven.plugins.selenese4j.transform.Command)
 	 */
 	public String process(Command command) throws IllegalArgumentException {
-		String[] cmdElt = StringUtils.split(command.getTarget(), '=');
+		String[] cmdElt = StringUtils.splitByWholeSeparator(command.getTarget(), "=", 2);
 		String locator = LocatorResolver.resolve(cmdElt[0].toLowerCase().trim());
 		return "driver.findElement(By." +locator+ "(\""+cmdElt[1]+"\")).getAttribute(\"value\")";
 	}

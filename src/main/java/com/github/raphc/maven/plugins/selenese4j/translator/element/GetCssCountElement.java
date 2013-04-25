@@ -3,7 +3,10 @@
  */
 package com.github.raphc.maven.plugins.selenese4j.translator.element;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.github.raphc.maven.plugins.selenese4j.transform.Command;
+import com.github.raphc.maven.plugins.selenese4j.translator.LocatorResolver;
 
 /**
  * @author Raphael
@@ -25,7 +28,9 @@ public class GetCssCountElement implements Element  {
 	 * @see com.github.raphc.maven.plugins.selenese4j.translator.element.Element#process(com.github.raphc.maven.plugins.selenese4j.transform.Command)
 	 */
 	public String process(Command command) throws IllegalArgumentException {
-		return "driver.findElements(By.id(\""+command.getTarget()+"\")).size()";
+		String[] cmdElt = StringUtils.splitByWholeSeparator(command.getTarget(), "=", 2);
+		String locator = LocatorResolver.resolve(cmdElt[0].toLowerCase().trim());
+		return "driver.findElements(By." +locator+ "(\""+cmdElt[1]+"\")).size()";
 	}
 
 	/*
