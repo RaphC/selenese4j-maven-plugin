@@ -24,4 +24,10 @@ public interface Element {
 	 * @throws IllegalArgumentException
 	 */
 	String process(Command command) throws IllegalArgumentException;
+	
+	/**
+	 * 
+	 * @return
+	 */
+	Class<?> getReturnType();
 }

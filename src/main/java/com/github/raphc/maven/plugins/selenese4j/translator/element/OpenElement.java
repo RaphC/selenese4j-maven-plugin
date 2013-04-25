@@ -28,5 +28,13 @@ public class OpenElement implements Element  {
 		return "driver.get(\"" +command.getTarget()+ "\");";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.raphc.maven.plugins.selenese4j.translator.element.Element#getReturnType()
+	 */
+	public Class<?> getReturnType() {
+		return null;
+	}
+
 	
 }

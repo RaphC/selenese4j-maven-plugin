@@ -9,7 +9,7 @@ import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 
 /**
  * @author Raphael
- * Genere l'instruction Java correspondant à la commande store
+ * Genere l'instruction Java correspondant à la commande check
  */
 @WebDriverElement
 public class CheckElement implements Element  {
@@ -34,6 +34,14 @@ public class CheckElement implements Element  {
 			throw new IllegalArgumentException("The command target has to specify id or name locator");
 		}
 		return "if (!driver.findElement(By."+locator+"(\"" +cmdElt[1]+ "\")).isSelected()) {\ndriver.findElement(By."+locator+"(\"" +cmdElt[1]+ "\")).click();\n};";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.raphc.maven.plugins.selenese4j.translator.element.Element#getReturnType()
+	 */
+	public Class<?> getReturnType() {
+		return null;
 	}
 
 	

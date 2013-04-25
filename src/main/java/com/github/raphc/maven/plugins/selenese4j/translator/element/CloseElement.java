@@ -7,7 +7,7 @@ import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 
 /**
  * @author Raphael
- * Genere l'instruction Java correspondant à la commande store
+ * Genere l'instruction Java correspondant à la commande close
  */
 @WebDriverElement
 public class CloseElement implements Element  {
@@ -26,6 +26,14 @@ public class CloseElement implements Element  {
 	 */
 	public String process(Command command) throws IllegalArgumentException {
 		return "driver.close();";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.github.raphc.maven.plugins.selenese4j.translator.element.Element#getReturnType()
+	 */
+	public Class<?> getReturnType() {
+		return null;
 	}
 
 	
