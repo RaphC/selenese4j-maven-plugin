@@ -2,10 +2,12 @@
   <components>
     <component>
       <role>com.github.raphc.maven.plugins.selenese4j.transform.ISourceGenerator</role>
+      <role-hint>selenium-generator-component</role-hint>
       <implementation>com.github.raphc.maven.plugins.selenese4j.transform.SourceGenerator</implementation>
       <requirements>
 	    <requirement>
 	      <role>com.github.raphc.maven.plugins.selenese4j.translator.ICommandToMethodTranslator</role>
+	      <role-hint>selenium-component</role-hint>
 	    </requirement>
 	    <!-- <requirement>
 	      <role>com.thoughtworks.xstream.XStream</role>
@@ -19,13 +21,38 @@
 	  </requirements>
       <configuration/>
     </component>
+	
+	<component>
+      <role>com.github.raphc.maven.plugins.selenese4j.transform.ISourceGenerator</role>
+      <role-hint>webdriver-generator-component</role-hint>
+      <implementation>com.github.raphc.maven.plugins.selenese4j.transform.SourceGenerator</implementation>
+      <requirements>
+	    <requirement>
+	      <role>com.github.raphc.maven.plugins.selenese4j.translator.ICommandToMethodTranslator</role>
+	      <role-hint>webdriver-component</role-hint>
+	    </requirement>
+	    <!-- <requirement>
+	      <role>com.thoughtworks.xstream.XStream</role>
+	    </requirement> -->
+	    <requirement>
+	      <role>com.github.raphc.maven.plugins.selenese4j.functions.PreDefinedFunctionProcessor</role>
+	    </requirement>
+	    <requirement>
+	      <role>com.github.raphc.maven.plugins.selenese4j.transform.IConfigurationValidator</role>
+	    </requirement>
+	  </requirements>
+      <configuration/>
+    </component>
+	
 	<component>
       <role>com.github.raphc.maven.plugins.selenese4j.translator.ICommandToMethodTranslator</role>
+      <role-hint>selenium-component</role-hint>
       <implementation>com.github.raphc.maven.plugins.selenese4j.translator.UnManagedCommandToMethodTranslator</implementation>
       <configuration/>
     </component>
 	<component>
       <role>com.github.raphc.maven.plugins.selenese4j.translator.ICommandToMethodTranslator</role>
+      <role-hint>webdriver-component</role-hint>
       <implementation>com.github.raphc.maven.plugins.selenese4j.translator.WebDriverCommandToMethodTranslator</implementation>
       <requirements>
 	    <requirement>

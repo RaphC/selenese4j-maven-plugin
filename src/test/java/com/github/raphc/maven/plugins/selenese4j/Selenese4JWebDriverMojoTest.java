@@ -7,13 +7,11 @@ import java.io.File;
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 
-import com.github.raphc.maven.plugins.selenese4j.Selenese4JMojo;
-
 /**
  * @author Raphael
  *
  */
-public class Selenese4JMojoTest extends AbstractMojoTestCase {
+public class Selenese4JWebDriverMojoTest extends AbstractMojoTestCase {
     
 	/**
      * @see junit.framework.TestCase#setUp()
@@ -26,8 +24,8 @@ public class Selenese4JMojoTest extends AbstractMojoTestCase {
      * @throws Exception
      */
     public void testMojoGoal() throws Exception {
-        File testPom = new File(getBasedir(), "src/test/resources/unit/conf/plugin-config-sln1.xml");
-        Selenese4JMojo mojo = (Selenese4JMojo) lookupMojo( "transform", testPom);
+        File testPom = new File(getBasedir(), "src/test/resources/unit/conf/plugin-config-sln2.xml");
+        Selenese4JWebDriverMojo mojo = (Selenese4JWebDriverMojo) lookupMojo( "html2wd", testPom);
         assertNotNull(mojo);
         mojo.execute();
     }
