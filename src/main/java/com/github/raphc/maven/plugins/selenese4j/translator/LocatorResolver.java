@@ -5,6 +5,8 @@ package com.github.raphc.maven.plugins.selenese4j.translator;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
+
 /**
  * @author Raphael
  * 
@@ -21,7 +23,7 @@ public class LocatorResolver {
 		String locator=selector.trim();
 		
 		if (StringUtils.startsWith(locator, "/")) {
-			return "By.xpath(\""+locator+"\")";
+			return "By.xpath(\""+FilteringUtils.filter(locator)+"\")";
 		}
 		
 		String[] selElt = StringUtils.splitByWholeSeparator(locator, "=", 2);
@@ -33,7 +35,7 @@ public class LocatorResolver {
 		}
 		
 		if ("xpath".equalsIgnoreCase(locator)) {
-			return "By.xpath(\""+target+"\")";
+			return "By.xpath(\""+FilteringUtils.filter(target)+"\")";
 		}
 		
 		if ("css".equalsIgnoreCase(locator)) {

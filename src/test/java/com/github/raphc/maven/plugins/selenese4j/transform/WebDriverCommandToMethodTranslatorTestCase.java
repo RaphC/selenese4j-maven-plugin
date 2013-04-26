@@ -7,6 +7,7 @@ import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.By;
 
 import com.github.raphc.maven.plugins.selenese4j.translator.SeleniumWebDriverAdaptor;
 import com.github.raphc.maven.plugins.selenese4j.translator.WebDriverCommandToMethodTranslator;
@@ -272,5 +273,12 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 		Command command = new Command("assertElementPresent","id=menu","");
 		String result = translator.discovery(command);
 		Assert.assertEquals("Assert.assertTrue(\"id=menu\",isElementPresent(By.id(\"menu\")));", result);
+	}
+	
+	@Test
+	public void discoveryAssertClickAndWaitCommand(){
+		Command command = new Command("clickAndWait","xpath=//div[@id=\"ui-accordion-accordion-panel-7\"]/form[@id=\"updateClientForm\"]/input[@value='Update client configuration']/","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.findElement(By.xpath(\"//div[@id=\\\"ui-accordion-accordion-panel-7\\\"]/form[@id=\\\"updateClientForm\\\"]/input[@value='Update client configuration']/\")).click();", result);
 	}
 }
