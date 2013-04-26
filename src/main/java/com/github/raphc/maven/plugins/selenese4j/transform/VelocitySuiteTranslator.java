@@ -31,7 +31,9 @@ class VelocitySuiteTranslator {
 	private String velocityLoader;
 	  
 	private String velocityResourceLoaderPath = ".";
-
+	
+	private String outputEncoding = GeneratorConfiguration.DEFAULT_ENCODING_TO_USE;
+	
 	VelocitySuiteTranslator(String velocityLoader, String velocityFileResourceLoaderPath, String templateFile) {
 		this.velocityLoader = velocityLoader;
 	    this.velocityResourceLoaderPath = velocityFileResourceLoaderPath;
@@ -48,6 +50,11 @@ class VelocitySuiteTranslator {
 			props.put("resource.loader", "file, class");
 			props.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 			props.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
+			
+			// Input encoding  for template
+			props.put("input.encoding", GeneratorConfiguration.VELOCITY_TEMPLATE_ENCODING);
+			// Output encoding
+			props.put("output.encoding", outputEncoding);
 			
 			if(GeneratorConfiguration.VELOCITY_FILE_LOADER.equalsIgnoreCase(velocityLoader)){
 				props.put("file.resource.loader.path", velocityResourceLoaderPath);

@@ -30,6 +30,8 @@ class ScenarioConverter {
 
 	private String velocityResourceLoaderPath = ".";
 
+	private String outputEncoding = GeneratorConfiguration.DEFAULT_ENCODING_TO_USE;
+	
 	/**
 	 * 
 	 * @param velocityLoader
@@ -58,7 +60,12 @@ class ScenarioConverter {
 			props.put(Velocity.RESOURCE_LOADER, "file, class");
 			props.put("class.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 			props.put("file.resource.loader.class",	"org.apache.velocity.runtime.resource.loader.FileResourceLoader");
-
+			
+			// Input encoding  for template
+			props.put("input.encoding", GeneratorConfiguration.VELOCITY_TEMPLATE_ENCODING);
+			// Output encoding
+			props.put("output.encoding", outputEncoding);
+			
 			if (GeneratorConfiguration.VELOCITY_FILE_LOADER.equalsIgnoreCase(velocityLoader)) {
 				props.put(Velocity.FILE_RESOURCE_LOADER_PATH,velocityResourceLoaderPath);
 				props.put(Velocity.FILE_RESOURCE_LOADER_CACHE, "false");

@@ -77,4 +77,14 @@ public interface GeneratorConfiguration {
 	public static final String PROP_BASED_TESTS_SOURCES_PACKAGE = "basedTestsSourcesPackage";
 
 	public static final String SCENARIO_FILE_SUFFIX = ".html";
+	
+	/**
+	 * Encodage definit par defaut
+	 */
+	public static final String DEFAULT_ENCODING_TO_USE = "UTF-8";
+	
+	/**
+	 * Encodage des templates
+	 */
+	public static final String VELOCITY_TEMPLATE_ENCODING = "UTF-8";
 }
