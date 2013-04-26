@@ -25,6 +25,6 @@ public final class PatternUtils {
 	 * @param pattern
 	 */
 	public static String processPattern(String pattern) {
-		return "^"+StringUtils.replaceEach(pattern, new String[]{"*", "?",".","["}, new String[]{"[\\s\\S]*","[\\s\\S]","\\.","\\["})+"$";
+		return "^"+StringUtils.replaceEach(pattern, new String[]{"*", "?",".","["}, new String[]{"[\\\\s\\\\S]*","[\\\\s\\\\S]","\\\\.","\\\\["})+"$";
 	}
 }

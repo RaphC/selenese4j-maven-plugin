@@ -298,7 +298,7 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 		String result = translator.discovery(command);
 		Assert.assertEquals("(new WebDriverWait(driver, 60)).until(new ExpectedCondition<Boolean>() {" +
 		    "\n\t\t\tpublic Boolean apply(WebDriver d) {" +
-		        "\n\t\t\t\treturn driver.getCurrentUrl().matches(\"^/[\\s\\S]*all[\\s\\S]*/$\");" +
+		        "\n\t\t\t\treturn driver.getCurrentUrl().matches(\"^/[\\\\s\\\\S]*all[\\\\s\\\\S]*/$\");" +
 		    "\n\t\t\t}" +
 		"\n\t\t});", result);
 	}
