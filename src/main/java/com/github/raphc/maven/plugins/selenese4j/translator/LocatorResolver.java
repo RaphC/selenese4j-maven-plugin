@@ -45,7 +45,7 @@ public class LocatorResolver {
 			return "By.id(\""+target+"\")";
 		}
 		if ("link".equalsIgnoreCase(locator)) {
-			return "By.linkText(\""+target+"\")";
+			return "By.linkText(\""+FilteringUtils.filter(target)+"\")";
 		}
 		if ("name".equalsIgnoreCase(locator)) {
 			return "By.name(\""+target+"\")";
