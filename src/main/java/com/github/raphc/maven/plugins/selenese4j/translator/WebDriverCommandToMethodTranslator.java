@@ -12,6 +12,7 @@ import com.github.raphc.maven.plugins.selenese4j.functions.AbstractPreDefinedFun
 import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 import com.github.raphc.maven.plugins.selenese4j.translator.element.Element;
 import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
+import com.github.raphc.maven.plugins.selenese4j.utils.PatternUtils;
 
 /**
  * @author Raphael
@@ -257,10 +258,34 @@ public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodT
 		
 		element = adaptor.findByName("get" + mName);
 		if (element != null) {
-			return forBlock("if (" + pipe + " " + element.process(c) +")", c);
+			return until(element, c);
 		}
 		return null;
 	}
+	
+	
+	private String until(Element element, Command c){
+		return "(new WebDriverWait(driver, "+DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT+")).until(new ExpectedCondition<Boolean>() {" +
+		    "\n\t\t\tpublic Boolean apply(WebDriver d) {" +
+		        "\n\t\t\t\treturn "+untilCondition(element, c)+";" +
+		    "\n\t\t\t}" +
+		"\n\t\t});";
+	}
+	
+	/**
+	 * Write condition
+	 * @param element
+	 * @param c
+	 * @return
+	 */
+	private String untilCondition(Element element, Command c) {
+		if(c.getTarget().startsWith("regexp:")){
+			return "Pattern.compile(\"" +FilteringUtils.filter(StringUtils.substringAfter(c.getTarget(), "regexp:"))+ "\").matcher("+element.process(c)+").find()";
+		} else {
+			return ""+element.process(c)+".matches(\""+PatternUtils.processPattern(c.getTarget())+"\")";
+		}
+	}
+	
 	/**
 	 * @param adaptor the adaptor to set
 	 */

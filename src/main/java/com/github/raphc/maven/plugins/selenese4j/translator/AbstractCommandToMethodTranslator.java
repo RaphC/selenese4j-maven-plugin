@@ -16,6 +16,7 @@ import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
 public abstract class AbstractCommandToMethodTranslator implements ICommandToMethodTranslator {
 
 	protected final static String DEFAULT_WAIT_FOR_PAGE_TOLOAD = "30000";
+	protected final static String DEFAULT_WAIT_FOR_ELEMENT_TIMEOUT = "60";
 	protected final static String DEFAULT_TIMEOUT = "1000";
 	protected final static String DEFAULT_LOOP = "60";
 	protected static final Pattern SNIPPET_FRAGMENT_PATTERN = Pattern.compile("[\\s\\S]*\\{@snippet\\:java([\\s\\S]*)@snippet\\}[\\s\\S]*");

@@ -7,7 +7,6 @@ import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.By;
 
 import com.github.raphc.maven.plugins.selenese4j.translator.SeleniumWebDriverAdaptor;
 import com.github.raphc.maven.plugins.selenese4j.translator.WebDriverCommandToMethodTranslator;
@@ -85,6 +84,13 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 	}
 	
 	@Test
+	public void discoveryClickByLinkCommand(){
+		Command command = new Command("clickAndWait","link=regexp:.*REJ-[0-9]{6}-[0-9]*\\.xml","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("driver.findElement(By.linkText(\"regexp:.*REJ-[0-9]{6}-[0-9]*\\\\.xml\")).click();", result);
+	}
+	
+	@Test
 	public void discoveryCloseCommand(){
 		Command command = new Command("close","","");
 		String result = translator.discovery(command);
@@ -112,12 +118,12 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 		Assert.assertEquals("Assert.assertEquals(\"\",\"simple text\", driver.findElement(By.tagName(\"BODY\")).getText());", result);
 	}
 	
-//	@Test
-//	public void discoveryAssertLocationWithRegexpCommand(){
-//		Command command = new Command("assertLocation","regexp:.*all","");
-//		String result = translator.discovery(command);
-//		Assert.assertEquals("Assert.assertTrue(Pattern.compile(\".*all\").matcher(driver.getCurrentUrl()).find());", result);
-//	}
+	@Test
+	public void discoveryAssertLocationWithRegexpCommand(){
+		Command command = new Command("assertLocation","","regexp:.*all");
+		String result = translator.discovery(command);
+		Assert.assertEquals("Assert.assertTrue(\"\",Pattern.compile(\".*all\").matcher(driver.getCurrentUrl()).find());", result);
+	}
 	
 	@Test
 	public void discoveryAssertTextCommand(){
@@ -263,9 +269,13 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 	
 	@Test
 	public void discoveryAssertTextPresentCommand(){
-		Command command = new Command("assertTextPresent","toto part à la plage","");
-		String result = translator.discovery(command);
-		Assert.assertEquals("Assert.assertTrue(\"toto part à la plage\",driver.findElement(By.tagName(\"body\")).getText().contains(\"toto part à la plage\"));", result);
+		Command command1 = new Command("assertTextPresent","toto part à la plage","");
+		String result1 = translator.discovery(command1);
+		Assert.assertEquals("Assert.assertTrue(\"toto part à la plage\",driver.findElement(By.tagName(\"body\")).getText().contains(\"toto part à la plage\"));", result1);
+		
+		Command command2 = new Command("assertTextPresent","The IP address of the user is \"blacklisted\"","");
+		String result2 = translator.discovery(command2);
+		Assert.assertEquals("Assert.assertTrue(\"The IP address of the user is \\\"blacklisted\\\"\",driver.findElement(By.tagName(\"body\")).getText().contains(\"The IP address of the user is \\\"blacklisted\\\"\"));", result2);
 	}
 	
 	@Test
@@ -280,5 +290,27 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 		Command command = new Command("clickAndWait","xpath=//div[@id=\"ui-accordion-accordion-panel-7\"]/form[@id=\"updateClientForm\"]/input[@value='Update client configuration']/","");
 		String result = translator.discovery(command);
 		Assert.assertEquals("driver.findElement(By.xpath(\"//div[@id=\\\"ui-accordion-accordion-panel-7\\\"]/form[@id=\\\"updateClientForm\\\"]/input[@value='Update client configuration']/\")).click();", result);
+	}
+	
+	@Test
+	public void discoveryWaitForLocationWithPlainValueCommand(){
+		Command command = new Command("waitForLocation","/*all*/","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("(new WebDriverWait(driver, 60)).until(new ExpectedCondition<Boolean>() {" +
+		    "\n\t\t\tpublic Boolean apply(WebDriver d) {" +
+		        "\n\t\t\t\treturn driver.getCurrentUrl().matches(\"^/[\\s\\S]*all[\\s\\S]*/$\");" +
+		    "\n\t\t\t}" +
+		"\n\t\t});", result);
+	}
+	
+	@Test
+	public void discoveryWaitForLocationWithRegexpCommand(){
+		Command command = new Command("waitForLocation","regexp:.*all","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("(new WebDriverWait(driver, 60)).until(new ExpectedCondition<Boolean>() {" +
+		    "\n\t\t\tpublic Boolean apply(WebDriver d) {" +
+		        "\n\t\t\t\treturn Pattern.compile(\".*all\").matcher(driver.getCurrentUrl()).find();" +
+			    "\n\t\t\t}" +
+				"\n\t\t});", result);
 	}
 }
