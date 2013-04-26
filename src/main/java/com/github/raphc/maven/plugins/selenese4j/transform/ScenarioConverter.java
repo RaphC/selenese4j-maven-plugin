@@ -22,8 +22,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  */
 class ScenarioConverter {
 
-	private static Logger logger = Logger.getLogger(ScenarioConverter.class.getName());
-
+	private Logger logger = Logger.getLogger(getClass().getSimpleName());
+	
 	private String templateFile;
 
 	private String velocityLoader;
@@ -87,10 +87,10 @@ class ScenarioConverter {
 			try {
 				template = Velocity.getTemplate(templateResource);
 			} catch (ResourceNotFoundException rnfe) {
-				logger.log(Level.WARNING, "VelocityTestTranslator : error : cannot find template " + templateResource);
+				logger.log(Level.WARNING, getClass().getSimpleName()+" : error : cannot find template " + templateResource);
 				return;
 			} catch (ParseErrorException pee) {
-				logger.log(Level.WARNING, "VelocityTestTranslator : Syntax error in template " + templateResource + ":" + pee);
+				logger.log(Level.WARNING, getClass().getSimpleName()+" : Syntax error in template " + templateResource + ":" + pee);
 				return;
 			}
 
@@ -106,7 +106,7 @@ class ScenarioConverter {
 			logger.log(Level.INFO, "File [" + fileOut + "] written.");
 
 		} catch (Exception e) {
-			logger.log(Level.WARNING, "", e);
+			logger.log(Level.WARNING, getClass().getSimpleName(), e);
 		}
 		logger.log(Level.INFO, "tests done.");
 	}

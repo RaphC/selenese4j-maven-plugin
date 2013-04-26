@@ -5,8 +5,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.maven.plugin.logging.Log;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -23,7 +24,7 @@ class VelocitySuiteTranslator {
 	/**
 	 * 
 	 */
-	private Log logger = new org.apache.maven.plugin.logging.SystemStreamLog();
+	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
 	private String templateFile;
 	
@@ -38,7 +39,7 @@ class VelocitySuiteTranslator {
 	}
 
 	void doWrite(Collection<String> classesList, ScenarioTokens tokens, String packageName, String fileOut, boolean setupDirExist, boolean teardownDirExist) {
-		logger.debug("Flushing content to java file [" + fileOut + "] from template file ["+velocityResourceLoaderPath+","+templateFile+"] ...");
+		logger.log(Level.INFO, "Flushing content to java file [" + fileOut + "] from template file [" + velocityResourceLoaderPath + "," + templateFile + "] ...");
 
 		try {
 			String templateResource = null;
@@ -68,10 +69,10 @@ class VelocitySuiteTranslator {
 			try {
 				template = Velocity.getTemplate(templateResource);
 			} catch (ResourceNotFoundException rnfe) {
-				logger.error("VelocitySuiteTranslator : error : cannot find template " + templateResource, rnfe);
+				logger.log(Level.WARNING, getClass().getSimpleName()+" : error : cannot find template " + templateResource);
 				return;
 			} catch (ParseErrorException pee) {
-				logger.error("VelocitySuiteTranslator : Syntax error in template " + templateResource, pee);
+				logger.log(Level.WARNING, getClass().getSimpleName()+" : Syntax error in template " + templateResource + ":" + pee);
 				return;
 			}
 
@@ -84,12 +85,12 @@ class VelocitySuiteTranslator {
 			writer.flush();
 			writer.close();
 
-			logger.debug("File [" + fileOut + "] written.");
+			logger.log(Level.INFO, "File [" + fileOut + "] written.");
 
 		} catch (Exception e) {
-			logger.error(e);
+			logger.log(Level.WARNING, getClass().getSimpleName(), e);
 		}
-		logger.debug("AllTest suite transformation done.");
+		logger.log(Level.INFO, "suite done.");
 	}
 
 }
