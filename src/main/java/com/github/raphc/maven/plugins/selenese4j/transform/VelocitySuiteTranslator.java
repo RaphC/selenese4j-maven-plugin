@@ -14,6 +14,8 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
+import com.github.raphc.maven.plugins.selenese4j.context.ThreadLocalInfoContext;
+
 /**
  * 
  * @author Raphael
@@ -31,8 +33,6 @@ class VelocitySuiteTranslator {
 	private String velocityLoader;
 	  
 	private String velocityResourceLoaderPath = ".";
-	
-	private String outputEncoding = GeneratorConfiguration.DEFAULT_ENCODING_TO_USE;
 	
 	VelocitySuiteTranslator(String velocityLoader, String velocityFileResourceLoaderPath, String templateFile) {
 		this.velocityLoader = velocityLoader;
@@ -54,7 +54,7 @@ class VelocitySuiteTranslator {
 			// Input encoding  for template
 			props.put("input.encoding", GeneratorConfiguration.VELOCITY_TEMPLATE_ENCODING);
 			// Output encoding
-			props.put("output.encoding", outputEncoding);
+			props.put("output.encoding", ThreadLocalInfoContext.get().getOutputEncoding());
 			
 			if(GeneratorConfiguration.VELOCITY_FILE_LOADER.equalsIgnoreCase(velocityLoader)){
 				props.put("file.resource.loader.path", velocityResourceLoaderPath);
