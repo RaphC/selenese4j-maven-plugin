@@ -4,6 +4,7 @@
 package com.github.raphc.maven.plugins.selenese4j.translator.element;
 
 import com.github.raphc.maven.plugins.selenese4j.transform.Command;
+import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
 
 /**
  * @author Raphael
@@ -27,7 +28,7 @@ public class IsTextPresentElement implements Element  {
 	public String process(Command command) throws IllegalArgumentException {
 		// driver.findElement(By.tagName("body")).getText().contains("Some text to search")
 		// driver.getPageSource().contains("sometext")
-		return "driver.findElement(By.tagName(\"body\")).getText().contains(\""+command.getTarget()+"\")";
+		return "driver.findElement(By.tagName(\"body\")).getText().contains(\""+FilteringUtils.filter(command.getTarget())+"\")";
 	}
 	
 	/*
