@@ -21,7 +21,9 @@ import static org.hamcrest.CoreMatchers.*;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.${wdBrowserDriver.toLowerCase()}.${wdBrowserDriver}Driver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ${className} {
 
