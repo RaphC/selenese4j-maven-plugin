@@ -67,6 +67,11 @@ public class Selenese4JWebDriverMojo extends AbstractMojo {
     */
     private String[] suitePatternIncludes;
 
+    /**
+     * The output encoding used by Velocity to generate Java files
+     * @parameter alias="outputEncoding"
+     */
+    private String outputEncoding;
     
 	/*
 	 * (non-Javadoc)
