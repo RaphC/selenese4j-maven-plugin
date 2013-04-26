@@ -15,6 +15,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
+import com.github.raphc.maven.plugins.selenese4j.context.InfoContext;
+import com.github.raphc.maven.plugins.selenese4j.context.ThreadLocalInfoContext;
 import com.github.raphc.maven.plugins.selenese4j.transform.DefaultMethodReader;
 import com.github.raphc.maven.plugins.selenese4j.transform.GeneratorConfiguration;
 import com.github.raphc.maven.plugins.selenese4j.transform.ISourceGenerator;
@@ -71,7 +73,7 @@ public class Selenese4JWebDriverMojo extends AbstractMojo {
      * The output encoding used by Velocity to generate Java files
      * @parameter alias="outputEncoding"
      */
-    private String outputEncoding;
+    private String outputEncoding = GeneratorConfiguration.DEFAULT_ENCODING_TO_USE;
     
 	/*
 	 * (non-Javadoc)
@@ -113,6 +115,10 @@ public class Selenese4JWebDriverMojo extends AbstractMojo {
 		testSourceGenerationDirectory.mkdir();
 		getLog().info("directory " + testSourceGenerationDirectory + " created.");
 
+		// Set InfoContext
+		InfoContext infoContext = new InfoContext(outputEncoding);
+		ThreadLocalInfoContext.set(infoContext);
+		
 		// Generation
 		//Check if an impl is defined and if it exists
 		try {
@@ -125,6 +131,7 @@ public class Selenese4JWebDriverMojo extends AbstractMojo {
 			throw new MojoExecutionException("Exception", e);
 		}
 		
+		ThreadLocalInfoContext.unset();
 	}
 	
 	/**
