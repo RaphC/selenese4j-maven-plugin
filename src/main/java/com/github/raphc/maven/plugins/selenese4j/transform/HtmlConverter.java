@@ -4,6 +4,7 @@
 package com.github.raphc.maven.plugins.selenese4j.transform;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -11,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.github.raphc.maven.plugins.selenese4j.context.ThreadLocalInfoContext;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestTd;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestTr;
 
@@ -26,8 +28,9 @@ public class HtmlConverter {
 	 * 
 	 * @param lines
 	 * @return
+	 * @throws UnsupportedEncodingException 
 	 */
-	public static List<Command> convert(List<TestTr> lines) {
+	public static List<Command> convert(List<TestTr> lines) throws UnsupportedEncodingException {
 		List<Command> result = new ArrayList<Command>();
 		
 		if(CollectionUtils.size(lines) == 0){return result;}
@@ -36,9 +39,18 @@ public class HtmlConverter {
 			Command command = new Command();
 			List<TestTd> cells = line.getTds();
 			logger.log(Level.FINE, "Converting cells ["+cells.get(0).getContent()+"]["+cells.get(1).getContent()+"]["+cells.get(2).getContent()+"] to command...");
-			command.setName(cells.get(0).getContent());
-			command.setTarget(cells.get(1).getContent());
-			command.setValue(cells.get(2).getContent());
+			
+			if(cells.get(0).getContent() != null) {
+				command.setName(new String(cells.get(0).getContent().getBytes(), ThreadLocalInfoContext.get().getOutputEncoding()));
+			}
+			
+			if(cells.get(1).getContent() != null) {
+				command.setTarget(new String(cells.get(1).getContent().getBytes(), ThreadLocalInfoContext.get().getOutputEncoding()));
+			}
+			
+			if(cells.get(2).getContent() != null) {
+				command.setValue(new String(cells.get(2).getContent().getBytes(), ThreadLocalInfoContext.get().getOutputEncoding()));
+			}
 			result.add(command);
 		}
 		

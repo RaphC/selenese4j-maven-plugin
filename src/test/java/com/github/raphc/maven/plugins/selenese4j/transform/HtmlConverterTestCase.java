@@ -3,6 +3,7 @@
  */
 package com.github.raphc.maven.plugins.selenese4j.transform;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class HtmlConverterTestCase {
 
 	
 	@Test
-	public void convert(){
+	public void convert() throws UnsupportedEncodingException{
 		List<TestTr> lines = new ArrayList<TestTr>();
 		
 		TestTr tr1 = new TestTr();
