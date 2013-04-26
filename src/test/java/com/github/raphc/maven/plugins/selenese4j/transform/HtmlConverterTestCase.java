@@ -9,8 +9,12 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.github.raphc.maven.plugins.selenese4j.context.InfoContext;
+import com.github.raphc.maven.plugins.selenese4j.context.ThreadLocalInfoContext;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestTd;
 import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestTr;
 
@@ -20,6 +24,11 @@ import com.github.raphc.maven.plugins.selenese4j.source.data.test.TestTr;
  */
 public class HtmlConverterTestCase {
 
+	@Before
+	public void before(){
+		InfoContext infoContext = new InfoContext(GeneratorConfiguration.DEFAULT_ENCODING_TO_USE);
+		ThreadLocalInfoContext.set(infoContext);
+	}
 	
 	@Test
 	public void convert() throws UnsupportedEncodingException{
@@ -59,5 +68,10 @@ public class HtmlConverterTestCase {
 		Assert.assertEquals("a chaud", result.get(1).getValue());
 		Assert.assertEquals("sandra", result.get(0).getName());
 		Assert.assertEquals("aveccouverture", result.get(1).getTarget());
+	}
+	
+	@After
+	public void after(){
+		ThreadLocalInfoContext.unset();
 	}
 }
