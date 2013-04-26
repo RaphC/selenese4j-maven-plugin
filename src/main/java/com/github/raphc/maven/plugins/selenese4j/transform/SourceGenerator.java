@@ -6,6 +6,9 @@ package com.github.raphc.maven.plugins.selenese4j.transform;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.MessageFormat;
@@ -93,9 +96,9 @@ public class SourceGenerator implements ISourceGenerator {
 					 * @see com.thoughtworks.xstream.mapper.MapperWrapper#shouldSerializeMember(java.lang.Class, java.lang.String)
 					 */
 					@Override
-					public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+					public boolean shouldSerializeMember(@SuppressWarnings("rawtypes") Class definedIn, String fieldName) {
 						if (definedIn == Object.class) { return false; }
-						return super .shouldSerializeMember(definedIn, fieldName);
+						return super.shouldSerializeMember(definedIn, fieldName);
 					}
 			
 				};
@@ -215,8 +218,22 @@ public class SourceGenerator implements ISourceGenerator {
 				
 				String className = ClassUtils.normalizeClassName(file.getName());
 				
-				// Parsing du fichier. On extrait les commandes
-				TestHtml html = (TestHtml) xstream.fromXML(file);
+				// Parsing du fichier. On specifie l'encodage du fichier 
+				InputStream inputFileStream = null;
+				Reader inputFileReader = null;
+				TestHtml html = null;
+				try {
+					inputFileStream = new FileInputStream(file);
+					inputFileReader = new InputStreamReader(inputFileStream, "UTF-8");
+					html = (TestHtml) xstream.fromXML(inputFileReader);
+				} catch(Exception e){
+					logger.log(Level.SEVERE, "XStream unmarshalling failed", e);
+				} finally {
+					inputFileReader.close();
+					inputFileStream.close();
+				}
+				
+				// On extrait les commandes
 				logger.log(Level.FINE, "Html Parsing result is [" + html + "]. ["+CollectionUtils.size(html.getBody().getTable().getTbody().getTrs())+"] lines found.");
 				if(html.getBody().getTable().getTbody().getTrs() == null){
 					logger.log(Level.SEVERE, "No lines extracted from html ["+file.getName()+"]");
