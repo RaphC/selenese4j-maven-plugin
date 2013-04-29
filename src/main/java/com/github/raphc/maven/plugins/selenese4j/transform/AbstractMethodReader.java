@@ -23,16 +23,16 @@ public abstract class AbstractMethodReader  implements IMethodReader {
 	 * Retourne une instance du traducteur Velocity
 	 * @return
 	 */
-	public ScenarioConverter getScenarioConverter(){
-		ScenarioConverter out = null;
+	public ScenarioWriter getScenarioConverter(){
+		ScenarioWriter out = null;
 		
 		String externalTemplateDir = StringUtils.substringAfter(templatesDirectoryPath, GeneratorConfiguration.VELOCITY_FILE_LOADER+":");
 		
 		if(StringUtils.isNotEmpty(externalTemplateDir) 
 				&& (new File(externalTemplateDir + File.separator + this.templateFileName)).exists()){
-			out = new ScenarioConverter(GeneratorConfiguration.VELOCITY_FILE_LOADER, externalTemplateDir, this.templateFileName);
+			out = new ScenarioWriter(GeneratorConfiguration.VELOCITY_FILE_LOADER, externalTemplateDir, this.templateFileName);
 		} else {
-			out = new ScenarioConverter(GeneratorConfiguration.DEFAULT_VELOCITY_LOADER, GeneratorConfiguration.DEFAULT_TEMPLATE_DIRECTORY_PATH, this.templateFileName);
+			out = new ScenarioWriter(GeneratorConfiguration.DEFAULT_VELOCITY_LOADER, GeneratorConfiguration.DEFAULT_TEMPLATE_DIRECTORY_PATH, this.templateFileName);
 		}
 		return out;
 	}

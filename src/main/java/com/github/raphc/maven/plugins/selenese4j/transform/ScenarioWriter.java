@@ -22,7 +22,7 @@ import com.github.raphc.maven.plugins.selenese4j.context.ThreadLocalInfoContext;
  * @author Raphael
  * 
  */
-class ScenarioConverter {
+class ScenarioWriter {
 
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	
@@ -32,13 +32,15 @@ class ScenarioConverter {
 
 	private String velocityResourceLoaderPath = ".";
 
+	private static Velocity engine = new Velocity();
+	
 	/**
 	 * 
 	 * @param velocityLoader
 	 * @param velocityFileResourceLoaderPath
 	 * @param templateFile
 	 */
-	public ScenarioConverter(String velocityLoader, String velocityFileResourceLoaderPath, String templateFile) {
+	public ScenarioWriter(String velocityLoader, String velocityFileResourceLoaderPath, String templateFile) {
 		this.velocityLoader = velocityLoader;
 		this.velocityResourceLoaderPath = velocityFileResourceLoaderPath;
 		this.templateFile = templateFile;
@@ -50,10 +52,11 @@ class ScenarioConverter {
 	 * @param velocityBean
 	 * @param fileOut
 	 */
+	@SuppressWarnings("static-access")
 	public void doWrite(ClassInfo classBean, ScenarioTokens velocityBean, String fileOut) {
 		logger.log(Level.INFO, "Flushing content to java file [" + fileOut + "] from template file [" + velocityResourceLoaderPath + "," + templateFile + "] ...");
 		try {
-
+			
 			String templateResource = null;
 
 			Properties props = new Properties();
@@ -62,10 +65,10 @@ class ScenarioConverter {
 			props.put("file.resource.loader.class",	"org.apache.velocity.runtime.resource.loader.FileResourceLoader");
 			
 			// Input encoding  for template
-			props.put("input.encoding", GeneratorConfiguration.VELOCITY_TEMPLATE_ENCODING);
+			props.put(Velocity.INPUT_ENCODING, GeneratorConfiguration.VELOCITY_TEMPLATE_ENCODING);
 			// Output encoding
-			props.put("output.encoding", ThreadLocalInfoContext.get().getOutputEncoding());
-			
+			props.put(Velocity.OUTPUT_ENCODING, ThreadLocalInfoContext.get().getOutputEncoding());
+						
 			if (GeneratorConfiguration.VELOCITY_FILE_LOADER.equalsIgnoreCase(velocityLoader)) {
 				props.put(Velocity.FILE_RESOURCE_LOADER_PATH,velocityResourceLoaderPath);
 				props.put(Velocity.FILE_RESOURCE_LOADER_CACHE, "false");
@@ -75,7 +78,7 @@ class ScenarioConverter {
 				templateResource = velocityResourceLoaderPath.concat(templateFile);
 			}
 
-			Velocity.init(props);
+			engine.init(props);
 
 			VelocityContext context = new VelocityContext();
 			context.put("packageName", classBean.getPackageName());
@@ -92,7 +95,7 @@ class ScenarioConverter {
 			Template template = null;
 
 			try {
-				template = Velocity.getTemplate(templateResource);
+				template = engine.getTemplate(templateResource);
 			} catch (ResourceNotFoundException rnfe) {
 				logger.log(Level.WARNING, getClass().getSimpleName()+" : error : cannot find template " + templateResource);
 				return;

@@ -42,7 +42,7 @@ public class DefaultMethodReader extends AbstractMethodReader {
 	      File packageDir = new File(testBuildDirectory + File.separator + javaSourceDirName + File.separator);
 	      packageDir.mkdirs();
 	      
-	      ScenarioConverter writer = getScenarioConverter();
+	      ScenarioWriter writer = getScenarioConverter();
 	      String javaSourceFile = packageDir.getAbsolutePath() + File.separator + classBean.getClassName() + ".java";
 	      logger.log(Level.FINE, "Writing Java source  " + javaSourceFile + " ...");
 	      writer.doWrite(classBean, tokens, javaSourceFile);

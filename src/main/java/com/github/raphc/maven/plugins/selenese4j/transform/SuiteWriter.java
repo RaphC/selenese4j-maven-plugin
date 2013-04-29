@@ -21,7 +21,7 @@ import com.github.raphc.maven.plugins.selenese4j.context.ThreadLocalInfoContext;
  * @author Raphael
  *
  */
-class VelocitySuiteTranslator {
+class SuiteWriter {
 
 	/**
 	 * 
@@ -34,16 +34,20 @@ class VelocitySuiteTranslator {
 	  
 	private String velocityResourceLoaderPath = ".";
 	
-	VelocitySuiteTranslator(String velocityLoader, String velocityFileResourceLoaderPath, String templateFile) {
+	private static Velocity engine = new Velocity();
+	
+	SuiteWriter(String velocityLoader, String velocityFileResourceLoaderPath, String templateFile) {
 		this.velocityLoader = velocityLoader;
 	    this.velocityResourceLoaderPath = velocityFileResourceLoaderPath;
 	    this.templateFile = templateFile;
 	}
 
+	@SuppressWarnings("static-access")
 	void doWrite(Collection<String> classesList, ScenarioTokens tokens, String packageName, String fileOut, boolean setupDirExist, boolean teardownDirExist) {
 		logger.log(Level.INFO, "Flushing content to java file [" + fileOut + "] from template file [" + velocityResourceLoaderPath + "," + templateFile + "] ...");
 
 		try {
+			
 			String templateResource = null;
 			
 			Properties props = new Properties();
@@ -52,9 +56,9 @@ class VelocitySuiteTranslator {
 			props.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
 			
 			// Input encoding  for template
-			props.put("input.encoding", GeneratorConfiguration.VELOCITY_TEMPLATE_ENCODING);
+			props.put(Velocity.INPUT_ENCODING, GeneratorConfiguration.VELOCITY_TEMPLATE_ENCODING);
 			// Output encoding
-			props.put("output.encoding", ThreadLocalInfoContext.get().getOutputEncoding());
+			props.put(Velocity.OUTPUT_ENCODING, ThreadLocalInfoContext.get().getOutputEncoding());
 			
 			if(GeneratorConfiguration.VELOCITY_FILE_LOADER.equalsIgnoreCase(velocityLoader)){
 				props.put("file.resource.loader.path", velocityResourceLoaderPath);
@@ -65,7 +69,7 @@ class VelocitySuiteTranslator {
 				templateResource = velocityResourceLoaderPath.concat(templateFile);
 			}
 			  
-			Velocity.init(props);
+			engine.init(props);
 			
 			VelocityContext context = new VelocityContext();
 			context.put("testClasses", classesList);
@@ -74,7 +78,7 @@ class VelocitySuiteTranslator {
 			Template template = null;
 
 			try {
-				template = Velocity.getTemplate(templateResource);
+				template = engine.getTemplate(templateResource);
 			} catch (ResourceNotFoundException rnfe) {
 				logger.log(Level.WARNING, getClass().getSimpleName()+" : error : cannot find template " + templateResource);
 				return;
