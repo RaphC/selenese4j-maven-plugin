@@ -4,6 +4,7 @@
 package com.github.raphc.maven.plugins.selenese4j.functions;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import junit.framework.Assert;
 
@@ -27,8 +28,8 @@ public class LocaleAndFormatNowFunctionTestCase {
 	
 	@Test
 	public void process(){
-		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "MM:yyyy"), localeAndFormatNowFunction.replaceByValue("{@function:now('sv_SE','MM:yyyy')}"));
-		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "MMMMM dd, yyyy"), localeAndFormatNowFunction.replaceByValue("{@function:now('fr_CA','MMMMM dd, yyyy')}"));
+		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "MM:yyyy" , new Locale("sv","SE")), localeAndFormatNowFunction.replaceByValue("{@function:now('sv_SE','MM:yyyy')}"));
+		Assert.assertEquals(DateFormatUtils.format(Calendar.getInstance(), "MMMMM dd, yyyy", Locale.CANADA_FRENCH), localeAndFormatNowFunction.replaceByValue("{@function:now('fr_CA','MMMMM dd, yyyy')}"));
 		
 	}
 }
