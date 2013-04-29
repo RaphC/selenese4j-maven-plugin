@@ -474,7 +474,7 @@ public class SourceGenerator implements ISourceGenerator {
 	 */
 	private void createOrderedSuite(String overrideTemplatesDirectoryPath, String buildDir, Collection<String> classBeans, ScenarioTokens tokens, String packageName, String dirName) {
 		logger.log(Level.FINE, "Building Order Suite for " + dirName);
-		VelocitySuiteTranslator t = getVelocitySuiteTranslator(overrideTemplatesDirectoryPath, GeneratorConfiguration.ORDERED_TESTS_SUITE_TEMPLATE_NAME);
+		SuiteWriter t = getVelocitySuiteTranslator(overrideTemplatesDirectoryPath, GeneratorConfiguration.ORDERED_TESTS_SUITE_TEMPLATE_NAME);
 
 		String[] packageDirs = packageName.split("\\.");
 		String allDirName = "";
@@ -494,15 +494,15 @@ public class SourceGenerator implements ISourceGenerator {
 	 * 
 	 * @return
 	 */
-	private VelocitySuiteTranslator getVelocitySuiteTranslator(String overrideTemplatesDirectoryPath, String templateFile) {
-		VelocitySuiteTranslator out = null;
+	private SuiteWriter getVelocitySuiteTranslator(String overrideTemplatesDirectoryPath, String templateFile) {
+		SuiteWriter out = null;
 
 		String externalTemplateDir = StringUtils.substringAfter(overrideTemplatesDirectoryPath, GeneratorConfiguration.VELOCITY_FILE_LOADER + ":");
 		if (StringUtils.isNotEmpty(externalTemplateDir)
 				&& (new File(externalTemplateDir + File.separator + templateFile)).exists()) {
-			out = new VelocitySuiteTranslator(GeneratorConfiguration.VELOCITY_FILE_LOADER, externalTemplateDir, templateFile);
+			out = new SuiteWriter(GeneratorConfiguration.VELOCITY_FILE_LOADER, externalTemplateDir, templateFile);
 		} else {
-			out = new VelocitySuiteTranslator(GeneratorConfiguration.DEFAULT_VELOCITY_LOADER, GeneratorConfiguration.DEFAULT_TEMPLATE_DIRECTORY_PATH, templateFile);
+			out = new SuiteWriter(GeneratorConfiguration.DEFAULT_VELOCITY_LOADER, GeneratorConfiguration.DEFAULT_TEMPLATE_DIRECTORY_PATH, templateFile);
 		}
 		return out;
 	}
