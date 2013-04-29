@@ -71,4 +71,11 @@ public class UnManagedCommandToMethodTranslatorTestCase {
 		String result = translator.discovery(command);
 		Assert.assertEquals("Assert.assertFalse(\"link=my_link\",selenium.isElementPresent(\"link=my_link\"));", result);
 	}
+	
+	@Test
+	public void discoveryDoubleClickCommand(){
+		Command command = new Command("doubleClick","link=my_link","");
+		String result = translator.discovery(command);
+		Assert.assertEquals("selenium.doubleClick(\"link=my_link\");", result);
+	}
 }
