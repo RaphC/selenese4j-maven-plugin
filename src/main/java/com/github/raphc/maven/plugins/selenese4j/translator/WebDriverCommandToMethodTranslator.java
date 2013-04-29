@@ -16,7 +16,7 @@ import com.github.raphc.maven.plugins.selenese4j.utils.PatternUtils;
 
 /**
  * @author Raphael
- *
+ * The WebDriver translator
  */
 public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodTranslator  implements ICommandToMethodTranslator {
 

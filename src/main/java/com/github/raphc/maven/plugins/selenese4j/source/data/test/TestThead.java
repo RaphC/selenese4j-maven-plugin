@@ -11,7 +11,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * @author Raphael
- *
+ * The 'thead' XStream class
  */
 @XStreamAlias("thead")
 public class TestThead implements Serializable {
@@ -21,6 +21,9 @@ public class TestThead implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The 'tr' tags
+	 */
 	@XStreamImplicit(itemFieldName="tr")
 	private List<TestTr> trs;
 

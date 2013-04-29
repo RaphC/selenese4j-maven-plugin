@@ -5,7 +5,7 @@ import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 public interface ICommandToMethodTranslator {
 
 	/**
-	 * transforme la commane créé en instructions java
+	 * transform the given command to a Java source code
 	 * @param c
 	 * @return
 	 */

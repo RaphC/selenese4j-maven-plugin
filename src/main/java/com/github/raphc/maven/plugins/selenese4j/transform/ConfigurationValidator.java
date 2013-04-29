@@ -11,7 +11,8 @@ import com.github.raphc.maven.plugins.selenese4j.exception.ConfigurationExceptio
 
 /**
  * @author Raphael
- *
+ * The configuration validator.
+ * Check the presence of {@linkplain GeneratorConfiguration#PROP_BASED_TESTS_SOURCES_PACKAGE} and its corrent syntax.
  */
 public class ConfigurationValidator implements IConfigurationValidator {
 

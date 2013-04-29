@@ -13,10 +13,13 @@ import java.util.logging.Logger;
  */
 public class DefaultMethodReader extends AbstractMethodReader {
     
+	/**
+	 * The logger
+	 */
 	private Logger logger = Logger.getLogger(getClass().getName());
 	
 	/**
-	 * 
+	 * The default constructor
 	 * @param templateFileName
 	 * @param templatesDirectoryPath
 	 * @param testBuildDirectory

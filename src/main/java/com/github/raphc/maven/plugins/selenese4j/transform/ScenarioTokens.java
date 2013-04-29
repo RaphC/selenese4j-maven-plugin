@@ -8,34 +8,71 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * 
  * @author Raphael
- *
+ * Hold all of the token used by the template or byt the scenario files
  */
 class ScenarioTokens {
 
+	/**
+	 * The suite context
+	 */
   private Map<String, String> suiteContext = new HashMap<String, String>();
+  
+  /**
+   * The substitue type token list 
+   */
   private Map<String, String> substituteEntries = new HashMap<String, String>();
+  
+  /**
+   * The template type token list
+   */
   private Map<String, String> templateEntries = new HashMap<String, String>();
 
+  /**
+   * 
+   * @return
+   */
   public Map<String, String> getSuiteContext() {
     return suiteContext;
   }
 
+  /**
+   * 
+   * @param suiteContext
+   */
   public void setSuiteContext(Map<String, String> suiteContext) {
     this.suiteContext = suiteContext;
   }
 
+  /**
+   * 
+   * @return
+   */
   public Map<String, String> getSubstituteEntries() {
     return substituteEntries;
   }
 
+  /**
+   * 
+   * @param substituteEntries
+   */
   public void setSubstituteEntries(Map<String, String> substituteEntries) {
     this.substituteEntries = substituteEntries;
   }
 
+  /**
+   * Adds a substitute token
+   * @param key
+   * @param value
+   */
   public void addSubstituteEntry(String key, String value) {
     substituteEntries.put(key, value);
   }
   
+  /**
+   * Adds a template token
+   * @param key
+   * @param value
+   */
   public void addTemplateEntry(String key, String value) {
 	  templateEntries.put(key, value);
   }
@@ -77,14 +114,28 @@ class ScenarioTokens {
     return classSubstitutes;
   }
   
+  /**
+   * 
+   * @param key
+   * @param value
+   */
   public void addToContext(String key, String value) {
     suiteContext.put(key, value);
   }
 
+  /**
+   * 
+   * @param key
+   * @return
+   */
   public String getFromContext(String key) {
     return suiteContext.get(key);
   }
 
+  /*
+   * (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this);

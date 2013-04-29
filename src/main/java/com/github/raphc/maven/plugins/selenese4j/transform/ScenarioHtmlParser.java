@@ -12,14 +12,17 @@ import java.util.logging.Logger;
 /**
  * 
  * @author Raphael
- *
+ * The html suite file parser
  */
 public class ScenarioHtmlParser {
 
+	/**
+	 * The logger
+	 */
 	private static Logger logger = Logger.getLogger(ScenarioHtmlParser.class.getName());
 	
 	/**
-	 * 
+	 * Parse the HTML file suite and return the list of scenario file referenced by the suite file
 	 * @param suiteFile
 	 * @return
 	 * @throws Exception

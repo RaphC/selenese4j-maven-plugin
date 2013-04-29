@@ -11,7 +11,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 /**
  * @author Raphael
- *
+ * The 'td' XStream class processed by {@link TdContentConverter} to the content attribute
  */
 @XStreamAlias("td")
 @XStreamConverter(value=TdContentConverter.class, strings={"content"})
@@ -22,6 +22,9 @@ public class TestTd implements Serializable {
 	 */
 	private static final long serialVersionUID = 5909323723987858723L;
 	
+	/**
+	 * The 'td' tag content
+	 */
 	private String content;
 
 	/**

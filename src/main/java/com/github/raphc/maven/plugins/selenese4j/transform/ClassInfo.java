@@ -3,7 +3,7 @@ package com.github.raphc.maven.plugins.selenese4j.transform;
 /**
  * 
  * @author Raphael
- *
+ * 
  */
 class ClassInfo {
 

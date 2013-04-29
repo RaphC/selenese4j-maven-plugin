@@ -22,7 +22,7 @@ import com.github.raphc.maven.plugins.selenese4j.transform.GeneratorConfiguratio
 import com.github.raphc.maven.plugins.selenese4j.transform.ISourceGenerator;
 
 /**
- * Goal which transform selenium html file scenarii into JUnit Test cases java sources.
+ * Goal which transform selenium html file scenarii into WebDriver JUnit Test cases java sources.
  *
  * @goal html2wd
  * 

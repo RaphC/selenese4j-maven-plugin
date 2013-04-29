@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.converters.SingleValueConverter;
 
 /**
  * @author Raphael
- *
+ * The XStream converter used to extract td content to the {@link TestTd#getContent()} attribute
  */
 public class TdContentConverter implements SingleValueConverter {
 

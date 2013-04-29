@@ -14,7 +14,7 @@ public final class PatternUtils {
 	private PatternUtils(){}
 	
 	/**
-	 * Transformation :
+	 * Transform regexp token * and . by the rigth string chars
 	 * commence par ^
 	 * * = [\\s\\S]*
 	 * ? = [\\s\\S]
@@ -25,6 +25,11 @@ public final class PatternUtils {
 	 * @param pattern
 	 */
 	public static String processPattern(String pattern) {
+		
+		if(pattern == null) {
+			return null;
+		}
+		
 		return "^"+StringUtils.replaceEach(pattern, new String[]{"*", "?",".","["}, new String[]{"[\\\\s\\\\S]*","[\\\\s\\\\S]","\\\\.","\\\\["})+"$";
 	}
 }

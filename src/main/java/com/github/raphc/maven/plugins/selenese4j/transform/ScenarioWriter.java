@@ -20,18 +20,33 @@ import com.github.raphc.maven.plugins.selenese4j.context.ThreadLocalInfoContext;
 /**
  * 
  * @author Raphael
- * 
+ * The Java Test Class writer
  */
 class ScenarioWriter {
 
+	/**
+	 * The logger
+	 */
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	
+	/**
+	 * The initial template file
+	 */
 	private String templateFile;
 
+	/**
+	 * The velocity loader
+	 */
 	private String velocityLoader;
 
+	/**
+	 * The default velocity resource loader path
+	 */
 	private String velocityResourceLoaderPath = ".";
 
+	/**
+	 * The velocity runtime engine
+	 */
 	private static Velocity engine = new Velocity();
 	
 	/**
@@ -47,7 +62,7 @@ class ScenarioWriter {
 	}
 
 	/**
-	 * 
+	 * Generate the java source file
 	 * @param classBean
 	 * @param velocityBean
 	 * @param fileOut

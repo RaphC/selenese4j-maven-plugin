@@ -10,7 +10,8 @@ import org.apache.commons.lang.ArrayUtils;
 
 /**
  * @author Raphael
- *
+ * The directory filter. From {@link GeneratorConfiguration.EXCLUDED_TEST_RESOURCES_DIR} value,
+ * it ignores excluded directory to the scanned directory list
  */
 public class ScenariiDirectoryFilter implements FileFilter {
 

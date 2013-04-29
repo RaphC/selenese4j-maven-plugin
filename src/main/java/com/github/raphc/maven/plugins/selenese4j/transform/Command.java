@@ -5,22 +5,22 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * 
  * @author Raphael
- * 
+ * Design the selenese commands elements
  */
 public class Command {
 
 	/**
-	 * 
+	 * The command name (also called action)
 	 */
 	private String name;
 	
 	/**
-	 * 
+	 * The target element (also called locators)
 	 */
 	private String target;
 	
 	/**
-	 * 
+	 * The value/assertors element
 	 */
 	private String value;
 

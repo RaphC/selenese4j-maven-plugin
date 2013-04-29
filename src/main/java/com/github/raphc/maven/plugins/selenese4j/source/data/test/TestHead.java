@@ -9,13 +9,19 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * @author Raphael
- *
+ * The 'head' XStream class
  */
 @XStreamAlias("head")
 public class TestHead implements Serializable {
 
+	/**
+	 * The 'meta' tag
+	 */
 	private String meta;
 	
+	/**
+	 * The 'title' tag
+	 */
 	private String title;
 	
 	/**

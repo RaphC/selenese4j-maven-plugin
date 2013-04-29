@@ -13,8 +13,13 @@ import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
  */
 public class LocatorResolver {
 
-	public static String resolve(String selector)
-			throws IllegalArgumentException {
+	/**
+	 * Return the locator from the given {@linkplain selector}
+	 * @param selector
+	 * @return a String matching a webDriver locator
+	 * @throws IllegalArgumentException if selector is null or no locator can be found
+	 */
+	public static String resolve(String selector) throws IllegalArgumentException {
 
 		if (selector == null) {
 			throw new IllegalArgumentException("The command target has no locator");

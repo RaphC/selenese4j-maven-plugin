@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * @author Raphael
- *
+ * The 'body' XStream class 
  */
 @XStreamAlias("body")
 public class TestBody implements Serializable {
@@ -19,6 +19,9 @@ public class TestBody implements Serializable {
 	 */
 	private static final long serialVersionUID = 2085070614558732828L;
 	
+	/**
+	 * The 'table tag
+	 */
 	private TestTable table;
 
 	/**

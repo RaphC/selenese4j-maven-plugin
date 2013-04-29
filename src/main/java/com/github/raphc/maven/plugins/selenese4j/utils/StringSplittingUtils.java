@@ -12,8 +12,10 @@ import org.apache.commons.lang.StringUtils;
  */
 public final class StringSplittingUtils {
 
+	private StringSplittingUtils(){}
+	
 	/**
-	 * 
+	 * Split the {@linkplain compactedString} to a String array by using delimitors {@linkplain startBoundary} and {@linkplain endBoundary} 
 	 */
 	public static String[] split(String compactedString, char startBoundary, char endBoundary) {
 		String[] result = new String[0];

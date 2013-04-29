@@ -12,7 +12,8 @@ import org.apache.commons.lang.time.DateFormatUtils;
 
 /**
  * @author Raphael
- *
+ * The function which convert 'dateadd' function as a date with a given pattern and locale
+ * It will add the given number of day to the current date
  */
 public class LocaleAndFormatDateAddFunction extends AbstractPreDefinedFunction {
 

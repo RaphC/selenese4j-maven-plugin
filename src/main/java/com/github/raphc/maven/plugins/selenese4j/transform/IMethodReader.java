@@ -12,23 +12,22 @@ import java.io.File;
 public interface IMethodReader {
 	
 	/**
-	 * 
-	 * @param dir
-	 * @param classBean
-	 * @param tokens
+	 * Write the output to the Java source file
+	 * @param dir. The Java source file directory
+	 * @param classBean. The Java class information.
+	 * @param tokens. The tokens available during the file velocity merge operation
 	 * @throws Exception
 	 */
 	void writeSource(File dir, ClassInfo classBean, ScenarioTokens tokens) throws Exception;
 	
 	/**
-	 * 
-	 * @return
+	 * @return the template directory path
 	 */
 	public String getTemplatesDirectoryPath();
 	
 	/**
 	 * 
-	 * @return
+	 * @return the build directory
 	 */
 	public String getTestBuildDirectory();
 }

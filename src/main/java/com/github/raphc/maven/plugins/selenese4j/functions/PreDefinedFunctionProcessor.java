@@ -21,8 +21,14 @@ import org.reflections.util.ConfigurationBuilder;
  */
 public class PreDefinedFunctionProcessor implements IPreDefinedFunctionProcessor {
 
+	/**
+	 * The logger
+	 */
 	private Logger logger = Logger.getLogger(getClass().getName());
 	
+	/**
+	 * The function list loaded at runtime and useable during the transformation.
+	 */
 	private List<PreDefinedFunction> functions = new ArrayList<PreDefinedFunction>();
 	
 	/**

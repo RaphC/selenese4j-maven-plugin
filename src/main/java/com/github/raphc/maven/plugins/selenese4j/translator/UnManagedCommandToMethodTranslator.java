@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import com.github.raphc.maven.plugins.selenese4j.functions.AbstractPreDefinedFunction;
 import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
+import com.github.raphc.maven.plugins.selenese4j.utils.PatternUtils;
 import com.thoughtworks.selenium.Selenium;
 
 /**
@@ -291,16 +292,16 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		}
 		Method m = methods.get("is" + mName);
 		if (m != null) {
-			return forBlock( "if (" + pipe + SELENIUM + "." + m.getName() + "(\"" + processRegex(FilteringUtils.filter(c.getTarget())) + "\"))", c);
+			return forBlock( "if (" + pipe + SELENIUM + "." + m.getName() + "(\"" + PatternUtils.processPattern(FilteringUtils.filter(c.getTarget())) + "\"))", c);
 		}
 		m = methods.get("get" + mName);
 		if (m != null) {
 			boolean noArgs = m.getParameterTypes().length == 0;
 			if(noArgs){
-				return forBlock("if (" + pipe + " " + SELENIUM + "." + m.getName() + "().matches(\"" + processRegex(FilteringUtils.filter(c.getTarget())) + "\"))", c);
+				return forBlock("if (" + pipe + " " + SELENIUM + "." + m.getName() + "().matches(\"" + PatternUtils.processPattern(FilteringUtils.filter(c.getTarget())) + "\"))", c);
 			} else {
 				return 
-				forBlock("if (" +pipe + " " + SELENIUM + "." + m.getName() + "(\"" + FilteringUtils.filter(c.getTarget()) + "\").matches(\"" + processRegex(FilteringUtils.filter(c.getValue())) + "\"))", c);
+				forBlock("if (" +pipe + " " + SELENIUM + "." + m.getName() + "(\"" + FilteringUtils.filter(c.getTarget()) + "\").matches(\"" + PatternUtils.processPattern(FilteringUtils.filter(c.getValue())) + "\"))", c);
 			}
 		}
 		return null;

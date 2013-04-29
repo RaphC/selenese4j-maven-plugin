@@ -7,7 +7,7 @@ import java.util.Locale;
 
 /**
  * @author Raphael
- *
+ * Hold the constant values used by the plugin
  */
 public interface GeneratorConfiguration {
 	
@@ -16,10 +16,13 @@ public interface GeneratorConfiguration {
 	 */
 	public final static String SELENIUM_TEST_TEMPLATE_NAME = "junit-selenium-test-class.vm";
 	  
+	/**
+	 * Default velocity template for suite generation
+	 */
 	public final static String ORDERED_TESTS_SUITE_TEMPLATE_NAME = "junit-ordered-test-suite.vm";
 	
 	/**
-	 * Default velocity template for webdrvier generation
+	 * Default velocity template for webdriver generation
 	 */
 	public final static String WEBDRIVER_TEST_TEMPLATE_NAME = "junit-webdriver-test-class.vm";
 	
@@ -29,16 +32,34 @@ public interface GeneratorConfiguration {
 	 */
 	public final static String DEFAULT_SUITE_FILE_NAME = "suite.html";
 
+	/**
+	 * The default templates directory. This directory is located into the plugin classpath
+	 */
 	public final static String DEFAULT_TEMPLATE_DIRECTORY_PATH = "templates/";
 
+	/**
+	 * The Velocity loader file prefix
+	 */
 	public static final String VELOCITY_FILE_LOADER = "file";
 
+	/**
+	 * The Velocity loader classpath prefix
+	 */
 	public static final String VELOCITY_JAR_LOADER = "jar";
 
+	/**
+	 * The Velocity loader class prefix
+	 */
 	public static final String VELOCITY_CLASSPATH_LOADER = "class";
 
+	/**
+	 * The default Velocity loader. By default, the classpath loader is used
+	 */
 	public static final String DEFAULT_VELOCITY_LOADER = VELOCITY_CLASSPATH_LOADER;
 
+	/**
+	 * The generated Java Test Class Suffix
+	 */
 	public static final String GENERATED_JAVA_TEST_CLASS_SUFFIX = "TestCase";
 
 	/**
@@ -64,18 +85,18 @@ public interface GeneratorConfiguration {
 	public static final String I18N_MESSAGES_FILE_BASENAME = "messages";
 
 	/**
-	   * 
-	   */
+	 * Excluded directory which will not be scanned by the plugin
+	 */
 	public static final String[] EXCLUDED_TEST_RESOURCES_DIR = new String[] { ".svn" };
 
 	/**
-	   * 
-	   */
-	public static final String TEST_RESOURCES_DIR = System.getProperty("user.dir") + "/src/it/resources/selenium";
-
-	/** parametre specifique a la generation **/
+	 *  The property name used to specify the base package value
+	 */
 	public static final String PROP_BASED_TESTS_SOURCES_PACKAGE = "basedTestsSourcesPackage";
 
+	/**
+	 * The html suite file extension
+	 */
 	public static final String SCENARIO_FILE_SUFFIX = ".html";
 	
 	/**

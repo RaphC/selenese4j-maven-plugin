@@ -18,10 +18,10 @@ public interface ISourceGenerator {
     String ROLE = ISourceGenerator.class.getName();
 	
 	/**
-	 * 
-	 * @param scenariiRootDirectory
-	 * @param suiteFilePattern
-	 * @param methodReader
+	 * Handle the end to end generation process.
+	 * @param scenariiRootDirectory. The input file directory
+	 * @param suiteFilePattern. The suite file pattern used to detect a file to process
+	 * @param methodReader. The writer
 	 * @throws Exception
 	 */
 	public void generate(File scenariiRootDirectory, String[] suiteFilePattern, IMethodReader methodReader) throws Exception;

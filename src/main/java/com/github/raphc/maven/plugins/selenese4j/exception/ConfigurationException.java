@@ -5,6 +5,7 @@ package com.github.raphc.maven.plugins.selenese4j.exception;
 
 /**
  * @author Raphael
+ * Exception thrown when a wrong configuration has been detected as not valid
  *
  */
 public class ConfigurationException extends Exception {

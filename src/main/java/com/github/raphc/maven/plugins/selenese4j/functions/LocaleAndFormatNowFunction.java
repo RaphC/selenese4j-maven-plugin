@@ -11,7 +11,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 
 /**
  * @author Raphael
- *
+ * The function which convert 'now' function as a current date with a given pattern and locale
  */
 public class LocaleAndFormatNowFunction extends AbstractPreDefinedFunction {
 

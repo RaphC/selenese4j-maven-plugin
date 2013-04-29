@@ -19,7 +19,7 @@ import com.github.raphc.maven.plugins.selenese4j.context.ThreadLocalInfoContext;
 /**
  * 
  * @author Raphael
- *
+ * The Java Test Suite Class writer
  */
 class SuiteWriter {
 

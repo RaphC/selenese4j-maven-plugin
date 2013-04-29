@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * @author Raphael
- *
+ * The 'html' XStream class
  */
 @XStreamAlias("html")
 public class TestHtml implements Serializable {
@@ -19,8 +19,14 @@ public class TestHtml implements Serializable {
 	 */
 	private static final long serialVersionUID = 6304392350558372451L;
 	
+	/**
+	 * The 'head' tag
+	 */
 	private TestHead head;
 	
+	/**
+	 * The 'body' tag
+	 */
 	private TestBody body;
 
 	/**

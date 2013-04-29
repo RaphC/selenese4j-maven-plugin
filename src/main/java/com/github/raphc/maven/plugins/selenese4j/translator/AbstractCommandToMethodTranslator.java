@@ -23,19 +23,10 @@ public abstract class AbstractCommandToMethodTranslator implements ICommandToMet
 	
 	protected final static String NOT_FLAG = "Not";
 	
+	/**
+	 * The logger
+	 */
 	protected Logger logger = Logger.getLogger(getClass().getName());
-	
-	
-	protected static String processRegex(String value) {
-		String result = value;
-		
-		if(result != null){
-			result = result.replace("*", "[\\\\s\\\\S]*");
-			result = result.replace(".", "\\\\.");
-		}
-		
-		return result;
-	}
 	
 	/**
 	 * Transforme la commande pause en Thread.sleep

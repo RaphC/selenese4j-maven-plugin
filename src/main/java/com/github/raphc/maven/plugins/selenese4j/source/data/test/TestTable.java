@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * @author Raphael
- *
+ * The 'table' XStream class
  */
 @XStreamAlias("table")
 public class TestTable implements Serializable {
@@ -20,9 +20,15 @@ public class TestTable implements Serializable {
 	 */
 	private static final long serialVersionUID = -8333553222779437405L;
 	
+	/**
+	 * The 'thead' tag
+	 */
 	@XStreamOmitField
 	private TestThead thead;
 	
+	/**
+	 * The 'tbody' tag
+	 */
 	private TestTbody tbody;
 
 	/**

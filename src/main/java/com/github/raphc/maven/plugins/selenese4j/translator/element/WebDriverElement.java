@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author Raphael
- *
+ * The annotation used to flag a class as a WebDriver element
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

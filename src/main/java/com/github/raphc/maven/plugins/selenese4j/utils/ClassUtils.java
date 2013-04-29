@@ -17,7 +17,7 @@ public final class ClassUtils {
 	
 	
 	/**
-	 * 
+	 * Transform the {@linkplain fileName} string to a valid class name
 	 * @param fileName
 	 * @return
 	 */
@@ -28,7 +28,7 @@ public final class ClassUtils {
 	}
 	
 	/**
-	 * 
+	 * Build a valid package name from the {@linkplain basedPackageName} and additional {@linkplain childs}
 	 * @param basedPackageName
 	 * @param childs
 	 * @return
@@ -42,7 +42,7 @@ public final class ClassUtils {
 	}
 	
 	/**
-	 * 
+	 * Transform the {@linkplain resourceName} string to a valid package name
 	 * @param resourceName
 	 * @return
 	 */

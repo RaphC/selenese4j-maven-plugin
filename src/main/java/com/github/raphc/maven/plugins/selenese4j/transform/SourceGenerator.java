@@ -50,8 +50,14 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
  */
 public class SourceGenerator implements ISourceGenerator {
 
+	/**
+	 * The logger
+	 */
 	private Logger logger = Logger.getLogger(getClass().getName());
 	
+	/**
+	 * The default locale
+	 */
 	private Locale i18nMessagesLocale = GeneratorConfiguration.DEFAULT_I18N_MESSAGES_LOCALE;
 	
 	/**
@@ -449,7 +455,7 @@ public class SourceGenerator implements ISourceGenerator {
 	}
 	
 	/**
-	 * 
+	 * Invoke writer to generate Java test file and stores the generated Java class name (package + class name)
 	 * @param dir
 	 * @param methodReader
 	 * @param classInfo
@@ -466,7 +472,7 @@ public class SourceGenerator implements ISourceGenerator {
 	}
 	
 	/**
-	 * 
+	 * Invoke the write to generated Java test suite file
 	 * @param classBeans
 	 * @param tokens
 	 * @param packageName

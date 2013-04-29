@@ -10,7 +10,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 
 /**
  * @author Raphael
- *
+ * The function which convert 'now' function as a current date
  */
 public class DefaultNowFunction extends AbstractPreDefinedFunction {
 

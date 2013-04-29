@@ -9,8 +9,12 @@ package com.github.raphc.maven.plugins.selenese4j.utils;
  */
 public class FilteringUtils {
 
+	private FilteringUtils(){}
+	
 	/**
-	 * 
+	 * Replace the given {@linkplan s} to an escaped string
+	 * '\\' string to '\\\\' string
+	 * '\' string to '\\\' string
 	 * @param s
 	 * @return
 	 */

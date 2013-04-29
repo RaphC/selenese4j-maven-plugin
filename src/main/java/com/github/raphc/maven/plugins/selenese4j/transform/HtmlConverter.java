@@ -3,7 +3,6 @@
  */
 package com.github.raphc.maven.plugins.selenese4j.transform;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,8 @@ public class HtmlConverter {
 	private static Logger logger = Logger.getLogger(HtmlConverter.class.getName());
 	
 	/**
-	 * 
+	 * Convert the {@link TestTr} list to a {@link Command} list.
+	 * The method is responsible for output encoding.
 	 * @param lines
 	 * @return
 	 * @throws UnsupportedEncodingException 
@@ -57,35 +57,35 @@ public class HtmlConverter {
 		return result;
 	}
 	
-	/**
-	 * 
-	 * @param lines
-	 * @param suiteFile
-	 * @return
-	 */
-	public static List<File> convert(List<TestTr> lines, File suiteFile) {
-		List<File> result = new ArrayList<File>();
-		
-		if(CollectionUtils.size(lines) == 0){return result;}
-		
-		for(TestTr line : lines){
-			List<TestTd> cells = line.getTds();
-			logger.log(Level.FINE, "Converting cells ["+cells.get(0).getContent()+"] to file...");
-			File file = null;
-			String content = cells.get(0).getContent();
-			if (content.contains("<a href=")) {
-				String[] parts = content.split("\"");
-				file = new File(suiteFile.getParentFile() + File.separator + parts[1]);
-				if (!file.exists()) {
-					throw new RuntimeException("Missing \"" + suiteFile.getParentFile() + File.separator + file + ".");
-				}
-				
-			}
-			
-			logger.log(Level.INFO, "Adding [" + file.getName() + "] to process from suite file ["+suiteFile+"]...");
-			result.add(file);
-		}
-		
-		return result;
-	}
+//	/**
+//	 * 
+//	 * @param lines
+//	 * @param suiteFile
+//	 * @return
+//	 */
+//	public static List<File> convert(List<TestTr> lines, File suiteFile) {
+//		List<File> result = new ArrayList<File>();
+//		
+//		if(CollectionUtils.size(lines) == 0){return result;}
+//		
+//		for(TestTr line : lines){
+//			List<TestTd> cells = line.getTds();
+//			logger.log(Level.FINE, "Converting cells ["+cells.get(0).getContent()+"] to file...");
+//			File file = null;
+//			String content = cells.get(0).getContent();
+//			if (content.contains("<a href=")) {
+//				String[] parts = content.split("\"");
+//				file = new File(suiteFile.getParentFile() + File.separator + parts[1]);
+//				if (!file.exists()) {
+//					throw new RuntimeException("Missing \"" + suiteFile.getParentFile() + File.separator + file + ".");
+//				}
+//				
+//			}
+//			
+//			logger.log(Level.INFO, "Adding [" + file.getName() + "] to process from suite file ["+suiteFile+"]...");
+//			result.add(file);
+//		}
+//		
+//		return result;
+//	}
 }

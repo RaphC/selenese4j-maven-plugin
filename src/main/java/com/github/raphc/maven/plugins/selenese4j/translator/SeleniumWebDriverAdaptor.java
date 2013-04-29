@@ -25,8 +25,14 @@ import com.github.raphc.maven.plugins.selenese4j.translator.element.WebDriverEle
  */
 public class SeleniumWebDriverAdaptor {
 
+	/**
+	 * The logger
+	 */
 	private Logger logger = Logger.getLogger(getClass().getName());
 	
+	/**
+	 * The webDriver element list
+	 */
 	Map<String, Element> elements = new HashMap<String, Element>();
 	
 	public SeleniumWebDriverAdaptor() throws InstantiationException {
@@ -34,7 +40,7 @@ public class SeleniumWebDriverAdaptor {
 	}
 	
 	/**
-	 * 
+	 * Register webDriver element found in the classpath
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
