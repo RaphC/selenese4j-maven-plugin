@@ -28,7 +28,7 @@ public class UnManagedCommandToMethodTranslatorTestCase {
 	public void discoveryOpenCommand(){
 		Command command = new Command("open","login.html","");
 		String result = translator.discovery(command);
-		Assert.assertEquals("selenium.open(\"login.html\");", result);
+		Assert.assertEquals("selenium.open(\"login.html\",\"\");", result);
 	}
 	
 	@Test
