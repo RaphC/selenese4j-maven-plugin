@@ -5,6 +5,7 @@ package com.github.raphc.maven.plugins.selenese4j.transform;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.raphc.maven.plugins.selenese4j.translator.UnManagedCommandToMethodTranslator;
@@ -78,4 +79,35 @@ public class UnManagedCommandToMethodTranslatorTestCase {
 		String result = translator.discovery(command);
 		Assert.assertEquals("selenium.doubleClick(\"link=my_link\");", result);
 	}
+
+    @Test
+    public void discoveryWaitForElementWidthCommandWithIntValue(){
+        Command command = new Command("waitForElementWidth","dixAjaxStatusBig","0");
+        String result = translator.discovery(command);
+        Assert.assertEquals("for (int second = 0;; second++) {" +
+                "\n\t\t	if (second >= 60) Assert.fail(\"timeout 'waitForElementWidth:0' \");" +
+                "\n\t\t	try { if ( selenium.getElementWidth(\"dixAjaxStatusBig\").intValue() == 0) break; } catch (Exception e) {}" +
+                "\n\t\t	Thread.sleep(1000);" +
+                "\n\t\t}", result);
+    }
+
+    @Test
+    public void discoveryWaitForElementWidthCommandWithFloatValue(){
+        Command command = new Command("waitForElementWidth","dixAjaxStatusBig","0.0");
+        String result = translator.discovery(command);
+        Assert.assertEquals("for (int second = 0;; second++) {" +
+                "\n\t\t	if (second >= 60) Assert.fail(\"timeout 'waitForElementWidth:0.0' \");" +
+                "\n\t\t	try { if ( selenium.getElementWidth(\"dixAjaxStatusBig\").intValue() == 0.0) break; } catch (Exception e) {}" +
+                "\n\t\t	Thread.sleep(1000);" +
+                "\n\t\t}", result);
+    }
+
+    @Test
+    @Ignore
+    public void discoverySendKeysByIdCommand(){
+        Command command = new Command("sendKeys","id=78-uyt","231");
+        String result = translator.discovery(command);
+       // Assert.assertEquals("selenium.type(\"78-uyt\", \"231\");", result);
+        Assert.assertEquals("selenium.keyPress(\"id=78-uyt\", \"231\");", result);
+    }
 }

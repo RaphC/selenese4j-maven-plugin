@@ -16,6 +16,7 @@ import com.github.raphc.maven.plugins.selenese4j.transform.Command;
 import com.github.raphc.maven.plugins.selenese4j.utils.FilteringUtils;
 import com.github.raphc.maven.plugins.selenese4j.utils.PatternUtils;
 import com.thoughtworks.selenium.Selenium;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * @author Raphael
@@ -91,11 +92,11 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	}
 	
 	/**
-	 * Transforme la method m issue de la commande c en instruction java interpretable par l'API selenium
+	 * Transforme la methode m issue de la commande c en instruction java interpretable par l'API selenium
 	 * Ne sont supportés que les m retournant un type {@link String}
 	 * @param m
 	 * @param c
-	 * @return
+	 * @return the java code based on selenium API and matching the [@link c}
 	 */
 	private String getMethodBody(Method m, Command c) {
 		StringBuilder sb = new StringBuilder(SELENIUM);
@@ -168,14 +169,14 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 		
 		} else if (c.getName().equalsIgnoreCase("echo")) {
 			result = doEcho(c);
-		
 		} else if (c.getName().endsWith("AndWait")) {
 			result = doAndWait(c);
-		
 		} else if (c.getName().startsWith("store")) {
 			result = doStore(c);
-		}
-		
+		} else if (c.getName().equalsIgnoreCase("sendKeys")) {
+            result = doKeyPress(c);
+        }
+
 		if (result == null) {
 			return "ERROR: Method \"" + c.getName() + "\" not supported yet.";
 		}
@@ -188,7 +189,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * Transforme les commandes de type assertXXXXX en instruction Java
 	 * @param c
 	 * @param not
-	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type assertXXXXXNotPresent
+	 * @param methodNotPresent Indique qu'il s'agit d'une commande du type assertXXXXXNotPresent
 	 * @return
 	 */
 	private String doAssert(Command c, String not, boolean methodNotPresent) {
@@ -252,7 +253,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * Gestion des commandes de type verifyXXXXX
 	 * @param c
 	 * @param not
-	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type verifyXXXXXNotPresent
+	 * @param methodNotPresent Indique qu'il s'agit d'une commande du type verifyXXXXXNotPresent
 	 * @return
 	 */
 	private String doVerify(Command c, String not, boolean methodNotPresent) {
@@ -277,7 +278,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * 
 	 * @param c
 	 * @param Not
-	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type XXXXXNotPresent
+	 * @param methodNotPresent Indique qu'il s'agit d'une commande du type XXXXXNotPresent
 	 * @return
 	 */
 	private String doWaitFor(Command c, String Not, boolean methodNotPresent) {
@@ -301,7 +302,7 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 				return forBlock("if (" + pipe + " " + SELENIUM + "." + m.getName() + "().matches(\"" + PatternUtils.processPattern(FilteringUtils.filter(c.getTarget())) + "\"))", c);
 			} else {
 				return 
-				forBlock("if (" +pipe + " " + SELENIUM + "." + m.getName() + "(\"" + FilteringUtils.filter(c.getTarget()) + "\").matches(\"" + PatternUtils.processPattern(FilteringUtils.filter(c.getValue())) + "\"))", c);
+				forBlock("if (" + pipe + " " + SELENIUM + "." + m.getName() + "(\"" + FilteringUtils.filter(c.getTarget()) + "\")" + buildAssert(c, m, c.getValue()) + ")", c);
 			}
 		}
 		return null;
@@ -342,12 +343,51 @@ public class UnManagedCommandToMethodTranslator extends AbstractCommandToMethodT
 	/**
 	 * 
 	 * @param c
-	 * @param mName
 	 * @return
 	 */
 	private String doXpathCount(Command c) {
 		return "Assert.assertEquals(new Integer(\""+c.getValue()+"\"), " + SELENIUM + ".getXpathCount(\"" +c.getTarget()+ "\"));";
 	}
+
+    /**
+     *
+     * @param c
+     * @return
+     */
+    private String doKeyPress(Command c) {
+        return SELENIUM + ".keyPress(\"" + FilteringUtils.filter(c.getTarget()) + "\", \""+ c.getValue() + "\");";
+    }
+
+    /**
+     *
+     * @param c
+     * @param m
+     * @param value
+     * @return
+     */
+    private String buildAssert(Command c, Method m, String value){
+        if(m.getReturnType().isAssignableFrom(String.class)) {
+            return ".matches(\"" + PatternUtils.processPattern(FilteringUtils.filter(value)) + "\")";
+        }
+
+        if(m.getReturnType().isAssignableFrom(Integer.class)
+                && NumberUtils.isNumber(value)){
+            return ".intValue() == " + value + "";
+        }
+
+        if(m.getReturnType().isAssignableFrom(Long.class)
+                && NumberUtils.isNumber(value)){
+            return ".longValue() == " + value + "";
+        }
+
+        if(m.getReturnType().isAssignableFrom(Float.class)
+                && NumberUtils.isNumber(value)){
+            return ".floatValue() == " + value + "";
+        }
+
+        throw new IllegalArgumentException(
+                String.format("invalid command %s. Due to either a wrong value '%s' type or an unsupported return type of the corresponding method '%s' ", c.getName(), value, m.getReturnType().getName()));
+    }
 	
 	/**
 	 * Returns String of the format ["name", session().getMethod("target")]

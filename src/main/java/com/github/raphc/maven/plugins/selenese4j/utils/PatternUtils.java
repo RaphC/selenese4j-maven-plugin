@@ -14,13 +14,13 @@ public final class PatternUtils {
 	private PatternUtils(){}
 	
 	/**
-	 * Transform regexp token * and . by the rigth string chars
-	 * commence par ^
+	 * Transform regexp token * and . by the right string chars
+	 * starts with ^
 	 * * = [\\s\\S]*
 	 * ? = [\\s\\S]
 	 * . = \\.
 	 * [ = \\[
-	 * termine par $
+	 * ended by $
 	 * 	
 	 * @param pattern
 	 */
