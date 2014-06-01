@@ -37,7 +37,7 @@
 	<scm>
 		<connection>scm:git:git@github.com/RaphC/selenese4j-maven-plugin.git</connection>
 		<developerConnection>scm:git:git@github.com:RaphC/selenese4j-maven-plugin.git</developerConnection>
-		<url>git@github.com/RaphC/selenese4j-maven-plugin.git</url>
+		<url>scm:git:git@github.com/RaphC/selenese4j-maven-plugin.git</url>
 	</scm>
 	
 	<properties>
