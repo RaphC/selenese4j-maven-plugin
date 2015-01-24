@@ -25,7 +25,7 @@ public class OpenElement implements Element  {
 	 * @see com.github.raphc.maven.plugins.selenese4j.translator.element.Element#process(com.github.raphc.maven.plugins.selenese4j.transform.Command)
 	 */
 	public String process(Command command) {
-		return "driver.get(\"" +command.getTarget()+ "\");";
+		return "driver.get(baseUrl+\"/" +command.getTarget()+ "\");";
 	}
 
 	/*

@@ -31,7 +31,7 @@ public class WebDriverCommandToMethodTranslatorTestCase {
 	public void discoveryOpenCommand(){
 		Command command = new Command("open","login.html","");
 		String result = translator.discovery(command);
-		Assert.assertEquals("driver.get(\"login.html\");", result);
+		Assert.assertEquals("driver.get(baseUrl+\"/login.html\");", result);
 	}
 	
 	@Test
