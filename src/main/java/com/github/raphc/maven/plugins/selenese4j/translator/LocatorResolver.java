@@ -58,9 +58,14 @@ public class LocatorResolver {
 		if ("tag_name".equalsIgnoreCase(locator)) {
 			return "By.tagName(\""+target+"\")";
 		}
-		if ("dom".equalsIgnoreCase(locator)) {
+		/*if ("dom".equalsIgnoreCase(locator)) {
 			throw new IllegalArgumentException("Error: Dom locators are not implemented yet!");
-		}
+		}*/
+        /*if (locator.startsWith("dom:name")) {
+            return "By.xpath(\"//form[@name='" + target + "']\")";*/
+        if ("dom".equalsIgnoreCase(locator)) {
+            return "byDom(\""+target+"\")";
+        }
 		if ("class".equalsIgnoreCase(locator)) {
 			return "By.className(\""+target+"\")";
 		}

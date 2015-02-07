@@ -60,5 +60,26 @@ public class ${className} {
 			return false;
 		}
 	}
+
+	/**
+	 * Teste une expression dom
+	 *
+	 */
+	public By byDom(String domExpression) {
+        final Object o = ((JavascriptExecutor) driver).executeScript("return " + domExpression + ";");
+
+        if (o instanceof WebElement) {
+            return new By() {
+                @Override
+                public List<WebElement> findElements(SearchContext searchContext) {
+                    return new ArrayList<WebElement>() {
+                        {
+                            add((WebElement) o);
+                        }
+                    };
+                }
+            };
+        }
+    }
   
 }
