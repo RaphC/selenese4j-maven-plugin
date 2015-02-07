@@ -76,18 +76,15 @@ public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodT
 		} else if (c.getName().equalsIgnoreCase("echo")) {
 			result = doEcho(c);
 		} else if (c.getName().endsWith("AndWait")) {
-			result = doAndWait(c);
-		
+            result = doAndWait(c);
+        } else if (c.getName().equalsIgnoreCase("waitForPageToLoad")) {
+            result = doWaitForPageToLoad(c);
 		} else if (c.getName().startsWith("waitForNot")) {
 			result = doWaitFor(c, NOT_FLAG, false);
-
 		} else if (c.getName().startsWith("waitFor") && c.getName().endsWith("NotPresent")) {
 			result = doWaitFor(c, "", true);
-			
 		} else if (c.getName().startsWith("waitFor")) {
 			result = doWaitFor(c, "", false);
-
-	
 		} else if (c.getName().startsWith("assertNot")) {
 			result = doAssert(c, NOT_FLAG, false);
 		} else if (c.getName().startsWith("assert") && c.getName().endsWith("NotPresent")) {
@@ -126,12 +123,27 @@ public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodT
 		}
 		return null;
 	}
+
+    /**
+     *
+     * @param c
+     * @return
+     */
+    private String doWaitForPageToLoad(Command c) {
+        return "WebDriverWait wait = new WebDriverWait(driver, "+Integer.valueOf(StringUtils.defaultIfBlank(c.getValue(), DEFAULT_WAIT_FOR_PAGE_TOLOAD))/1000+");\n" +
+                "\t\treturn wait.until(new ExpectedCondition<Boolean>() {\n" +
+                "            public Boolean apply(WebDriver driver) {\n" +
+                "                return ((JavascriptExecutor)driver).executeScript(\"return document.readyState\").equals(\"complete\");\n" +
+                "            }\n" +
+                "        };);";
+        //return "driver.manage().timeouts().pageLoadTimeout("+c.getValue()+",TimeUnit.MILLISECONDS)";
+    }
 	
 	/**
 	 * Transforme les commandes de type assertXXXXX en instruction Java
 	 * @param c
 	 * @param not
-	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type assertXXXXXNotPresent
+	 * @param methodNotPresent Indique qu'il s'agit d'une commande du type assertXXXXXNotPresent
 	 * @return
 	 */
 	private String doAssert(Command c, String not, boolean methodNotPresent) {
@@ -173,8 +185,8 @@ public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodT
 	/**
 	 * Transforme une commande de type assert/verify by regex en instruction
 	 * Java de type Match
-	 * @param c
-	 * @param mName
+	 * @param command
+	 * @param element
 	 * @return
 	 */
 	private String doMatch(Command command, Element element) {
@@ -210,7 +222,7 @@ public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * Gestion des commandes de type verifyXXXXX
 	 * @param c
 	 * @param not
-	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type verifyXXXXXNotPresent
+	 * @param methodNotPresent Indique qu'il s'agit d'une commande du type verifyXXXXXNotPresent
 	 * @return
 	 */
 	private String doVerify(Command c, String not, boolean methodNotPresent) {
@@ -237,7 +249,7 @@ public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodT
 	 * 
 	 * @param c
 	 * @param Not
-	 * @param methodNotPresent. Indique qu'il s'agit d'une commande du type XXXXXNotPresent
+	 * @param methodNotPresent Indique qu'il s'agit d'une commande du type XXXXXNotPresent
 	 * @return
 	 */
 	private String doWaitFor(Command c, String Not, boolean methodNotPresent) {
@@ -250,16 +262,19 @@ public class WebDriverCommandToMethodTranslator extends AbstractCommandToMethodT
 		} else if(Not.equals(NOT_FLAG)){
 			pipe = "!";
 		}
+
+        // recherche par is
 		Element element = adaptor.findByName("is" + mName);
 		if (element != null) {
 			return forBlock( "if (" + pipe + " " + element.process(c) +")", c);
 		}
 		
-		
+		// recherche par get
 		element = adaptor.findByName("get" + mName);
 		if (element != null) {
 			return until(element, c);
 		}
+
 		return null;
 	}
 	
