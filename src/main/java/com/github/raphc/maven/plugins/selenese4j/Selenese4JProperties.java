@@ -9,6 +9,6 @@ package com.github.raphc.maven.plugins.selenese4j;
  */
 public interface Selenese4JProperties {
 	
-	public final static String GLOBAL_CONF_FILE_NAME = "selenese4j.properties";
+	String GLOBAL_CONF_FILE_NAME = "selenese4j.properties";
 
 }
