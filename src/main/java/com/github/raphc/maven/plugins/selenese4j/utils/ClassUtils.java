@@ -17,7 +17,7 @@ public final class ClassUtils {
 	
 	
 	/**
-	 * Transform the {@linkplain fileName} string to a valid class name
+	 * Transform the fileName string to a valid class name
 	 * @param fileName
 	 * @return
 	 */
